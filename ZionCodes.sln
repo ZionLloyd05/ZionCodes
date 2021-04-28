@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31005.135
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZionCodes.Core", "ZionCodes.Core\ZionCodes.Core.csproj", "{1965AA10-CF06-4614-BBB1-AAF2C96D4B90}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1965AA10-CF06-4614-BBB1-AAF2C96D4B90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1965AA10-CF06-4614-BBB1-AAF2C96D4B90}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1965AA10-CF06-4614-BBB1-AAF2C96D4B90}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1965AA10-CF06-4614-BBB1-AAF2C96D4B90}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0C741C15-D1A9-4D1A-91FC-ED32D7625F39}
+	EndGlobalSection
+EndGlobal
