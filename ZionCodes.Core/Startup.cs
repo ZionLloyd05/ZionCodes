@@ -10,10 +10,8 @@ namespace ZionCodes.Core
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
+        public Startup(IConfiguration configuration) =>
             Configuration = configuration;
-        }
 
         public IConfiguration Configuration { get; }
 
@@ -26,11 +24,16 @@ namespace ZionCodes.Core
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo
+                var openApiInfo = new OpenApiInfo
                 {
                     Title = "ZionCodes",
                     Version = "v1"
-                });
+                };
+
+                c.SwaggerDoc(
+                   name: "v1",
+                   info: openApiInfo
+                );
             });
         }
 
