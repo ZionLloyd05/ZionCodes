@@ -8,7 +8,7 @@ using ZionCodes.Core.Models.Categories;
 
 namespace ZionCodes.Core.Brokers.Storages
 {
-    public partial class StorageBroker
+    public partial class StorageBroker : IStorageBroker
     {
         public DbSet<Category> Categories { get; set; }
 
@@ -22,14 +22,14 @@ namespace ZionCodes.Core.Brokers.Storages
 
         public IQueryable<Category> SelectAllCategories() => this.Categories.AsQueryable();
 
-        public async ValueTask<Category> SelectCategoryById(Guid categoryId)
+        public async ValueTask<Category> SelectCategoryByIdAsync(Guid categoryId)
         {
             this.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 
             return await Categories.FindAsync(categoryId);
         }
 
-        public async ValueTask<Category> UpdateCategory(Category category) 
+        public async ValueTask<Category> UpdateCategoryAsync(Category category)
         {
             EntityEntry<Category> categoryEntityEntry = this.Categories.Update(category);
             await this.SaveChangesAsync();
@@ -37,12 +37,13 @@ namespace ZionCodes.Core.Brokers.Storages
             return categoryEntityEntry.Entity;
         }
 
-        public async ValueTask<Category> DeleteCategory(Category category)
+        public async ValueTask<Category> DeleteCategoryAsync(Category category)
         {
             EntityEntry<Category> categoryEntityEntry = this.Categories.Remove(category);
             await this.SaveChangesAsync();
 
             return categoryEntityEntry.Entity;
         }
+
     }
 }

@@ -1,6 +1,9 @@
-﻿using EFxceptions;
+﻿using System;
+using System.Threading.Tasks;
+using EFxceptions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using ZionCodes.Core.Models.Categories;
 
 namespace ZionCodes.Core.Brokers.Storages
 {
@@ -26,5 +29,6 @@ namespace ZionCodes.Core.Brokers.Storages
 
             optionsBuilder.UseSqlServer(connectionString);
         }
+
     }
 }
