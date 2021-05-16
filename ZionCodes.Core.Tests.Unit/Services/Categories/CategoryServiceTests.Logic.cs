@@ -23,10 +23,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
             inputCategory.UpdatedBy = inputCategory.CreatedBy;
             inputCategory.UpdatedDate = inputCategory.CreatedDate;
             Category expectedCategory = inputCategory;
-
-            this.dateTimeBrokerMock.Setup(broker =>
-                broker.GetCurrentDateTime())
-                    .Returns(dateTime);
+                        
 
             this.storageBrokerMock.Setup(broker =>
                 broker.InsertCategoryAsync(inputCategory))
@@ -38,10 +35,6 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
 
             //then
             actualCategory.Should().BeEquivalentTo(expectedCategory);
-
-            this.dateTimeBrokerMock.Verify(broker =>
-                broker.GetCurrentDateTime(),
-                    Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
                 broker.InsertCategoryAsync(inputCategory),

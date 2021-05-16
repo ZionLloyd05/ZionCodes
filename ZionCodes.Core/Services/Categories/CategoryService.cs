@@ -29,7 +29,7 @@ namespace ZionCodes.Core.Services.Categories
 
         public ValueTask<Category> AddCategoryAsync(Category category)
         {
-            throw new NotImplementedException();
+            return this.storageBroker.InsertCategoryAsync(category);
         }
     }
 }
