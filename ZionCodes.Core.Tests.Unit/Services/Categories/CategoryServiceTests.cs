@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using Moq;
@@ -34,6 +35,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
 
         private static Category CreateRandomCategory(DateTimeOffset dateTime) =>
             CreateRandomCategoryFiller(dateTime).Create();
+
         private static DateTimeOffset GetRandomDateTime() =>
             new DateTimeRange(earliestDate: new DateTime()).GetValue();
 
@@ -45,6 +47,13 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
                 .OnType<DateTimeOffset>().Use(dateTime);
 
             return filler;
+        }
+
+        private Expression<Func<Exception, bool>> SameExceptionAs(Exception exceptionException)
+        {
+            return actualException =>
+                exceptionException.Message == actualException.Message &&
+                exceptionException.InnerException.Message == actualException.InnerException.Message;
         }
     }
 }
