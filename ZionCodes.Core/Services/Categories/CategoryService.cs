@@ -9,7 +9,7 @@ using ZionCodes.Core.Models.Categories;
 
 namespace ZionCodes.Core.Services.Categories
 {
-    public class CategoryService : ICategoryService
+    public partial class CategoryService : ICategoryService
     {
         private readonly IStorageBroker storageBroker;
         private readonly IDateTimeBroker dateTimeBroker;
@@ -27,9 +27,12 @@ namespace ZionCodes.Core.Services.Categories
         }
 
 
-        public ValueTask<Category> AddCategoryAsync(Category category)
-        {
-            return this.storageBroker.InsertCategoryAsync(category);
-        }
+        public ValueTask<Category> AddCategoryAsync(Category category) =>
+            TryCatch(async () =>
+            {
+                ValidateCategoryOnCreate(category);
+
+                return await this.storageBroker.InsertCategoryAsync(category);
+            });
     }
 }
