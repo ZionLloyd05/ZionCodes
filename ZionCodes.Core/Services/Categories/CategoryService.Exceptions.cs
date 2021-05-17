@@ -22,6 +22,10 @@ namespace ZionCodes.Core.Services.Categories
             {
                 throw CreateAndLogValidationException(nullCategoryException);
             }
+            catch (InvalidCategoryException invalidCategoryException)
+            {
+                throw CreateAndLogValidationException(invalidCategoryException);
+            }
         }
 
         private CategoryValidationException CreateAndLogValidationException(Exception exception)
