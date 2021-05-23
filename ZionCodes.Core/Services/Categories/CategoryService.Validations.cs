@@ -13,6 +13,7 @@ namespace ZionCodes.Core.Services.Categories
         {
             ValidateCategoryIsNull(category);
             ValidateCategoryIdIsNull(category.Id);
+            ValidateCategoryAuditFieldsOnCreate(category);
         }
 
         private void ValidateCategoryIsNull(Category category)
@@ -30,6 +31,19 @@ namespace ZionCodes.Core.Services.Categories
                 throw new InvalidCategoryException(
                     parameterName: nameof(Category.Id),
                     parameterValue: categoryId);
+            }
+        }
+
+        private bool IsInvalid(Guid input) => input == default;
+
+        private void ValidateCategoryAuditFieldsOnCreate(Category category)
+        {
+            switch (category)
+            {
+                case { } when IsInvalid(input: category.CreatedBy):
+                    throw new InvalidCategoryException(
+                        parameterName: nameof(category.CreatedBy),
+                        parameterValue: category.CreatedBy);
             }
         }
     }
