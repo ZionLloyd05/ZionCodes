@@ -55,6 +55,11 @@ namespace ZionCodes.Core.Services.Categories
                     throw new InvalidCategoryException(
                         parameterName: nameof(category.CreatedDate),
                         parameterValue: category.CreatedDate);
+
+                case { } when IsInvalid(input: category.UpdatedDate):
+                    throw new InvalidCategoryException(
+                        parameterName: nameof(category.UpdatedDate),
+                        parameterValue: category.UpdatedDate);
             }
         }
     }
