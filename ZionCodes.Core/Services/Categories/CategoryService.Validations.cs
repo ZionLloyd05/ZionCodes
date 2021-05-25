@@ -35,6 +35,7 @@ namespace ZionCodes.Core.Services.Categories
         }
 
         private bool IsInvalid(Guid input) => input == default;
+        private bool IsInvalid(DateTimeOffset input) => input == default;
 
         private void ValidateCategoryAuditFieldsOnCreate(Category category)
         {
@@ -49,6 +50,11 @@ namespace ZionCodes.Core.Services.Categories
                     throw new InvalidCategoryException(
                         parameterName: nameof(category.UpdatedBy),
                         parameterValue: category.UpdatedBy);
+
+                case { } when IsInvalid(input: category.CreatedDate):
+                    throw new InvalidCategoryException(
+                        parameterName: nameof(category.CreatedDate),
+                        parameterValue: category.CreatedDate);
             }
         }
     }
