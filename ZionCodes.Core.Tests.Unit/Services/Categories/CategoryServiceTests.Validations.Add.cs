@@ -266,5 +266,42 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
             this.loggingBrokerMock.VerifyNoOtherCalls();
             this.storageBrokerMock.VerifyNoOtherCalls();
         }
+
+        [Theory]
+        [MemberData(nameof(InvalidMinuteCases))]
+        public async void ShouldThrowValidationExceptionOnAddWhenCreatedDateIsNotRecentAndLogItAsync(int minutes)
+        {
+            // given
+            DateTimeOffset dateTime = GetRandomDateTime();
+            Category randomCategory = CreateRandomCategory(dateTime);
+            Category inputCategory = randomCategory;
+            inputCategory.UpdatedBy = randomCategory.CreatedBy;
+            inputCategory.CreatedDate = dateTime.AddMinutes(minutes);
+            inputCategory.UpdatedDate = inputCategory.CreatedDate;
+
+            var invalidCategoryValidationException = new InvalidCategoryException(
+                parameterName: nameof(Category.CreatedDate),
+                parameterValue: inputCategory.CreatedDate);
+
+            var expectedCategoryValidationException =
+                new CategoryValidationException(invalidCategoryValidationException);
+
+            // when 
+            ValueTask<Category> createCategoryTask =
+                this.categoryService.AddCategoryAsync(inputCategory);
+
+            // then
+            await Assert.ThrowsAsync<CategoryValidationException>(() =>
+                createCategoryTask.AsTask());
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedCategoryValidationException))),
+                    Times.Once);
+
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+        }
     }
 }
