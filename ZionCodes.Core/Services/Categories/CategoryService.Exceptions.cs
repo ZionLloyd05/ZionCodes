@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EFxceptions.Models.Exceptions;
 using ZionCodes.Core.Models.Categories;
 using ZionCodes.Core.Models.Categories.Exceptions;
 
@@ -25,6 +26,13 @@ namespace ZionCodes.Core.Services.Categories
             catch (InvalidCategoryException invalidCategoryException)
             {
                 throw CreateAndLogValidationException(invalidCategoryException);
+            }
+            catch (DuplicateKeyException duplicateKeyException)
+            {
+                var alreadyExistsCategoryException =
+                    new AlreadyExistsCategoryException(duplicateKeyException);
+
+                throw CreateAndLogValidationException(alreadyExistsCategoryException);
             }
         }
 
