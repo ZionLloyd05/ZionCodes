@@ -65,7 +65,21 @@ namespace ZionCodes.Core.Services.Categories
                     throw new InvalidCategoryException(
                         parameterName: nameof(category.UpdatedDate),
                         parameterValue: category.UpdatedDate);
+               
+                case { } when IsDateNotRecent(category.CreatedDate):
+                    throw new InvalidCategoryException(
+                        parameterName: nameof(Category.CreatedDate),
+                        parameterValue: category.CreatedDate);
             }
+        }
+
+        private bool IsDateNotRecent(DateTimeOffset dateTime)
+        {
+            DateTimeOffset now = this.dateTimeBroker.GetCurrentDateTime();
+            int oneMinute = 1;
+            TimeSpan difference = now.Subtract(dateTime);
+
+            return Math.Abs(difference.TotalMinutes) > oneMinute;
         }
     }
 }

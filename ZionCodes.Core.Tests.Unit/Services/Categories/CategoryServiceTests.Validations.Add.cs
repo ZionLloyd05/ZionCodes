@@ -294,9 +294,17 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
             await Assert.ThrowsAsync<CategoryValidationException>(() =>
                 createCategoryTask.AsTask());
 
+            this.dateTimeBrokerMock.Verify(broker =>
+                broker.GetCurrentDateTime(),
+                    Times.Once);
+
             this.loggingBrokerMock.Verify(broker =>
                 broker.LogError(It.Is(SameExceptionAs(expectedCategoryValidationException))),
                     Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.InsertCategoryAsync(It.IsAny<Category>()),
+                    Times.Never);
 
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
