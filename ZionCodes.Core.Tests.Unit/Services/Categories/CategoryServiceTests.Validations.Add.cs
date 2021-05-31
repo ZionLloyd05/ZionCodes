@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EFxceptions.Models.Exceptions;
 using Moq;
 using Xunit;
 using ZionCodes.Core.Models.Categories;
@@ -306,6 +307,58 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
                 broker.InsertCategoryAsync(It.IsAny<Category>()),
                     Times.Never);
 
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public async void ShouldThrowValidationExceptionOnAddWhenCategoryAlreadyExistsAndLogItAsync()
+        {
+            // given
+            DateTimeOffset dateTime = GetRandomDateTime();
+            Category randomCategory = CreateRandomCategory(dateTime);
+            Category alreadyExistsCategory = randomCategory;
+            alreadyExistsCategory.UpdatedBy = alreadyExistsCategory.CreatedBy;
+
+            string randomMessage = GetRandomMessage();
+            string exceptionMessage = randomMessage;
+            var duplicateKeyException = new DuplicateKeyException(exceptionMessage);
+
+            var alreadyExistsCategoryException =
+                new AlreadyExistsCategoryException(duplicateKeyException);
+
+            var expectedCategoryValidationException =
+                new CategoryValidationException(alreadyExistsCategoryException);
+
+            this.dateTimeBrokerMock.Setup(broker =>
+                broker.GetCurrentDateTime())
+                    .Returns(dateTime);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.InsertCategoryAsync(alreadyExistsCategory))
+                    .ThrowsAsync(duplicateKeyException);
+
+            // when
+            ValueTask<Category> createCategoryTask =
+                this.categoryService.AddCategoryAsync(alreadyExistsCategory);
+
+            // then
+            await Assert.ThrowsAsync<CategoryValidationException>(() =>
+                createCategoryTask.AsTask());
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedCategoryValidationException))),
+                    Times.Once);
+
+            this.dateTimeBrokerMock.Verify(broker =>
+                broker.GetCurrentDateTime(),
+                    Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.InsertCategoryAsync(alreadyExistsCategory),
+                    Times.Once);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();

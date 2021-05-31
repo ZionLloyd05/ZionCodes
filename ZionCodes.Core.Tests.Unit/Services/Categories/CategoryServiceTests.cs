@@ -49,6 +49,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
             return filler;
         }
 
+        private static string GetRandomMessage() => new MnemonicString().GetValue();
+
         private Expression<Func<Exception, bool>> SameExceptionAs(Exception exceptionException)
         {
             return actualException =>
