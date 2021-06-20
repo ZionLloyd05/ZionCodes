@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Data.SqlClient;
 using Moq;
 using Tynamix.ObjectFiller;
 using ZionCodes.Core.Brokers.DateTimes;
@@ -41,6 +43,9 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
 
         private static IQueryable<Category> CreateRandomCategories(DateTimeOffset dateTime) =>
             CreateRandomCategoryFiller(dateTime).Create(GetRandomNumber()).AsQueryable();
+
+        private static SqlException GetSqlException() =>
+            (SqlException)FormatterServices.GetUninitializedObject(typeof(SqlException));
 
         private static Filler<Category> CreateRandomCategoryFiller(DateTimeOffset dateTime)
         {
