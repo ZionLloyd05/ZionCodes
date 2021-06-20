@@ -36,5 +36,10 @@ namespace ZionCodes.Core.Services.Categories
 
                 return await this.storageBroker.InsertCategoryAsync(category);
             });
+
+        public IQueryable<Category> RetrieveAllCategories()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

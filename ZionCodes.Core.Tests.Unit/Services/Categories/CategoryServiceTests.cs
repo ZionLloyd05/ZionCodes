@@ -39,6 +39,9 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
         private static DateTimeOffset GetRandomDateTime() =>
             new DateTimeRange(earliestDate: new DateTime()).GetValue();
 
+        private static IQueryable<Category> CreateRandomCategories(DateTimeOffset dateTime) =>
+            CreateRandomCategoryFiller(dateTime).Create(GetRandomNumber()).AsQueryable();
+
         private static Filler<Category> CreateRandomCategoryFiller(DateTimeOffset dateTime)
         {
             Filler<Category> filler = new Filler<Category>();

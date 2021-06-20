@@ -51,5 +51,39 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
             this.loggingBrokerMock.VerifyNoOtherCalls();
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
         }
+
+        [Fact]
+        public void ShouldRetriveAllCategories()
+        {
+            // given
+            DateTimeOffset randomDateTime = GetRandomDateTime();
+            IQueryable<Category> randomCategories =
+                CreateRandomCategories(randomDateTime);
+
+            IQueryable<Category> storageCategories =
+                randomCategories;
+
+            IQueryable<Category> expectedCategories =
+                storageCategories;
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectAllCategories())
+                    .Returns(storageCategories);
+
+            // when
+            IQueryable<Category> actualCategories =
+                this.categoryService.RetrieveAllCategories();
+
+            // then
+            actualCategories.Should().BeEquivalentTo(expectedCategories);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectAllCategories(),
+                    Times.Once);
+
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+        }
     }
 }
