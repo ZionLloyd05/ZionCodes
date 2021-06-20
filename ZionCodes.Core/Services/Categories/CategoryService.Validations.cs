@@ -13,6 +13,7 @@ namespace ZionCodes.Core.Services.Categories
         {
             ValidateCategoryIsNull(category);
             ValidateCategoryIdIsNull(category.Id);
+            ValidateCategoryPropertiesOnCreate(category);
             ValidateCategoryAuditFieldsOnCreate(category);
         }
 
@@ -34,7 +35,19 @@ namespace ZionCodes.Core.Services.Categories
             }
         }
 
+        private void ValidateCategoryPropertiesOnCreate(Category category)
+        {
+            switch (category)
+            {
+                case { } when IsInvalid(category.Title):
+                    throw new InvalidCategoryException(
+                        parameterName: nameof(Category.Title),
+                        parameterValue: category.Title);
+            }
+        }
+
         private bool IsInvalid(Guid input) => input == default;
+        private bool IsInvalid(string categoryTitle) => String.IsNullOrWhiteSpace(categoryTitle);
         private bool IsInvalid(DateTimeOffset input) => input == default;
 
         private void ValidateCategoryAuditFieldsOnCreate(Category category)

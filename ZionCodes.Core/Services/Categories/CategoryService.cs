@@ -14,6 +14,7 @@ namespace ZionCodes.Core.Services.Categories
         private readonly IStorageBroker storageBroker;
         private readonly IDateTimeBroker dateTimeBroker;
         private readonly ILoggingBroker loggingBroker;
+        private IList<int> notelist = new List<int>();
 
         public CategoryService(
             IStorageBroker storageBroker,
@@ -30,6 +31,7 @@ namespace ZionCodes.Core.Services.Categories
         public ValueTask<Category> AddCategoryAsync(Category category) =>
             TryCatch(async () =>
             {
+
                 ValidateCategoryOnCreate(category);
 
                 return await this.storageBroker.InsertCategoryAsync(category);
