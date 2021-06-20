@@ -39,7 +39,9 @@ namespace ZionCodes.Core.Services.Categories
 
         public IQueryable<Category> RetrieveAllCategories()
         {
-            throw new NotImplementedException();
+            IQueryable<Category> storageCategories = this.storageBroker.SelectAllCategories();
+
+            return storageCategories;
         }
     }
 }
