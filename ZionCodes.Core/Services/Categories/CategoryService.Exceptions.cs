@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EFxceptions.Models.Exceptions;
+using Microsoft.Data.SqlClient;
 using ZionCodes.Core.Models.Categories;
 using ZionCodes.Core.Models.Categories.Exceptions;
 
@@ -11,6 +12,7 @@ namespace ZionCodes.Core.Services.Categories
     public partial class CategoryService
     {
         private delegate ValueTask<Category> ReturningCategoryFunction();
+        private delegate IQueryable<Category> ReturningQueryableCategoryFunction();
 
         private async ValueTask<Category> TryCatch(
             ReturningCategoryFunction returningCategoryFunction)
@@ -34,6 +36,20 @@ namespace ZionCodes.Core.Services.Categories
 
                 throw CreateAndLogValidationException(alreadyExistsCategoryException);
             }
+          
+        }
+
+        private IQueryable<Category> TryCatch
+            (ReturningQueryableCategoryFunction returningQueryableCategoryFunction)
+        {
+            try
+            {
+                return returningQueryableCategoryFunction();
+            }
+            catch (SqlException sqlException)
+            {
+                throw CreateAndLogCriticalDependencyException(sqlException);
+            }
         }
 
         private CategoryValidationException CreateAndLogValidationException(Exception exception)
@@ -42,6 +58,14 @@ namespace ZionCodes.Core.Services.Categories
             this.loggingBroker.LogError(CategoryValidationException);
 
             return CategoryValidationException;
+        }
+
+        private CategoryDependencyException CreateAndLogCriticalDependencyException(Exception exception)
+        {
+            var categoryDependencyException = new CategoryDependencyException(exception);
+            this.loggingBroker.LogCritical(categoryDependencyException);
+
+            return categoryDependencyException;
         }
     }
 }
