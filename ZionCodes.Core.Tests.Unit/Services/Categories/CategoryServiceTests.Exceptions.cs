@@ -63,7 +63,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
                     Times.Once);
 
             this.loggingBrokerMock.Verify(broker =>
-                broker.LogCritical(It.Is(SameExceptionAs(expectedCategoryServiceException))),
+                broker.LogError(It.Is(SameExceptionAs(expectedCategoryServiceException))),
                     Times.Once);
 
             this.loggingBrokerMock.VerifyNoOtherCalls();

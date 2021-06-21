@@ -50,6 +50,10 @@ namespace ZionCodes.Core.Services.Categories
             {
                 throw CreateAndLogCriticalDependencyException(sqlException);
             }
+            catch (Exception exception)
+            {
+                throw CreateAndLogServiceException(exception);
+            }
         }
 
         private CategoryValidationException CreateAndLogValidationException(Exception exception)
@@ -66,6 +70,14 @@ namespace ZionCodes.Core.Services.Categories
             this.loggingBroker.LogCritical(categoryDependencyException);
 
             return categoryDependencyException;
+        }
+
+        private CategoryServiceException CreateAndLogServiceException(Exception exception)
+        {
+            var categoryServiceException = new CategoryServiceException(exception);
+            this.loggingBroker.LogError(categoryServiceException);
+
+            return categoryServiceException;
         }
     }
 }
