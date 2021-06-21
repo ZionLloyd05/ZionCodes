@@ -42,6 +42,8 @@ namespace ZionCodes.Core.Services.Categories
             {
                 IQueryable<Category> storageCategories = this.storageBroker.SelectAllCategories();
 
+                ValidateStorageCategories(storageCategories);
+
                 return storageCategories;
             });
     }

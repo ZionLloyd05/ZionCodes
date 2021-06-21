@@ -37,6 +37,10 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
                 broker.GetCurrentDateTime(), 
                     Times.Never);
 
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectAllCategories(),
+                    Times.Once);
+
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
             this.storageBrokerMock.VerifyNoOtherCalls();

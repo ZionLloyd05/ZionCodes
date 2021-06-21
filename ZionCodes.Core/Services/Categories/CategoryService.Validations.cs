@@ -46,6 +46,14 @@ namespace ZionCodes.Core.Services.Categories
             }
         }
 
+        private void ValidateStorageCategories(IQueryable<Category> storageCategories)
+        {
+            if (storageCategories.Count() == 0)
+            {
+                this.loggingBroker.LogWarning("No categories found in storage.");
+            }
+        }
+
         private bool IsInvalid(Guid input) => input == default;
         private bool IsInvalid(string categoryTitle) => String.IsNullOrWhiteSpace(categoryTitle);
         private bool IsInvalid(DateTimeOffset input) => input == default;
