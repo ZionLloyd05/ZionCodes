@@ -53,7 +53,9 @@ namespace ZionCodes.Core.Services.Categories
                 ValidateCategoryId(categoryId);
                 Category storageCategory =
                     await this.storageBroker.SelectCategoryByIdAsync(categoryId);
-
+                
+                ValidateStorageCategory(storageCategory, categoryId);
+                
                 return storageCategory;
             });
     }

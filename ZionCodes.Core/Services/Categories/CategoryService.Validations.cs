@@ -35,6 +35,14 @@ namespace ZionCodes.Core.Services.Categories
             }
         }
 
+        private void ValidateStorageCategory(Category storageCategory, Guid categoryId)
+        {
+            if (storageCategory == null)
+            {
+                throw new NotFoundCategoryException(categoryId);
+            }
+        }
+
         private void ValidateCategoryId(Guid categoryId)
         {
             if (categoryId == Guid.Empty)

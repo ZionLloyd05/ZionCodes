@@ -29,6 +29,10 @@ namespace ZionCodes.Core.Services.Categories
             {
                 throw CreateAndLogValidationException(invalidCategoryException);
             }
+            catch (NotFoundCategoryException notFoundCategoryException)
+            {
+                throw CreateAndLogValidationException(notFoundCategoryException);
+            }
             catch (DuplicateKeyException duplicateKeyException)
             {
                 var alreadyExistsCategoryException =
