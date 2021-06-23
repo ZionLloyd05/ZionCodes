@@ -35,6 +35,16 @@ namespace ZionCodes.Core.Services.Categories
             }
         }
 
+        private void ValidateCategoryId(Guid categoryId)
+        {
+            if (categoryId == Guid.Empty)
+            {
+                throw new InvalidCategoryInputException(
+                    parameterName: nameof(Category.Id),
+                    parameterValue: categoryId);
+            }
+        }
+
         private void ValidateCategoryPropertiesOnCreate(Category category)
         {
             switch (category)

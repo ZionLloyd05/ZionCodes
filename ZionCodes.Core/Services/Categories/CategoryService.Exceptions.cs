@@ -36,6 +36,10 @@ namespace ZionCodes.Core.Services.Categories
 
                 throw CreateAndLogValidationException(alreadyExistsCategoryException);
             }
+            catch (InvalidCategoryInputException invalidCategoryInputException)
+            {
+                throw CreateAndLogValidationException(invalidCategoryInputException);
+            }
           
         }
 
