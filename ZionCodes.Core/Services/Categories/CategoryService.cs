@@ -47,9 +47,12 @@ namespace ZionCodes.Core.Services.Categories
                 return storageCategories;
             });
 
-        public ValueTask<Category> RetrieveCategoryByIdAsync(Guid categoryId)
+        public async ValueTask<Category> RetrieveCategoryByIdAsync(Guid categoryId)
         {
-            throw new NotImplementedException();
+            Category storageCategory =
+                await this.storageBroker.SelectCategoryByIdAsync(categoryId);
+
+            return storageCategory;
         }
     }
 }
