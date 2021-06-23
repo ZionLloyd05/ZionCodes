@@ -10,5 +10,6 @@ namespace ZionCodes.Core.Services.Categories
     {
         ValueTask<Category> AddCategoryAsync(Category category);
         IQueryable<Category> RetrieveAllCategories();
+        ValueTask<Category> RetrieveCategoryByIdAsync(Guid categoryId);
     }
 }

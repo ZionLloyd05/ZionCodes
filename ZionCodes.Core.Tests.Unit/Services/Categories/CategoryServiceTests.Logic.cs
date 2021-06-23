@@ -85,5 +85,37 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
             this.loggingBrokerMock.VerifyNoOtherCalls();
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
         }
+
+        [Fact]
+        public async Task ShouldRetrieveCategoryByIdAsync()
+        {
+            // given
+            Guid randomCategoryId = Guid.NewGuid();
+            Guid inputCategoryId = randomCategoryId;
+            DateTimeOffset randomDateTime = GetRandomDateTime();
+            Category randomCategory = CreateRandomCategory(randomDateTime);
+            Category storageCategory = randomCategory;
+            Category expectedCategory = storageCategory;
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectCategoryByIdAsync(inputCategoryId))
+                    .ReturnsAsync(storageCategory);
+
+            // when
+            Category actualCategory =
+                await this.categoryService.RetrieveCategoryByIdAsync(inputCategoryId);
+
+            // then
+            actualCategory.Should().BeEquivalentTo(expectedCategory);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectCategoryByIdAsync(inputCategoryId),
+                    Times.Once);
+
+
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+        }
     }
 }
