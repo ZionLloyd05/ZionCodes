@@ -59,7 +59,10 @@ namespace ZionCodes.Core.Services.Categories
             {
                 throw CreateAndLogValidationException(invalidCategoryInputException);
             }
-          
+            catch (Exception exception)
+            {
+                throw CreateAndLogServiceException(exception);
+            }
         }
 
         private IQueryable<Category> TryCatch
