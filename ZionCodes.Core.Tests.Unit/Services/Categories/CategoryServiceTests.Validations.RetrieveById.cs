@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Data.SqlClient;
 using Moq;
 using Xunit;
 using ZionCodes.Core.Models.Categories;
@@ -91,5 +92,6 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
             this.loggingBrokerMock.VerifyNoOtherCalls();
             this.storageBrokerMock.VerifyNoOtherCalls();
         }
+
     }
 }

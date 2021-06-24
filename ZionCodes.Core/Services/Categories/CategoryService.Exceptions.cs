@@ -29,6 +29,10 @@ namespace ZionCodes.Core.Services.Categories
             {
                 throw CreateAndLogValidationException(invalidCategoryException);
             }
+            catch (SqlException sqlException)
+            {
+                throw CreateAndLogCriticalDependencyException(sqlException);
+            }
             catch (NotFoundCategoryException notFoundCategoryException)
             {
                 throw CreateAndLogValidationException(notFoundCategoryException);

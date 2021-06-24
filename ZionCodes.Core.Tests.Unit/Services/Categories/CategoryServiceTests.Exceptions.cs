@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Data.SqlClient;
 using Moq;
 using Xunit;
+using ZionCodes.Core.Models.Categories;
 using ZionCodes.Core.Models.Categories.Exceptions;
 
 namespace ZionCodes.Core.Tests.Unit.Services.Categories
@@ -39,6 +41,43 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
             this.loggingBrokerMock.VerifyNoOtherCalls();
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
+        }
+
+
+        [Fact]
+        public async Task ShouldThrowDependencyExceptionOnRetrieveByIdWhenSqlExceptionOccursAndLogItAsync()
+        {
+            // given
+            Guid randomCategoryId = Guid.NewGuid();
+            Guid inputCategoryId = randomCategoryId;
+            SqlException sqlException = GetSqlException();
+
+            var exceptionCategoryDependencyException =
+                new CategoryDependencyException(sqlException);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectCategoryByIdAsync(inputCategoryId))
+                    .ThrowsAsync(sqlException);
+
+            // when
+            ValueTask<Category> retrieveCategoryByIdTask =
+                this.categoryService.RetrieveCategoryByIdAsync(inputCategoryId);
+
+            // then
+            await Assert.ThrowsAsync<CategoryDependencyException>(() =>
+                retrieveCategoryByIdTask.AsTask());
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogCritical(It.Is(SameExceptionAs(exceptionCategoryDependencyException))),
+                    Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectCategoryByIdAsync(inputCategoryId),
+                    Times.Once);
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
         }
 
         [Fact]
