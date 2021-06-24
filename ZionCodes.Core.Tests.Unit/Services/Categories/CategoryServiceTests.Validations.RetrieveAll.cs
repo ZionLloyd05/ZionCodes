@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
 using Xunit;
@@ -34,7 +31,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
                 broker.LogWarning("No categories found in storage."));
 
             this.dateTimeBrokerMock.Verify(broker =>
-                broker.GetCurrentDateTime(), 
+                broker.GetCurrentDateTime(),
                     Times.Never);
 
             this.storageBrokerMock.Verify(broker =>

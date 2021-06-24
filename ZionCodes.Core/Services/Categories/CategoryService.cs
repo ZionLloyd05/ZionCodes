@@ -38,13 +38,25 @@ namespace ZionCodes.Core.Services.Categories
             });
 
         public IQueryable<Category> RetrieveAllCategories() =>
-            TryCatch(() => 
+            TryCatch(() =>
             {
                 IQueryable<Category> storageCategories = this.storageBroker.SelectAllCategories();
 
                 ValidateStorageCategories(storageCategories);
 
                 return storageCategories;
+            });
+
+        public ValueTask<Category> RetrieveCategoryByIdAsync(Guid categoryId) =>
+            TryCatch(async () =>
+            {
+                ValidateCategoryId(categoryId);
+                Category storageCategory =
+                    await this.storageBroker.SelectCategoryByIdAsync(categoryId);
+
+                ValidateStorageCategory(storageCategory, categoryId);
+
+                return storageCategory;
             });
     }
 }

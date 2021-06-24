@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ZionCodes.Core.Models.Categories;
@@ -10,5 +9,6 @@ namespace ZionCodes.Core.Services.Categories
     {
         ValueTask<Category> AddCategoryAsync(Category category);
         IQueryable<Category> RetrieveAllCategories();
+        ValueTask<Category> RetrieveCategoryByIdAsync(Guid categoryId);
     }
 }
