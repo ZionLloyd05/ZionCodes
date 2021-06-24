@@ -38,7 +38,7 @@ namespace ZionCodes.Core.Services.Categories
             });
 
         public IQueryable<Category> RetrieveAllCategories() =>
-            TryCatch(() => 
+            TryCatch(() =>
             {
                 IQueryable<Category> storageCategories = this.storageBroker.SelectAllCategories();
 
@@ -53,9 +53,9 @@ namespace ZionCodes.Core.Services.Categories
                 ValidateCategoryId(categoryId);
                 Category storageCategory =
                     await this.storageBroker.SelectCategoryByIdAsync(categoryId);
-                
+
                 ValidateStorageCategory(storageCategory, categoryId);
-                
+
                 return storageCategory;
             });
     }

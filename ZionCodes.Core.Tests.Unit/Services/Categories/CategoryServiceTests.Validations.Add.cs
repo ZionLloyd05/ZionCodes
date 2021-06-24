@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using EFxceptions.Models.Exceptions;
 using Moq;
@@ -397,7 +394,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
                 broker.LogError(It.Is(SameExceptionAs(expectedCategoryValidationException))),
                     Times.Once);
 
-            this.storageBrokerMock.Verify(broker => 
+            this.storageBrokerMock.Verify(broker =>
                 broker.InsertCategoryAsync(It.IsAny<Category>()),
                     Times.Never);
 

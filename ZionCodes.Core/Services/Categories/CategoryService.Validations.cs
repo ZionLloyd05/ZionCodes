@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using ZionCodes.Core.Models.Categories;
 using ZionCodes.Core.Models.Categories.Exceptions;
 
@@ -27,7 +25,7 @@ namespace ZionCodes.Core.Services.Categories
 
         private void ValidateCategoryIdIsNull(Guid categoryId)
         {
-            if(categoryId == default)
+            if (categoryId == default)
             {
                 throw new InvalidCategoryException(
                     parameterName: nameof(Category.Id),
@@ -104,7 +102,7 @@ namespace ZionCodes.Core.Services.Categories
                     throw new InvalidCategoryException(
                         parameterName: nameof(category.UpdatedDate),
                         parameterValue: category.UpdatedDate);
-               
+
                 case { } when IsDateNotRecent(category.CreatedDate):
                     throw new InvalidCategoryException(
                         parameterName: nameof(Category.CreatedDate),
