@@ -45,6 +45,12 @@ namespace ZionCodes.Core.Services.Categories
 
                 throw CreateAndLogValidationException(alreadyExistsCategoryException);
             }
+            catch (DbUpdateConcurrencyException dbUpdateConcurrencyException)
+            {
+                var lockedCategoryException = new LockedCategoryException(dbUpdateConcurrencyException);
+
+                throw CreateAndLogDependencyException(lockedCategoryException);
+            }
             catch (DbUpdateException dbUpdateException)
             {
                 throw CreateAndLogDependencyException(dbUpdateException);
