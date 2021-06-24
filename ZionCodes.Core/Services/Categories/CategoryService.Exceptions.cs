@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using EFxceptions.Models.Exceptions;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using ZionCodes.Core.Models.Categories;
 using ZionCodes.Core.Models.Categories.Exceptions;
 
@@ -44,6 +45,10 @@ namespace ZionCodes.Core.Services.Categories
 
                 throw CreateAndLogValidationException(alreadyExistsCategoryException);
             }
+            catch (DbUpdateException dbUpdateException)
+            {
+                throw CreateAndLogDependencyException(dbUpdateException);
+            }
             catch (InvalidCategoryInputException invalidCategoryInputException)
             {
                 throw CreateAndLogValidationException(invalidCategoryInputException);
@@ -74,6 +79,14 @@ namespace ZionCodes.Core.Services.Categories
             this.loggingBroker.LogError(CategoryValidationException);
 
             return CategoryValidationException;
+        }
+
+        private CategoryDependencyException CreateAndLogDependencyException(Exception exception)
+        {
+            var categoryDependencyException = new CategoryDependencyException(exception);
+            this.loggingBroker.LogError(categoryDependencyException);
+
+            return categoryDependencyException;
         }
 
         private CategoryDependencyException CreateAndLogCriticalDependencyException(Exception exception)
