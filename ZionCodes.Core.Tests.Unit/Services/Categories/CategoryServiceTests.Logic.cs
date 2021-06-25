@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Force.DeepCloner;
 using Moq;
 using Xunit;
 using ZionCodes.Core.Models.Categories;
@@ -115,6 +116,59 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
             this.loggingBrokerMock.VerifyNoOtherCalls();
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
         }
+
+        [Fact]
+        public async Task ShouldModifyCategoryAsync()
+        {
+            // given
+            int randomNumber = GetRandomNumber();
+            int randomDays = randomNumber;
+            DateTimeOffset randomDate = GetRandomDateTime();
+            DateTimeOffset randomInputDate = GetRandomDateTime();
+            Category randomCategory = CreateRandomCategory(randomInputDate);
+            Category inputCategory = randomCategory;
+            Category afterUpdateStorageCategory = inputCategory;
+            Category expectedCategory = afterUpdateStorageCategory;
+            Category beforeUpdateStorageCategory = randomCategory.DeepClone();
+            inputCategory.UpdatedDate = randomDate;
+            Guid categoryId = inputCategory.Id;
+
+            this.dateTimeBrokerMock.Setup(broker =>
+               broker.GetCurrentDateTime())
+                   .Returns(randomDate);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectCategoryByIdAsync(categoryId))
+                    .ReturnsAsync(beforeUpdateStorageCategory);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.UpdateCategoryAsync(inputCategory))
+                    .ReturnsAsync(afterUpdateStorageCategory);
+
+            // when
+            Category actualCategory =
+                await this.categoryService.ModifyCategoryAsync(inputCategory);
+
+            // then
+            actualCategory.Should().BeEquivalentTo(expectedCategory);
+
+            this.dateTimeBrokerMock.Verify(broker =>
+                broker.GetCurrentDateTime(),
+                    Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectCategoryByIdAsync(categoryId),
+                    Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.UpdateCategoryAsync(inputCategory),
+                    Times.Once);
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+        }
+
 
         [Fact]
         public async Task ShouldDeleteCategoryByIdAsync()
