@@ -90,5 +90,45 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
         }
+
+        [Fact]
+        public async Task ShouldThrowDependencyExceptionOnModifyIfDbUpdateConcurrencyExceptionOccursAndLogItAsync()
+        {
+            // given
+            int randomNegativeNumber = GetNegativeRandomNumber();
+            DateTimeOffset randomDateTime = GetRandomDateTime();
+            Category randomCategory = CreateRandomCategory(randomDateTime);
+            Category someCategory = randomCategory;
+            someCategory.CreatedDate = randomDateTime.AddMinutes(randomNegativeNumber);
+            var databaseUpdateConcurrencyException = new DbUpdateConcurrencyException();
+            var lockedCategoryException = new LockedCategoryException(databaseUpdateConcurrencyException);
+
+            var expectedCategoryDependencyException =
+                new CategoryDependencyException(lockedCategoryException);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectCategoryByIdAsync(someCategory.Id))
+                    .ThrowsAsync(databaseUpdateConcurrencyException);
+
+            // when
+            ValueTask<Category> modifyCategoryTask =
+                this.categoryService.ModifyCategoryAsync(someCategory);
+
+            // then
+            await Assert.ThrowsAsync<CategoryDependencyException>(() =>
+                modifyCategoryTask.AsTask());
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectCategoryByIdAsync(someCategory.Id),
+                    Times.Once);
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedCategoryDependencyException))),
+                    Times.Once);
+
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+        }
     }
 }
