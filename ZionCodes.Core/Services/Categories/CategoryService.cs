@@ -58,5 +58,10 @@ namespace ZionCodes.Core.Services.Categories
 
                 return storageCategory;
             });
+
+        public ValueTask<Category> RemoveCategoryByIdAsync(Guid categoryId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
