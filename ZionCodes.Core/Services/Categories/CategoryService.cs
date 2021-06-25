@@ -62,6 +62,8 @@ namespace ZionCodes.Core.Services.Categories
         public ValueTask<Category> RemoveCategoryByIdAsync(Guid categoryId) =>
             TryCatch(async () =>
             {
+                ValidateCategoryIdIsNull(categoryId);
+
                 Category storageCategory =
                 await this.storageBroker.SelectCategoryByIdAsync(categoryId);
 
