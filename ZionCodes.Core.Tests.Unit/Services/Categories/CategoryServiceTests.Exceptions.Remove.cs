@@ -59,9 +59,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
         {
             // given
             Guid randomCategoryId = Guid.NewGuid();
-            Guid randomStudentId = Guid.NewGuid();
             Guid inputCategoryId = randomCategoryId;
-            Guid inputStudentId = randomStudentId;
             var databaseUpdateConcurrencyException = new DbUpdateConcurrencyException();
 
             var lockedCategoryException =
@@ -94,5 +92,40 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
             this.storageBrokerMock.VerifyNoOtherCalls();
         }
 
+        [Fact]
+        public async Task ShouldThrowServiceExceptionOnDeleteWhenExceptionOccursAndLogItAsync()
+        {
+            // given
+            Guid randomCategoryId = Guid.NewGuid();
+            Guid inputCategoryId = randomCategoryId;
+            var exception = new Exception();
+
+            var expectedStudentCategoryException =
+                new CategoryServiceException(exception);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectCategoryByIdAsync(inputCategoryId))
+                    .ThrowsAsync(exception);
+
+            // when
+            ValueTask<Category> deleteStudentCategoryTask =
+                this.categoryService.RemoveCategoryByIdAsync(inputCategoryId);
+
+            // then
+            await Assert.ThrowsAsync<CategoryServiceException>(() =>
+                deleteStudentCategoryTask.AsTask());
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedStudentCategoryException))),
+                    Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectCategoryByIdAsync(inputCategoryId),
+                    Times.Once);
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+        }
     }
 }
