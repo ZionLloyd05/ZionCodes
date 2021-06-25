@@ -50,5 +50,47 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
         }
 
+        [Fact]
+        public async Task ShouldThrowValidatonExceptionOnDeleteWhenStorageCategoryIsInvalidAndLogItAsync()
+        {
+            // given
+            DateTimeOffset dateTime = GetRandomDateTime();
+            Category randomCategory = CreateRandomCategory(dateTime);
+            Guid inputCategoryId = randomCategory.Id;
+            Category inputCategory = randomCategory;
+            Category nullStorageCategory = null;
+
+            var notFoundCategoryException = new NotFoundCategoryException(inputCategoryId);
+
+            var expectedCategoryValidationException =
+                new CategoryValidationException(notFoundCategoryException);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectCategoryByIdAsync(inputCategoryId))
+                    .ReturnsAsync(nullStorageCategory);
+
+            // when
+            ValueTask<Category> actualCategoryTask =
+                this.categoryService.RemoveCategoryByIdAsync(inputCategoryId);
+
+            // then
+            await Assert.ThrowsAsync<CategoryValidationException>(() => actualCategoryTask.AsTask());
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedCategoryValidationException))),
+                    Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectCategoryByIdAsync(inputCategoryId),
+                    Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.DeleteCategoryAsync(It.IsAny<Category>()),
+                    Times.Never);
+
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+        }
     }
 }
