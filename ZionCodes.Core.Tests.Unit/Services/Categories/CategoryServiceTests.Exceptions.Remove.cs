@@ -1,0 +1,56 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Data.SqlClient;
+using Moq;
+using Xunit;
+using ZionCodes.Core.Models.Categories;
+using ZionCodes.Core.Models.Categories.Exceptions;
+
+namespace ZionCodes.Core.Tests.Unit.Services.Categories
+{
+    public partial class CategoryServiceTests
+    {
+        [Fact]
+        public async Task ShouldThrowDependencyExceptionOnDeleteWhenSqlExceptionOccursAndLogItAsync()
+        {
+            // given
+            Guid randomCategoryId = Guid.NewGuid();
+            Guid inputCategoryId = randomCategoryId;
+            SqlException sqlException = GetSqlException();
+
+            var expectedCategoryDependencyException =
+                new CategoryDependencyException(sqlException);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectCategoryByIdAsync(inputCategoryId))
+                    .ThrowsAsync(sqlException);
+
+            // when
+            ValueTask<Category> deleteCategoryTask =
+                this.categoryService.RemoveCategoryByIdAsync(inputCategoryId);
+
+            // then
+            await Assert.ThrowsAsync<CategoryDependencyException>(() =>
+                deleteCategoryTask.AsTask());
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogCritical(It.Is(SameExceptionAs(expectedCategoryDependencyException))),
+                    Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectCategoryByIdAsync(inputCategoryId),
+                    Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.DeleteCategoryAsync(It.IsAny<Category>()),
+                    Times.Never);
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+        }
+    }
+}
