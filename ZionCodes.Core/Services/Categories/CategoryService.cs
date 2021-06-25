@@ -59,9 +59,12 @@ namespace ZionCodes.Core.Services.Categories
                 return storageCategory;
             });
 
-        public ValueTask<Category> ModifyCategoryAsync(Category category)
+        public async ValueTask<Category> ModifyCategoryAsync(Category category)
         {
-            throw new NotImplementedException();
+            Category maybeCategory =
+                    await this.storageBroker.SelectCategoryByIdAsync(category.Id);
+
+            return await this.storageBroker.UpdateCategoryAsync(category);
         }
 
         public ValueTask<Category> RemoveCategoryByIdAsync(Guid categoryId) =>

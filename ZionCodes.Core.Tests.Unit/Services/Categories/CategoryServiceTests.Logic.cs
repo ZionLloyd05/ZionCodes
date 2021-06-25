@@ -133,10 +133,6 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
             inputCategory.UpdatedDate = randomDate;
             Guid categoryId = inputCategory.Id;
 
-            this.dateTimeBrokerMock.Setup(broker =>
-               broker.GetCurrentDateTime())
-                   .Returns(randomDate);
-
             this.storageBrokerMock.Setup(broker =>
                 broker.SelectCategoryByIdAsync(categoryId))
                     .ReturnsAsync(beforeUpdateStorageCategory);
@@ -151,10 +147,6 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
 
             // then
             actualCategory.Should().BeEquivalentTo(expectedCategory);
-
-            this.dateTimeBrokerMock.Verify(broker =>
-                broker.GetCurrentDateTime(),
-                    Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
                 broker.SelectCategoryByIdAsync(categoryId),
