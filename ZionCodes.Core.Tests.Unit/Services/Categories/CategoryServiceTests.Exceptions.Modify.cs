@@ -130,5 +130,44 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
         }
+
+        [Fact]
+        public async Task ShouldThrowServiceExceptionOnModifyIfServiceExceptionOccursAndLogItAsync()
+        {
+            // given
+            int randomNegativeNumber = GetNegativeRandomNumber();
+            DateTimeOffset randomDateTime = GetRandomDateTime();
+            Category randomCategory = CreateRandomCategory(randomDateTime);
+            Category someCategory = randomCategory;
+            someCategory.CreatedDate = randomDateTime.AddMinutes(randomNegativeNumber);
+            var serviceException = new Exception();
+
+            var expectedCategoryServiceException =
+                new CategoryServiceException(serviceException);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectCategoryByIdAsync(someCategory.Id))
+                    .ThrowsAsync(serviceException);
+
+            // when
+            ValueTask<Category> modifyCategoryTask =
+                this.categoryService.ModifyCategoryAsync(someCategory);
+
+            // then
+            await Assert.ThrowsAsync<CategoryServiceException>(() =>
+                modifyCategoryTask.AsTask());
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectCategoryByIdAsync(someCategory.Id),
+                    Times.Once);
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedCategoryServiceException))),
+                    Times.Once);
+
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+        }
     }
 }
