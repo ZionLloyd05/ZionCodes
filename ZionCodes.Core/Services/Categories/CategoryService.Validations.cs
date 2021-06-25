@@ -41,6 +41,11 @@ namespace ZionCodes.Core.Services.Categories
             }
         }
 
+        private void ValidateCategoryOnModify(Category category)
+        {
+            ValidateCategoryIsNull(category);
+        }
+
         private void ValidateCategoryId(Guid categoryId)
         {
             if (categoryId == Guid.Empty)
