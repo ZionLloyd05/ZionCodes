@@ -59,11 +59,21 @@ namespace ZionCodes.Core.Services.Categories
                 return storageCategory;
             });
 
+        public ValueTask<Category> ModifyCategoryAsync(Category category) =>
+            TryCatch(async () =>
+            {
+                ValidateCategoryOnModify(category);
+                ValidateCategoryIdIsNull(category.Id);
+                Category maybeCategory =
+                        await this.storageBroker.SelectCategoryByIdAsync(category.Id);
+
+                return await this.storageBroker.UpdateCategoryAsync(category);
+            });
+
         public ValueTask<Category> RemoveCategoryByIdAsync(Guid categoryId) =>
             TryCatch(async () =>
             {
                 ValidateCategoryIdIsNull(categoryId);
-
                 Category storageCategory =
                 await this.storageBroker.SelectCategoryByIdAsync(categoryId);
 
@@ -71,5 +81,6 @@ namespace ZionCodes.Core.Services.Categories
 
                 return await this.storageBroker.DeleteCategoryAsync(storageCategory);
             });
+
     }
 }

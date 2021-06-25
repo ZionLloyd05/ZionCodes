@@ -11,7 +11,7 @@ namespace ZionCodes.Core.Services.Categories
         {
             ValidateCategoryIsNull(category);
             ValidateCategoryIdIsNull(category.Id);
-            ValidateCategoryPropertiesOnCreate(category);
+            ValidateCategoryProperties(category);
             ValidateCategoryAuditFieldsOnCreate(category);
         }
 
@@ -41,6 +41,29 @@ namespace ZionCodes.Core.Services.Categories
             }
         }
 
+        private void ValidateCategoryOnModify(Category category)
+        {
+            ValidateCategoryIsNull(category);
+            ValidateCategoryProperties(category);
+            ValidateCategoryAuditFields(category);
+        }
+
+        private void ValidateCategoryAuditFieldsOnModify(Category category)
+        {
+            switch (category)
+            {
+                case { } when category.UpdatedDate == category.CreatedDate:
+                    throw new InvalidCategoryException(
+                        parameterName: nameof(Category.UpdatedDate),
+                        parameterValue: category.UpdatedDate);
+
+                case { } when IsDateNotRecent(category.UpdatedDate):
+                    throw new InvalidCategoryException(
+                        parameterName: nameof(Category.UpdatedDate),
+                        parameterValue: category.UpdatedDate);
+            }
+        }
+
         private void ValidateCategoryId(Guid categoryId)
         {
             if (categoryId == Guid.Empty)
@@ -51,7 +74,7 @@ namespace ZionCodes.Core.Services.Categories
             }
         }
 
-        private void ValidateCategoryPropertiesOnCreate(Category category)
+        private void ValidateCategoryProperties(Category category)
         {
             switch (category)
             {
@@ -107,6 +130,31 @@ namespace ZionCodes.Core.Services.Categories
                     throw new InvalidCategoryException(
                         parameterName: nameof(Category.CreatedDate),
                         parameterValue: category.CreatedDate);
+            }
+        }
+        private void ValidateCategoryAuditFields(Category category)
+        {
+            switch (category)
+            {
+                case { } when IsInvalid(input: category.CreatedBy):
+                    throw new InvalidCategoryException(
+                        parameterName: nameof(Category.CreatedBy),
+                        parameterValue: category.CreatedBy);
+
+                case { } when IsInvalid(input: category.UpdatedBy):
+                    throw new InvalidCategoryException(
+                        parameterName: nameof(Category.UpdatedBy),
+                        parameterValue: category.UpdatedBy);
+
+                case { } when IsInvalid(input: category.CreatedDate):
+                    throw new InvalidCategoryException(
+                        parameterName: nameof(Category.CreatedDate),
+                        parameterValue: category.CreatedDate);
+
+                case { } when IsInvalid(input: category.UpdatedDate):
+                    throw new InvalidCategoryException(
+                        parameterName: nameof(Category.UpdatedDate),
+                        parameterValue: category.UpdatedDate);
             }
         }
 
