@@ -70,10 +70,6 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
                 broker.SelectCategoryByIdAsync(someCategory.Id))
                     .ThrowsAsync(databaseUpdateException);
 
-            this.dateTimeBrokerMock.Setup(broker =>
-                broker.GetCurrentDateTime())
-                    .Returns(randomDateTime);
-
             // when
             ValueTask<Category> modifyCategoryTask =
                 this.categoryService.ModifyCategoryAsync(someCategory);
@@ -81,10 +77,6 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
             // then
             await Assert.ThrowsAsync<CategoryDependencyException>(() =>
                 modifyCategoryTask.AsTask());
-
-            this.dateTimeBrokerMock.Verify(broker =>
-                broker.GetCurrentDateTime(),
-                    Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
                 broker.SelectCategoryByIdAsync(someCategory.Id),
