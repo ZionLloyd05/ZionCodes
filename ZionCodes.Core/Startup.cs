@@ -3,8 +3,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using ZionCodes.Core.Brokers.DateTimes;
+using ZionCodes.Core.Brokers.Loggings;
 using ZionCodes.Core.Brokers.Storages;
+using ZionCodes.Core.Services.Categories;
 
 namespace ZionCodes.Core
 {
@@ -20,7 +24,11 @@ namespace ZionCodes.Core
         {
             services.AddControllers();
             services.AddDbContext<StorageBroker>();
-            services.AddTransient<IStorageBroker, StorageBroker>();
+            services.AddScoped<IStorageBroker, StorageBroker>();
+            services.AddTransient<ILogger, Logger<LoggingBroker>>();
+            services.AddTransient<ILoggingBroker, LoggingBroker>();
+            services.AddTransient<IDateTimeBroker, DateTimeBroker>();
+            services.AddTransient<ICategoryService, CategoryService>();
 
             services.AddSwaggerGen(c =>
             {
