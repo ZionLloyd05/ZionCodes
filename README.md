@@ -1,9 +1,9 @@
 # ZionCodes
-Open source Blogging System 📚
+Blogging System 📚
 
 [![BCH compliance](https://bettercodehub.com/edge/badge/ZionLloyd05/ZionCodes?branch=master)](https://bettercodehub.com/)
 
-This is an open source blogging system with the aim of democratizing blogging systems for everyone who seeks to have a personal blog.
+Building a personal site and blogging system, kind of like a web journal, or web extension of my brain, you feel me 😉
 
 ## Project Coding Standard
 [The Standard](https://github.com/hassanhabib/The-Standard)
