@@ -115,5 +115,47 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
             this.loggingBrokerMock.VerifyNoOtherCalls();
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
         }
+
+        [Fact]
+        public async Task ShouldDeleteCategoryByIdAsync()
+        {
+            // given
+            DateTimeOffset randomDateTime = GetRandomDateTime();
+            DateTimeOffset dateTime = randomDateTime;
+            Category randomCategory = CreateRandomCategory(dateTime);
+            Category inputCategory = randomCategory;
+            Guid inputCategoryId = inputCategory.Id;
+            inputCategory.UpdatedBy = inputCategory.CreatedBy;
+            inputCategory.UpdatedDate = inputCategory.CreatedDate;
+            Category storageCategory = inputCategory;
+            Category expectedCategory = inputCategory;
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectCategoryByIdAsync(inputCategoryId))
+                    .ReturnsAsync(inputCategory);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.DeleteCategoryAsync(inputCategory))
+                    .ReturnsAsync(storageCategory);
+
+            // when
+            Category actualCategory =
+                await this.categoryService.RemoveCategoryByIdAsync(inputCategoryId);
+
+            // then
+            actualCategory.Should().BeEquivalentTo(expectedCategory);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectCategoryByIdAsync(inputCategoryId),
+                    Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.DeleteCategoryAsync(inputCategory),
+                    Times.Once);
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+        }
     }
 }
