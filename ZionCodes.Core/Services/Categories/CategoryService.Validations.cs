@@ -11,7 +11,7 @@ namespace ZionCodes.Core.Services.Categories
         {
             ValidateCategoryIsNull(category);
             ValidateCategoryIdIsNull(category.Id);
-            ValidateCategoryPropertiesOnCreate(category);
+            ValidateCategoryProperties(category);
             ValidateCategoryAuditFieldsOnCreate(category);
         }
 
@@ -44,6 +44,8 @@ namespace ZionCodes.Core.Services.Categories
         private void ValidateCategoryOnModify(Category category)
         {
             ValidateCategoryIsNull(category);
+            ValidateCategoryProperties(category);
+
         }
 
         private void ValidateCategoryId(Guid categoryId)
@@ -56,7 +58,7 @@ namespace ZionCodes.Core.Services.Categories
             }
         }
 
-        private void ValidateCategoryPropertiesOnCreate(Category category)
+        private void ValidateCategoryProperties(Category category)
         {
             switch (category)
             {
