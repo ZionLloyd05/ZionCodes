@@ -63,6 +63,7 @@ namespace ZionCodes.Core.Services.Categories
             TryCatch(async () =>
             {
                 ValidateCategoryOnModify(category);
+                ValidateCategoryIdIsNull(category.Id);
                 Category maybeCategory =
                         await this.storageBroker.SelectCategoryByIdAsync(category.Id);
 
@@ -73,7 +74,6 @@ namespace ZionCodes.Core.Services.Categories
             TryCatch(async () =>
             {
                 ValidateCategoryIdIsNull(categoryId);
-
                 Category storageCategory =
                 await this.storageBroker.SelectCategoryByIdAsync(categoryId);
 

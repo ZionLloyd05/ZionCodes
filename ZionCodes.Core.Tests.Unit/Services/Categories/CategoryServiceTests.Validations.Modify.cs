@@ -48,7 +48,6 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
         public async void ShouldThrowValidationExceptionOnModifyWhenIdIsInvalidAndLogItAsync()
         {
             // given
-            Guid invalidFeeId = Guid.Empty;
             DateTimeOffset dateTime = GetRandomDateTime();
             Category randomCategory = CreateRandomCategory(dateTime);
             Category inputCategory = randomCategory;
@@ -80,6 +79,43 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
             this.storageBrokerMock.VerifyNoOtherCalls();
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("   ")]
+        public async Task ShouldThrowValidationExceptionOnModifyWhenCategoryTitleIsInvalidAndLogItAsync(
+            string invalidCategoryCategoryName)
+        {
+            // given
+            DateTimeOffset dateTime = GetRandomDateTime();
+            Category randomCategory = CreateRandomCategory(dateTime);
+            Category invalidCategory = randomCategory;
+            invalidCategory.Title = invalidCategoryCategoryName;
+
+            var invalidCategoryException = new InvalidCategoryException(
+               parameterName: nameof(Category.Title),
+               parameterValue: invalidCategory.Title);
+
+            var expectedCategoryValidationException =
+                new CategoryValidationException(invalidCategoryException);
+
+            // when
+            ValueTask<Category> modifyCategoryTask =
+                this.categoryService.ModifyCategoryAsync(invalidCategory);
+
+            // then
+            await Assert.ThrowsAsync<CategoryValidationException>(() =>
+                modifyCategoryTask.AsTask());
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedCategoryValidationException))),
+                    Times.Once);
+
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
         }
     }
 }
