@@ -51,7 +51,7 @@ namespace ZionCodes.Core
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-               
+
             }
 
             app.UseSwagger();
