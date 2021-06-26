@@ -3,45 +3,45 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using ZionCodes.Core.Models.Categories;
+using ZionCodes.Core.Models.Tags;
 
 namespace ZionCodes.Core.Brokers.Storages
 {
     public partial class StorageBroker : IStorageBroker
     {
-        public DbSet<Category> Categories { get; set; }
+        public DbSet<Tag> Tags { get; set; }
 
-        public async ValueTask<Category> InsertCategoryAsync(Category category)
+        public async ValueTask<Tag> InsertTagAsync(Tag tag)
         {
-            EntityEntry<Category> categoryEntityEntry = await this.Categories.AddAsync(category);
+            EntityEntry<Tag> tagEntityEntry = await this.Tags.AddAsync(tag);
             await this.SaveChangesAsync();
 
-            return categoryEntityEntry.Entity;
+            return tagEntityEntry.Entity;
         }
 
-        public IQueryable<Category> SelectAllCategories() => this.Categories.AsQueryable();
+        public IQueryable<Tag> SelectAllTags() => this.Tags.AsQueryable();
 
-        public async ValueTask<Category> SelectCategoryByIdAsync(Guid categoryId)
+        public async ValueTask<Tag> SelectTagByIdAsync(Guid tagId)
         {
             this.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 
-            return await Categories.FindAsync(categoryId);
+            return await Tags.FindAsync(tagId);
         }
 
-        public async ValueTask<Category> UpdateCategoryAsync(Category category)
+        public async ValueTask<Tag> UpdateTagAsync(Tag tag)
         {
-            EntityEntry<Category> categoryEntityEntry = this.Categories.Update(category);
+            EntityEntry<Tag> tagEntityEntry = this.Tags.Update(tag);
             await this.SaveChangesAsync();
 
-            return categoryEntityEntry.Entity;
+            return tagEntityEntry.Entity;
         }
 
-        public async ValueTask<Category> DeleteCategoryAsync(Category category)
+        public async ValueTask<Tag> DeleteTagAsync(Tag tag)
         {
-            EntityEntry<Category> categoryEntityEntry = this.Categories.Remove(category);
+            EntityEntry<Tag> tagEntityEntry = this.Tags.Remove(tag);
             await this.SaveChangesAsync();
 
-            return categoryEntityEntry.Entity;
+            return tagEntityEntry.Entity;
         }
 
     }
