@@ -14,7 +14,6 @@ namespace ZionCodes.Core.Services.Categories
         private readonly IStorageBroker storageBroker;
         private readonly IDateTimeBroker dateTimeBroker;
         private readonly ILoggingBroker loggingBroker;
-        private IList<int> notelist = new List<int>();
 
         public CategoryService(
             IStorageBroker storageBroker,
