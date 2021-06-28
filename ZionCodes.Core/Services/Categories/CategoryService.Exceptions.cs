@@ -84,7 +84,7 @@ namespace ZionCodes.Core.Services.Categories
         private CategoryValidationException CreateAndLogValidationException(Exception exception)
         {
             var CategoryValidationException = new CategoryValidationException(exception);
-            this.loggingBroker.LogError(CategoryValidationException);
+            this.loggingBroker.LogError((Exception)CategoryValidationException);
 
             return CategoryValidationException;
         }
