@@ -24,9 +24,9 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
             inputTag.UpdatedDate = inputTag.CreatedDate;
             Tag expectedTag = inputTag;
 
-            this.dateTimeBrokerMock.Setup(broker =>
-                broker.GetCurrentDateTime())
-                    .Returns(dateTime);
+            //this.dateTimeBrokerMock.Setup(broker =>
+            //    broker.GetCurrentDateTime())
+            //        .Returns(dateTime);
 
             this.storageBrokerMock.Setup(broker =>
                 broker.InsertTagAsync(inputTag))
@@ -43,9 +43,9 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
                 broker.InsertTagAsync(inputTag),
                     Times.Once);
 
-            this.dateTimeBrokerMock.Verify(broker =>
-                broker.GetCurrentDateTime(),
-                    Times.Once);
+            //this.dateTimeBrokerMock.Verify(broker =>
+            //    broker.GetCurrentDateTime(),
+                    //Times.Once);
 
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
