@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit;
 using ZionCodes.Core.Models.Tags;
@@ -42,6 +43,41 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
 
             this.storageBrokerMock.Verify(broker =>
                 broker.SelectTagByIdAsync(inputTagId),
+                    Times.Once);
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public async Task ShouldThrowDependencyExceptionOnRetrieveByIdWhenDbExceptionOccursAndLogItAsync()
+        {
+            // given
+            Guid someTagId = Guid.NewGuid();
+            var databaseUpdateException = new DbUpdateException();
+
+            var expectedTagDependencyException =
+                new TagDependencyException(databaseUpdateException);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectTagByIdAsync(It.IsAny<Guid>()))
+                    .ThrowsAsync(databaseUpdateException);
+
+            // when
+            ValueTask<Tag> retrieveByIdTagTask =
+                this.tagService.RetrieveTagByIdAsync(someTagId);
+
+            // then
+            await Assert.ThrowsAsync<TagDependencyException>(() =>
+                retrieveByIdTagTask.AsTask());
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedTagDependencyException))),
+                    Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectTagByIdAsync(It.IsAny<Guid>()),
                     Times.Once);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
