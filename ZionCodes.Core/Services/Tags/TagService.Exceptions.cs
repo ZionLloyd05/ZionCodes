@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using EFxceptions.Models.Exceptions;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using ZionCodes.Core.Models.Tags;
 using ZionCodes.Core.Models.Tags.Exceptions;
 
@@ -39,6 +40,10 @@ namespace ZionCodes.Core.Services.Tags
             {
                 throw CreateAndLogCriticalDependencyException(sqlException);
             }
+            catch (DbUpdateException dbUpdateException)
+            {
+                throw CreateAndLogDependencyException(dbUpdateException);
+            }
         }
 
 
@@ -56,6 +61,13 @@ namespace ZionCodes.Core.Services.Tags
             this.loggingBroker.LogError((Exception)TagValidationException);
 
             return TagValidationException;
+        }
+        private TagDependencyException CreateAndLogDependencyException(Exception exception)
+        {
+            var tagDependencyException = new TagDependencyException(exception);
+            this.loggingBroker.LogError(tagDependencyException);
+
+            return tagDependencyException;
         }
     }
 }
