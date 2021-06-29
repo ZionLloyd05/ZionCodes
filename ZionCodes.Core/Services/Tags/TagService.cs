@@ -32,12 +32,15 @@ namespace ZionCodes.Core.Services.Tags
                 return await this.storageBroker.InsertTagAsync(tag);
             });
 
-        public async ValueTask<Tag> RetrieveTagByIdAsync(Guid tagId)
-        {
-            Tag storageTag =
-                await this.storageBroker.SelectTagByIdAsync(tagId);
+        public ValueTask<Tag> RetrieveTagByIdAsync(Guid tagId) =>
+            TryCatch(async () =>
+            {
+                ValidateTagId(tagId);
 
-            return storageTag;
-        }
+                Tag storageTag =
+                    await this.storageBroker.SelectTagByIdAsync(tagId);
+
+                return storageTag;
+            });
     }
 }

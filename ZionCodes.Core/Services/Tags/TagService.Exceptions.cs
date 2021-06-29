@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using EFxceptions.Models.Exceptions;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using ZionCodes.Core.Models.Categories.Exceptions;
 using ZionCodes.Core.Models.Tags;
 using ZionCodes.Core.Models.Tags.Exceptions;
 
@@ -41,6 +42,10 @@ namespace ZionCodes.Core.Services.Tags
             catch (DbUpdateException dbUpdateException)
             {
                 throw CreateAndLogDependencyException(dbUpdateException);
+            }
+            catch (InvalidTagInputException invalidTagInputException)
+            {
+                throw CreateAndLogValidationException(invalidTagInputException);
             }
             catch (Exception exception)
             {
