@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using EFxceptions.Models.Exceptions;
 using Moq;
 using Xunit;
-using ZionCodes.Core.Models.Categories.Exceptions;
 using ZionCodes.Core.Models.Tags;
 using ZionCodes.Core.Models.Tags.Exceptions;
 
