@@ -27,9 +27,12 @@ namespace ZionCodes.Core.Services.Tags
             this.loggingBroker = loggingBroker;
         }
 
-        public async ValueTask<Tag> AddTagAsync(Tag tag)
-        {
-            return await this.storageBroker.InsertTagAsync(tag);
-        }
+        public ValueTask<Tag> AddTagAsync(Tag tag) =>
+            TryCatch(async () => 
+            {
+                ValidateTagOnCreate(tag);
+
+                return await this.storageBroker.InsertTagAsync(tag);
+            });
     }
 }
