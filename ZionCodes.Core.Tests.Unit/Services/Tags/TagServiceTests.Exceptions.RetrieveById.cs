@@ -123,5 +123,40 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
             this.loggingBrokerMock.VerifyNoOtherCalls();
             this.storageBrokerMock.VerifyNoOtherCalls();
         }
+
+        [Fact]
+        public async Task ShouldThrowServiceExceptionOnRetrieveByIdWhenExceptionOccursAndLogItAsync()
+        {
+            // given
+            Guid someTagId = Guid.NewGuid();
+            var exception = new Exception();
+
+            var expectedTagServiceException =
+                new TagServiceException(exception);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectTagByIdAsync(It.IsAny<Guid>()))
+                    .ThrowsAsync(exception);
+
+            // when
+            ValueTask<Tag> retrieveByIdTagTask =
+                this.tagService.RetrieveTagByIdAsync(someTagId);
+
+            // then
+            await Assert.ThrowsAsync<TagServiceException>(() =>
+                retrieveByIdTagTask.AsTask());
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedTagServiceException))),
+                    Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectTagByIdAsync(It.IsAny<Guid>()),
+                    Times.Once);
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+        }
     }
 }
