@@ -48,5 +48,38 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
             this.loggingBrokerMock.VerifyNoOtherCalls();
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
         }
+
+        [Fact]
+        public async Task ShouldRetrieveTagByIdAsync()
+        {
+            // given
+            Guid randomTagId = Guid.NewGuid();
+            Guid inputTagId = randomTagId;
+            DateTimeOffset randomDateTime = GetRandomDateTime();
+            Tag randomTag = CreateRandomTag(randomDateTime);
+            Tag storageTag = randomTag;
+            Tag expectedTag = storageTag;
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectTagByIdAsync(inputTagId))
+                    .ReturnsAsync(storageTag);
+
+            // when
+            Tag actualTag =
+                await this.tagService.RetrieveTagByIdAsync(inputTagId);
+
+            // then
+            actualTag.Should().BeEquivalentTo(expectedTag);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectTagByIdAsync(inputTagId),
+                    Times.Once);
+
+
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+        }
+
     }
 }
