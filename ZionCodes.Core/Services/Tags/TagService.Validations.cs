@@ -13,6 +13,7 @@ namespace ZionCodes.Core.Services.Tags
         {
             ValidateTagIsNull(tag);
             ValidateTagIdIsNull(tag.Id);
+            ValidateTagAuditFieldsOnCreate(tag);
         }
 
         private void ValidateTagIsNull(Tag tag)
@@ -32,5 +33,17 @@ namespace ZionCodes.Core.Services.Tags
                     parameterValue: tagId);
             }
         }
+        private void ValidateTagAuditFieldsOnCreate(Tag tag)
+        {
+            switch (tag)
+            {
+                case { } when IsInvalid(input: tag.CreatedBy):
+                    throw new InvalidTagException(
+                        parameterName: nameof(tag.CreatedBy),
+                        parameterValue: tag.CreatedBy);
+            }
+        }
+
+        private bool IsInvalid(Guid input) => input == default;
     }
 }

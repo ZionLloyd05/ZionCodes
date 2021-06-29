@@ -132,6 +132,7 @@ namespace ZionCodes.Core.Services.Categories
                         parameterValue: category.CreatedDate);
             }
         }
+
         private void ValidateCategoryAuditFields(Category category)
         {
             switch (category)
