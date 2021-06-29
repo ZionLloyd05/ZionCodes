@@ -42,6 +42,10 @@ namespace ZionCodes.Core.Services.Tags
                         parameterName: nameof(tag.CreatedBy),
                         parameterValue: tag.CreatedBy);
 
+                case { } when IsInvalid(input: tag.UpdatedBy):
+                    throw new InvalidTagException(
+                        parameterName: nameof(tag.UpdatedBy),
+                        parameterValue: tag.UpdatedBy);
             }
         }
 
