@@ -284,5 +284,42 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
             this.storageBrokerMock.VerifyNoOtherCalls();
         }
 
+        [Fact]
+        public async void ShouldThrowValidationExceptionOnAddWhenUpdatedDateIsNotSameToCreatedDateAndLogItAsync()
+        {
+            // given
+            DateTimeOffset dateTime = GetRandomDateTime();
+            Tag randomTag = CreateRandomTag(dateTime);
+            Tag inputTag = randomTag;
+            inputTag.UpdatedBy = randomTag.CreatedBy;
+            inputTag.UpdatedDate = GetRandomDateTime();
+
+            var invalidTagValidationException = new InvalidTagException(
+                parameterName: nameof(Tag.UpdatedDate),
+                parameterValue: inputTag.UpdatedDate);
+
+            var expectedTagValidationException =
+                new TagValidationException(invalidTagValidationException);
+
+            // when
+            ValueTask<Tag> createTagTask =
+                this.tagService.AddTagAsync(inputTag);
+
+            // then
+            await Assert.ThrowsAsync<TagValidationException>(() =>
+                createTagTask.AsTask());
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedTagValidationException))),
+                    Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.InsertTagAsync(It.IsAny<Tag>()),
+                    Times.Never);
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+        }
     }
 }
