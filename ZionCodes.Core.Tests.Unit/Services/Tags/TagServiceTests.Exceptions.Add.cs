@@ -26,9 +26,9 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
             var expectedTagDependencyException =
                 new TagDependencyException(sqlException);
 
-            //this.dateTimeBrokerMock.Setup(broker =>
-            //    broker.GetCurrentDateTime())
-            //        .Returns(dateTime);
+            this.dateTimeBrokerMock.Setup(broker =>
+                broker.GetCurrentDateTime())
+                    .Returns(dateTime);
 
             this.storageBrokerMock.Setup(broker =>
                 broker.InsertTagAsync(inputTag))
@@ -50,9 +50,9 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
                 broker.InsertTagAsync(inputTag),
                     Times.Once);
 
-            //this.dateTimeBrokerMock.Verify(broker =>
-            //    broker.GetCurrentDateTime(),
-            //        Times.Once);
+            this.dateTimeBrokerMock.Verify(broker =>
+                broker.GetCurrentDateTime(),
+                    Times.Once);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
@@ -72,9 +72,9 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
             var expectedTagDependencyException =
                 new TagDependencyException(databaseUpdateException);
 
-            //this.dateTimeBrokerMock.Setup(broker =>
-            //    broker.GetCurrentDateTime())
-            //        .Returns(dateTime);
+            this.dateTimeBrokerMock.Setup(broker =>
+                broker.GetCurrentDateTime())
+                    .Returns(dateTime);
 
             this.storageBrokerMock.Setup(broker =>
                 broker.InsertTagAsync(inputTag))
@@ -96,9 +96,9 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
                 broker.InsertTagAsync(inputTag),
                     Times.Once);
 
-            //this.dateTimeBrokerMock.Verify(broker =>
-            //    broker.GetCurrentDateTime(),
-            //        Times.Once);
+            this.dateTimeBrokerMock.Verify(broker =>
+                broker.GetCurrentDateTime(),
+                    Times.Once);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
@@ -118,9 +118,9 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
             var expectedTagServiceException =
                 new TagServiceException(exception);
 
-            //this.dateTimeBrokerMock.Setup(broker =>
-            //    broker.GetCurrentDateTime())
-            //        .Returns(dateTime);
+            this.dateTimeBrokerMock.Setup(broker =>
+                broker.GetCurrentDateTime())
+                    .Returns(dateTime);
 
             this.storageBrokerMock.Setup(broker =>
                 broker.InsertTagAsync(inputTag))
@@ -142,9 +142,9 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
                 broker.InsertTagAsync(inputTag),
                     Times.Once);
 
-            //this.dateTimeBrokerMock.Verify(broker =>
-            //    broker.GetCurrentDateTime(),
-            //        Times.Once);
+            this.dateTimeBrokerMock.Verify(broker =>
+                broker.GetCurrentDateTime(),
+                    Times.Once);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
