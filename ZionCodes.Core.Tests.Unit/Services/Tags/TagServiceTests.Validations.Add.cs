@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EFxceptions.Models.Exceptions;
 using Moq;
 using Xunit;
 using ZionCodes.Core.Models.Categories.Exceptions;
@@ -77,6 +78,58 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
             this.storageBrokerMock.Verify(broker =>
                 broker.InsertTagAsync(It.IsAny<Tag>()),
                     Times.Never);
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public async void ShouldThrowValidationExceptionOnAddWhenTagAlreadyExistsAndLogItAsync()
+        {
+            // given
+            DateTimeOffset dateTime = GetRandomDateTime();
+            Tag randomTag = CreateRandomTag(dateTime);
+            Tag alreadyExistsTag = randomTag;
+            alreadyExistsTag.UpdatedBy = alreadyExistsTag.CreatedBy;
+
+            string randomMessage = GetRandomMessage();
+            string exceptionMessage = randomMessage;
+            var duplicateKeyException = new DuplicateKeyException(exceptionMessage);
+
+            var alreadyExistsTagException =
+                new AlreadyExistsTagException(duplicateKeyException);
+
+            var expectedTagValidationException =
+                new TagValidationException(alreadyExistsTagException);
+
+            this.dateTimeBrokerMock.Setup(broker =>
+                broker.GetCurrentDateTime())
+                    .Returns(dateTime);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.InsertTagAsync(alreadyExistsTag))
+                    .ThrowsAsync(duplicateKeyException);
+
+            // when
+            ValueTask<Tag> createTagTask =
+                this.tagService.AddTagAsync(alreadyExistsTag);
+
+            // then
+            await Assert.ThrowsAsync<TagValidationException>(() =>
+                createTagTask.AsTask());
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedTagValidationException))),
+                    Times.Once);
+
+            this.dateTimeBrokerMock.Verify(broker =>
+                broker.GetCurrentDateTime(),
+                    Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.InsertTagAsync(alreadyExistsTag),
+                    Times.Once);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
