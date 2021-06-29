@@ -61,10 +61,24 @@ namespace ZionCodes.Core.Services.Tags
                     throw new InvalidTagException(
                         parameterName: nameof(tag.UpdatedDate),
                         parameterValue: tag.UpdatedDate);
+
+                case { } when IsDateNotRecent(tag.CreatedDate):
+                    throw new InvalidTagException(
+                        parameterName: nameof(Tag.CreatedDate),
+                        parameterValue: tag.CreatedDate);
             }
         }
 
         private bool IsInvalid(Guid input) => input == default;
         private bool IsInvalid(DateTimeOffset input) => input == default;
+
+        private bool IsDateNotRecent(DateTimeOffset dateTime)
+        {
+            DateTimeOffset now = this.dateTimeBroker.GetCurrentDateTime();
+            int oneMinute = 1;
+            TimeSpan difference = now.Subtract(dateTime);
+
+            return Math.Abs(difference.TotalMinutes) > oneMinute;
+        }
     }
 }
