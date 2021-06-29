@@ -22,6 +22,10 @@ namespace ZionCodes.Core.Services.Tags
             {
                 throw CreateAndLogValidationException(nullTagException);
             }
+            catch (InvalidTagException invalidTagException)
+            {
+                throw CreateAndLogValidationException(invalidTagException);
+            }
         }
 
 

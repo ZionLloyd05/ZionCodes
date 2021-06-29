@@ -12,6 +12,7 @@ namespace ZionCodes.Core.Services.Tags
         private void ValidateTagOnCreate(Tag tag)
         {
             ValidateTagIsNull(tag);
+            ValidateTagIdIsNull(tag.Id);
         }
 
         private void ValidateTagIsNull(Tag tag)
@@ -19,6 +20,16 @@ namespace ZionCodes.Core.Services.Tags
             if (tag is null)
             {
                 throw new NullTagException();
+            }
+        }
+
+        private void ValidateTagIdIsNull(Guid tagId)
+        {
+            if (tagId == default)
+            {
+                throw new InvalidTagException(
+                    parameterName: nameof(Tag.Id),
+                    parameterValue: tagId);
             }
         }
     }
