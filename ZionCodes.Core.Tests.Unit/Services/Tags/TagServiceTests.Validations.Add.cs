@@ -103,9 +103,9 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
             var expectedTagValidationException =
                 new TagValidationException(alreadyExistsTagException);
 
-            this.dateTimeBrokerMock.Setup(broker =>
-                broker.GetCurrentDateTime())
-                    .Returns(dateTime);
+            //this.dateTimeBrokerMock.Setup(broker =>
+            //    broker.GetCurrentDateTime())
+            //        .Returns(dateTime);
 
             this.storageBrokerMock.Setup(broker =>
                 broker.InsertTagAsync(alreadyExistsTag))
@@ -123,9 +123,9 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
                 broker.LogError(It.Is(SameExceptionAs(expectedTagValidationException))),
                     Times.Once);
 
-            this.dateTimeBrokerMock.Verify(broker =>
-                broker.GetCurrentDateTime(),
-                    Times.Once);
+            //this.dateTimeBrokerMock.Verify(broker =>
+            //    broker.GetCurrentDateTime(),
+            //        Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
                 broker.InsertTagAsync(alreadyExistsTag),
