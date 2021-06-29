@@ -41,6 +41,7 @@ namespace ZionCodes.Core.Services.Tags
                     throw new InvalidTagException(
                         parameterName: nameof(tag.CreatedBy),
                         parameterValue: tag.CreatedBy);
+
             }
         }
 
