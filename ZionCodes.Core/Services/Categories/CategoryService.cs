@@ -29,7 +29,6 @@ namespace ZionCodes.Core.Services.Categories
         public ValueTask<Category> AddCategoryAsync(Category category) =>
             TryCatch(async () =>
             {
-
                 ValidateCategoryOnCreate(category);
 
                 return await this.storageBroker.InsertCategoryAsync(category);

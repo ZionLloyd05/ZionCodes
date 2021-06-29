@@ -30,6 +30,25 @@ namespace ZionCodes.Core.Services.Tags
                     parameterValue: tagId);
             }
         }
+
+        private void ValidateTagId(Guid tagId)
+        {
+            if (tagId == Guid.Empty)
+            {
+                throw new InvalidTagInputException(
+                    parameterName: nameof(Tag.Id),
+                    parameterValue: tagId);
+            }
+        }
+
+        private void ValidateStorageTag(Tag storageTag, Guid tagId)
+        {
+            if (storageTag == null)
+            {
+                throw new NotFoundTagException(tagId);
+            }
+        }
+
         private void ValidateTagAuditFieldsOnCreate(Tag tag)
         {
             switch (tag)

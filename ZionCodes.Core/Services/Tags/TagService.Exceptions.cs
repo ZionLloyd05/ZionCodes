@@ -34,6 +34,12 @@ namespace ZionCodes.Core.Services.Tags
 
                 throw CreateAndLogValidationException(alreadyExistsTagException);
             }
+            catch (DbUpdateConcurrencyException dbUpdateConcurrencyException)
+            {
+                var lockedTagException = new LockedTagException(dbUpdateConcurrencyException);
+
+                throw CreateAndLogDependencyException(lockedTagException);
+            }
             catch (SqlException sqlException)
             {
                 throw CreateAndLogCriticalDependencyException(sqlException);
@@ -41,6 +47,14 @@ namespace ZionCodes.Core.Services.Tags
             catch (DbUpdateException dbUpdateException)
             {
                 throw CreateAndLogDependencyException(dbUpdateException);
+            }
+            catch (InvalidTagInputException invalidTagInputException)
+            {
+                throw CreateAndLogValidationException(invalidTagInputException);
+            }
+            catch (NotFoundTagException notFoundTagException)
+            {
+                throw CreateAndLogValidationException(notFoundTagException);
             }
             catch (Exception exception)
             {
