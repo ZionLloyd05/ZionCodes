@@ -47,6 +47,10 @@ namespace ZionCodes.Core.Services.Tags
             {
                 throw CreateAndLogValidationException(invalidTagInputException);
             }
+            catch (NotFoundTagException notFoundTagException)
+            {
+                throw CreateAndLogValidationException(notFoundTagException);
+            }
             catch (Exception exception)
             {
                 throw CreateAndLogServiceException(exception);

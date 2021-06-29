@@ -41,6 +41,14 @@ namespace ZionCodes.Core.Services.Tags
             }
         }
 
+        private void ValidateStorageTag(Tag storageTag, Guid tagId)
+        {
+            if (storageTag == null)
+            {
+                throw new NotFoundTagException(tagId);
+            }
+        }
+
         private void ValidateTagAuditFieldsOnCreate(Tag tag)
         {
             switch (tag)

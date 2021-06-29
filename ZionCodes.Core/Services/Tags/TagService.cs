@@ -40,6 +40,8 @@ namespace ZionCodes.Core.Services.Tags
                 Tag storageTag =
                     await this.storageBroker.SelectTagByIdAsync(tagId);
 
+                ValidateStorageTag(storageTag, tagId);
+
                 return storageTag;
             });
     }
