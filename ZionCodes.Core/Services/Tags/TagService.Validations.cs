@@ -46,9 +46,15 @@ namespace ZionCodes.Core.Services.Tags
                     throw new InvalidTagException(
                         parameterName: nameof(tag.UpdatedBy),
                         parameterValue: tag.UpdatedBy);
+
+                case { } when IsInvalid(input: tag.CreatedDate):
+                    throw new InvalidTagException(
+                        parameterName: nameof(tag.CreatedDate),
+                        parameterValue: tag.CreatedDate);
             }
         }
 
         private bool IsInvalid(Guid input) => input == default;
+        private bool IsInvalid(DateTimeOffset input) => input == default;
     }
 }
