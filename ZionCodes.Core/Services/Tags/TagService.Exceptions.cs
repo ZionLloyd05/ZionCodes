@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using EFxceptions.Models.Exceptions;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using ZionCodes.Core.Models.Categories.Exceptions;
 using ZionCodes.Core.Models.Tags;
 using ZionCodes.Core.Models.Tags.Exceptions;
 
