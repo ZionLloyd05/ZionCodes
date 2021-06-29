@@ -44,6 +44,10 @@ namespace ZionCodes.Core.Services.Tags
             {
                 throw CreateAndLogDependencyException(dbUpdateException);
             }
+            catch (Exception exception)
+            {
+                throw CreateAndLogServiceException(exception);
+            }
         }
 
 
@@ -68,6 +72,13 @@ namespace ZionCodes.Core.Services.Tags
             this.loggingBroker.LogError(tagDependencyException);
 
             return tagDependencyException;
+        }
+        private TagServiceException CreateAndLogServiceException(Exception exception)
+        {
+            var tagServiceException = new TagServiceException(exception);
+            this.loggingBroker.LogError(tagServiceException);
+
+            return tagServiceException;
         }
     }
 }
