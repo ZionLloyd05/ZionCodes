@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit;
 using ZionCodes.Core.Models.Tags;
@@ -47,6 +48,44 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
             this.storageBrokerMock.Verify(broker =>
                 broker.DeleteTagAsync(It.IsAny<Tag>()),
                     Times.Never);
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public async Task ShouldThrowDependencyExceptionOnDeleteWhenDbUpdateConcurrencyExceptionOccursAndLogItAsync()
+        {
+            // given
+            Guid randomTagId = Guid.NewGuid();
+            Guid inputTagId = randomTagId;
+            var databaseUpdateConcurrencyException = new DbUpdateConcurrencyException();
+
+            var lockedTagException =
+                new LockedTagException(databaseUpdateConcurrencyException);
+
+            var expectedTagException =
+                new TagDependencyException(lockedTagException);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectTagByIdAsync(inputTagId))
+                    .ThrowsAsync(databaseUpdateConcurrencyException);
+
+            // when
+            ValueTask<Tag> deleteTagTask =
+                this.tagService.RemoveTagByIdAsync(inputTagId);
+
+            // then
+            await Assert.ThrowsAsync<TagDependencyException>(() => deleteTagTask.AsTask());
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedTagException))),
+                    Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectTagByIdAsync(inputTagId),
+                    Times.Once);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
