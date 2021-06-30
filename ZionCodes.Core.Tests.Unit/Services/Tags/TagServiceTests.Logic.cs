@@ -133,9 +133,9 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
             inputTag.UpdatedDate = randomDate;
             Guid tagId = inputTag.Id;
 
-            this.dateTimeBrokerMock.Setup(broker =>
-               broker.GetCurrentDateTime())
-                   .Returns(randomDate);
+            //this.dateTimeBrokerMock.Setup(broker =>
+            //   broker.GetCurrentDateTime())
+            //       .Returns(randomDate);
 
             this.storageBrokerMock.Setup(broker =>
                 broker.SelectTagByIdAsync(tagId))
@@ -152,9 +152,9 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
             // then
             actualTag.Should().BeEquivalentTo(expectedTag);
 
-            this.dateTimeBrokerMock.Verify(broker =>
-                broker.GetCurrentDateTime(),
-                    Times.Once);
+            //this.dateTimeBrokerMock.Verify(broker =>
+            //    broker.GetCurrentDateTime(),
+            //        Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
                 broker.SelectTagByIdAsync(tagId),

@@ -56,9 +56,12 @@ namespace ZionCodes.Core.Services.Tags
                 return storageTag;
             });
 
-        public ValueTask<Tag> ModifyTagAsync(Tag tag)
+        public async ValueTask<Tag> ModifyTagAsync(Tag tag)
         {
-            throw new NotImplementedException();
+            Tag maybeTag =
+                    await this.storageBroker.SelectTagByIdAsync(tag.Id);
+
+            return await this.storageBroker.UpdateTagAsync(tag);
         }
     }
 }
