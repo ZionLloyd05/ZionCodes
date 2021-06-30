@@ -94,6 +94,11 @@ namespace ZionCodes.Core.Services.Tags
             }
         }
 
+        private void ValidateTagOnModify(Tag tag)
+        {
+            ValidateTagIsNull(tag);
+        }
+
         private bool IsInvalid(Guid input) => input == default;
         private bool IsInvalid(DateTimeOffset input) => input == default;
 
