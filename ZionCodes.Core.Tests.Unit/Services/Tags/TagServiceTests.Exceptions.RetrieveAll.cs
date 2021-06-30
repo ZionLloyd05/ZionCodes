@@ -40,5 +40,35 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
         }
+
+        [Fact]
+        public void ShouldThrowServiceExceptionOnRetrieveAllTagsWhenExceptionOccursAndLogIt()
+        {
+            // given
+            var exception = new Exception();
+
+            var expectedTagServiceException =
+                new TagServiceException(exception);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectAllTags())
+                    .Throws(exception);
+
+            // when . then
+            Assert.Throws<TagServiceException>(() =>
+                this.tagService.RetrieveAllTags());
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectAllTags(),
+                    Times.Once);
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogCritical(It.Is(SameExceptionAs(expectedTagServiceException))),
+                    Times.Once);
+
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+        }
     }
 }
