@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using ZionCodes.Core.Models.Tags;
 using ZionCodes.Core.Models.Tags.Exceptions;
 
@@ -38,6 +39,14 @@ namespace ZionCodes.Core.Services.Tags
                 throw new InvalidTagInputException(
                     parameterName: nameof(Tag.Id),
                     parameterValue: tagId);
+            }
+        }
+
+        private void ValidateStorageTags(IQueryable<Tag> storageCategories)
+        {
+            if (storageCategories.Count() == 0)
+            {
+                this.loggingBroker.LogWarning("No tags found in storage.");
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using ZionCodes.Core.Brokers.DateTimes;
 using ZionCodes.Core.Brokers.Loggings;
@@ -30,6 +31,16 @@ namespace ZionCodes.Core.Services.Tags
                 ValidateTagOnCreate(tag);
 
                 return await this.storageBroker.InsertTagAsync(tag);
+            });
+
+        public IQueryable<Tag> RetrieveAllTags() =>
+            TryCatch(() =>
+            {
+                IQueryable<Tag> storageTags = this.storageBroker.SelectAllTags();
+
+                ValidateStorageTags(storageTags);
+
+                return storageTags;
             });
 
         public ValueTask<Tag> RetrieveTagByIdAsync(Guid tagId) =>
