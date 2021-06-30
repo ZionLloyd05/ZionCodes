@@ -71,6 +71,8 @@ namespace ZionCodes.Core.Services.Tags
         public ValueTask<Tag> RemoveTagByIdAsync(Guid tagId) =>
             TryCatch(async () =>
             {
+                ValidateTagIdIsNull(tagId);
+
                 Tag storageTag =
                 await this.storageBroker.SelectTagByIdAsync(tagId);
 
