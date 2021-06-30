@@ -98,5 +98,46 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
         }
+
+        [Fact]
+        public async Task ShouldThrowDependencyExceptionOnModifyIfDbUpdateConcurrencyExceptionOccursAndLogItAsync()
+        {
+            // given
+            int randomNegativeNumber = GetNegativeRandomNumber();
+            DateTimeOffset randomDateTime = GetRandomDateTime();
+            Tag randomTag = CreateRandomTag(randomDateTime);
+            Tag someTag = randomTag;
+            someTag.CreatedDate = randomDateTime.AddMinutes(randomNegativeNumber);
+            var databaseUpdateConcurrencyException = new DbUpdateConcurrencyException();
+            var lockedTagException = new LockedTagException(databaseUpdateConcurrencyException);
+
+            var expectedTagDependencyException =
+                new TagDependencyException(lockedTagException);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectTagByIdAsync(someTag.Id))
+                    .ThrowsAsync(databaseUpdateConcurrencyException);
+
+            // when
+            ValueTask<Tag> modifyTagTask =
+                this.tagService.ModifyTagAsync(someTag);
+
+            // then
+            await Assert.ThrowsAsync<TagDependencyException>(() =>
+                modifyTagTask.AsTask());
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectTagByIdAsync(someTag.Id),
+                    Times.Once);
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedTagDependencyException))),
+                    Times.Once);
+
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+        }
+
     }
 }
