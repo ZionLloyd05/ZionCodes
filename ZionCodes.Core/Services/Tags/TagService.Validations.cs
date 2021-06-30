@@ -114,10 +114,10 @@ namespace ZionCodes.Core.Services.Tags
                         parameterName: nameof(Tag.UpdatedDate),
                         parameterValue: tag.UpdatedDate);
 
-                //case { } when IsDateNotRecent(tag.UpdatedDate):
-                //    throw new InvalidTagException(
-                //        parameterName: nameof(Tag.UpdatedDate),
-                //        parameterValue: tag.UpdatedDate);
+                    //case { } when IsDateNotRecent(tag.UpdatedDate):
+                    //    throw new InvalidTagException(
+                    //        parameterName: nameof(Tag.UpdatedDate),
+                    //        parameterValue: tag.UpdatedDate);
             }
         }
 
