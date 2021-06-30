@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
@@ -42,6 +43,40 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
 
             this.dateTimeBrokerMock.Verify(broker =>
                 broker.GetCurrentDateTime(),
+                    Times.Once);
+
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public void ShouldRetriveAllTags()
+        {
+            // given
+            DateTimeOffset randomDateTime = GetRandomDateTime();
+            IQueryable<Tag> randomTags =
+                CreateRandomTags(randomDateTime);
+
+            IQueryable<Tag> storageTags =
+                randomTags;
+
+            IQueryable<Tag> expectedTags =
+                storageTags;
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectAllTags())
+                    .Returns(storageTags);
+
+            // when
+            IQueryable<Tag> actualTags =
+                this.tagService.RetrieveAllTags();
+
+            // then
+            actualTags.Should().BeEquivalentTo(expectedTags);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectAllTags(),
                     Times.Once);
 
             this.storageBrokerMock.VerifyNoOtherCalls();

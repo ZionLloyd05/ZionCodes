@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using ZionCodes.Core.Models.Tags;
 
@@ -8,5 +9,6 @@ namespace ZionCodes.Core.Services.Tags
     {
         ValueTask<Tag> AddTagAsync(Tag tag);
         ValueTask<Tag> RetrieveTagByIdAsync(Guid tagId);
+        IQueryable<Tag> RetrieveAllTags();
     }
 }
