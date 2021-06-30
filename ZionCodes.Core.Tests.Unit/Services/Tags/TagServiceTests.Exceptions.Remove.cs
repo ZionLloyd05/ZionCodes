@@ -100,11 +100,11 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
             Guid inputTagId = randomTagId;
             var exception = new Exception();
 
-            var expectedStudentCategoryException =
+            var expectedTagException =
                 new TagServiceException(exception);
 
             this.storageBrokerMock.Setup(broker =>
-                broker.SelectCategoryByIdAsync(inputTagId))
+                broker.SelectTagByIdAsync(inputTagId))
                     .ThrowsAsync(exception);
 
             // when
@@ -116,7 +116,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
                 deleteTagTask.AsTask());
 
             this.loggingBrokerMock.Verify(broker =>
-                broker.LogError(It.Is(SameExceptionAs(expectedStudentCategoryException))),
+                broker.LogError(It.Is(SameExceptionAs(expectedTagException))),
                     Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
