@@ -31,11 +31,16 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
             actualTag.Should().BeEquivalentTo(expectedTags);
 
             this.loggingBrokerMock.Verify(broker =>
-                broker.LogWarning("No categories found in storage."));
+                broker.LogWarning("No tags found in storage."));
 
             this.dateTimeBrokerMock.Verify(broker =>
                 broker.GetCurrentDateTime(),
                     Times.Never);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectAllTags(),
+                    Times.Once);
+
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();

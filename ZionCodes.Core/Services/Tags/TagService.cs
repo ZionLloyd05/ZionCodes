@@ -38,6 +38,8 @@ namespace ZionCodes.Core.Services.Tags
             {
                 IQueryable<Tag> storageTags = this.storageBroker.SelectAllTags();
 
+                ValidateStorageTags(storageTags);
+
                 return storageTags;
             });
 
