@@ -35,7 +35,9 @@ namespace ZionCodes.Core.Services.Tags
 
         public IQueryable<Tag> RetrieveAllTags()
         {
-            throw new NotImplementedException();
+            IQueryable<Tag> storageTags = this.storageBroker.SelectAllTags();
+
+            return storageTags;
         }
 
         public ValueTask<Tag> RetrieveTagByIdAsync(Guid tagId) =>
