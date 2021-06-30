@@ -139,5 +139,44 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
         }
 
+        [Fact]
+        public async Task ShouldThrowServiceExceptionOnModifyIfServiceExceptionOccursAndLogItAsync()
+        {
+            // given
+            int randomNegativeNumber = GetNegativeRandomNumber();
+            DateTimeOffset randomDateTime = GetRandomDateTime();
+            Tag randomTag = CreateRandomTag(randomDateTime);
+            Tag someTag = randomTag;
+            someTag.CreatedDate = randomDateTime.AddMinutes(randomNegativeNumber);
+            var serviceException = new Exception();
+
+            var expectedTagServiceException =
+                new TagServiceException(serviceException);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectTagByIdAsync(someTag.Id))
+                    .ThrowsAsync(serviceException);
+
+            // when
+            ValueTask<Tag> modifyTagTask =
+                this.tagService.ModifyTagAsync(someTag);
+
+            // then
+            await Assert.ThrowsAsync<TagServiceException>(() =>
+                modifyTagTask.AsTask());
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectTagByIdAsync(someTag.Id),
+                    Times.Once);
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedTagServiceException))),
+                    Times.Once);
+
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+        }
+
     }
 }
