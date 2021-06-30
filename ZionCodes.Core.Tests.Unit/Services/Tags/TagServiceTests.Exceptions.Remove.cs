@@ -91,5 +91,41 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
             this.loggingBrokerMock.VerifyNoOtherCalls();
             this.storageBrokerMock.VerifyNoOtherCalls();
         }
+
+        [Fact]
+        public async Task ShouldThrowServiceExceptionOnDeleteWhenExceptionOccursAndLogItAsync()
+        {
+            // given
+            Guid randomTagId = Guid.NewGuid();
+            Guid inputTagId = randomTagId;
+            var exception = new Exception();
+
+            var expectedStudentCategoryException =
+                new TagServiceException(exception);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectCategoryByIdAsync(inputTagId))
+                    .ThrowsAsync(exception);
+
+            // when
+            ValueTask<Tag> deleteTagTask =
+                this.tagService.RemoveTagByIdAsync(inputTagId);
+
+            // then
+            await Assert.ThrowsAsync<TagServiceException>(() =>
+                deleteTagTask.AsTask());
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedStudentCategoryException))),
+                    Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectTagByIdAsync(inputTagId),
+                    Times.Once);
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+        }
     }
 }
