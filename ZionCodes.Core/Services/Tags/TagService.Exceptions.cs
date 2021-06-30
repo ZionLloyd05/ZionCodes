@@ -75,6 +75,10 @@ namespace ZionCodes.Core.Services.Tags
             {
                 throw CreateAndLogCriticalDependencyException(sqlException);
             }
+            catch (Exception exception)
+            {
+                throw CreateAndLogServiceException(exception);
+            }
         }
 
 
