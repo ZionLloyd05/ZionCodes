@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Force.DeepCloner;
 using Moq;
 using Xunit;
 using ZionCodes.Core.Models.Tags;
@@ -115,6 +116,59 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
             this.loggingBrokerMock.VerifyNoOtherCalls();
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
         }
+
+        [Fact]
+        public async Task ShouldModifyTagAsync()
+        {
+            // given
+            int randomNumber = GetRandomNumber();
+            int randomDays = randomNumber;
+            DateTimeOffset randomDate = GetRandomDateTime();
+            DateTimeOffset randomInputDate = GetRandomDateTime();
+            Tag randomTag = CreateRandomTag(randomInputDate);
+            Tag inputTag = randomTag;
+            Tag afterUpdateStorageTag = inputTag;
+            Tag expectedTag = afterUpdateStorageTag;
+            Tag beforeUpdateStorageTag = randomTag.DeepClone();
+            inputTag.UpdatedDate = randomDate;
+            Guid tagId = inputTag.Id;
+
+            this.dateTimeBrokerMock.Setup(broker =>
+               broker.GetCurrentDateTime())
+                   .Returns(randomDate);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectTagByIdAsync(tagId))
+                    .ReturnsAsync(beforeUpdateStorageTag);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.UpdateTagAsync(inputTag))
+                    .ReturnsAsync(afterUpdateStorageTag);
+
+            // when
+            Tag actualTag =
+                await this.tagService.ModifyTagAsync(inputTag);
+
+            // then
+            actualTag.Should().BeEquivalentTo(expectedTag);
+
+            this.dateTimeBrokerMock.Verify(broker =>
+                broker.GetCurrentDateTime(),
+                    Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectTagByIdAsync(tagId),
+                    Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.UpdateTagAsync(inputTag),
+                    Times.Once);
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+        }
+
 
     }
 }
