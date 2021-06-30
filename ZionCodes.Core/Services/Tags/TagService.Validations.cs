@@ -11,7 +11,7 @@ namespace ZionCodes.Core.Services.Tags
         {
             ValidateTagIsNull(tag);
             ValidateTagIdIsNull(tag.Id);
-            ValidateTagAuditFieldsOnCreate(tag);
+            ValidateTagAuditFields(tag);
         }
 
         private void ValidateTagIsNull(Tag tag)
@@ -58,7 +58,7 @@ namespace ZionCodes.Core.Services.Tags
             }
         }
 
-        private void ValidateTagAuditFieldsOnCreate(Tag tag)
+        private void ValidateTagAuditFields(Tag tag)
         {
             switch (tag)
             {
@@ -91,6 +91,33 @@ namespace ZionCodes.Core.Services.Tags
                     throw new InvalidTagException(
                         parameterName: nameof(Tag.CreatedDate),
                         parameterValue: tag.CreatedDate);
+            }
+        }
+
+        private void ValidateTagOnModify(Tag tag)
+        {
+            ValidateTagIsNull(tag);
+            ValidateTagAuditFieldsOnModify(tag);
+        }
+
+        private void ValidateTagAuditFieldsOnModify(Tag tag)
+        {
+            switch (tag)
+            {
+                case { } when IsInvalid(input: tag.UpdatedDate):
+                    throw new InvalidTagException(
+                        parameterName: nameof(tag.UpdatedDate),
+                        parameterValue: tag.UpdatedDate);
+
+                case { } when tag.UpdatedDate == tag.CreatedDate:
+                    throw new InvalidTagException(
+                        parameterName: nameof(Tag.UpdatedDate),
+                        parameterValue: tag.UpdatedDate);
+
+                    //case { } when IsDateNotRecent(tag.UpdatedDate):
+                    //    throw new InvalidTagException(
+                    //        parameterName: nameof(Tag.UpdatedDate),
+                    //        parameterValue: tag.UpdatedDate);
             }
         }
 
