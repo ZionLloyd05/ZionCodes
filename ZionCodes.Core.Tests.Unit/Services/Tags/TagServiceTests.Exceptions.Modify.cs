@@ -70,9 +70,9 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
                 broker.SelectTagByIdAsync(someTag.Id))
                     .ThrowsAsync(databaseUpdateException);
 
-            this.dateTimeBrokerMock.Setup(broker =>
-                broker.GetCurrentDateTime())
-                    .Returns(randomDateTime);
+            //this.dateTimeBrokerMock.Setup(broker =>
+            //    broker.GetCurrentDateTime())
+            //        .Returns(randomDateTime);
 
             // when
             ValueTask<Tag> modifyTagTask =
@@ -82,9 +82,9 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
             await Assert.ThrowsAsync<TagDependencyException>(() =>
                 modifyTagTask.AsTask());
 
-            this.dateTimeBrokerMock.Verify(broker =>
-                broker.GetCurrentDateTime(),
-                    Times.Once);
+            //this.dateTimeBrokerMock.Verify(broker =>
+            //    broker.GetCurrentDateTime(),
+            //        Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
                 broker.SelectTagByIdAsync(someTag.Id),
