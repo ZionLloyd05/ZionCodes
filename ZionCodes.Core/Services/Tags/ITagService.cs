@@ -11,5 +11,6 @@ namespace ZionCodes.Core.Services.Tags
         ValueTask<Tag> RetrieveTagByIdAsync(Guid tagId);
         IQueryable<Tag> RetrieveAllTags();
         ValueTask<Tag> ModifyTagAsync(Tag tag);
+        ValueTask<Tag> RemoveTagByIdAsync(Guid tagId);
     }
 }
