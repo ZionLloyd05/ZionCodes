@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit;
 using ZionCodes.Core.Models.Tags;
@@ -50,6 +51,52 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
             this.loggingBrokerMock.VerifyNoOtherCalls();
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public async Task ShouldThrowDependencyExceptionOnModifyIfDbUpdateExceptionOccursAndLogItAsync()
+        {
+            // given
+            int randomNegativeNumber = GetNegativeRandomNumber();
+            DateTimeOffset randomDateTime = GetRandomDateTime();
+            Tag someTag = CreateRandomTag(randomDateTime);
+            someTag.CreatedDate = randomDateTime.AddMinutes(randomNegativeNumber);
+            var databaseUpdateException = new DbUpdateException();
+
+            var expectedTagDependencyException =
+                new TagDependencyException(databaseUpdateException);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectTagByIdAsync(someTag.Id))
+                    .ThrowsAsync(databaseUpdateException);
+
+            this.dateTimeBrokerMock.Setup(broker =>
+                broker.GetCurrentDateTime())
+                    .Returns(randomDateTime);
+
+            // when
+            ValueTask<Tag> modifyTagTask =
+                this.tagService.ModifyTagAsync(someTag);
+
+            // then
+            await Assert.ThrowsAsync<TagDependencyException>(() =>
+                modifyTagTask.AsTask());
+
+            this.dateTimeBrokerMock.Verify(broker =>
+                broker.GetCurrentDateTime(),
+                    Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectTagByIdAsync(someTag.Id),
+                    Times.Once);
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedTagDependencyException))),
+                    Times.Once);
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
         }
     }
 }
