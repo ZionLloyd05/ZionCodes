@@ -50,5 +50,47 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
         }
 
+        [Fact]
+        public async Task ShouldThrowValidatonExceptionOnDeleteWhenStorageTagIsInvalidAndLogItAsync()
+        {
+            // given
+            DateTimeOffset dateTime = GetRandomDateTime();
+            Tag randomTag = CreateRandomTag(dateTime);
+            Guid inputTagId = randomTag.Id;
+            Tag inputTag = randomTag;
+            Tag nullStorageTag = null;
+
+            var notFoundTagException = new NotFoundTagException(inputTagId);
+
+            var expectedTagValidationException =
+                new TagValidationException(notFoundTagException);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectTagByIdAsync(inputTagId))
+                    .ReturnsAsync(nullStorageTag);
+
+            // when
+            ValueTask<Tag> actualTagTask =
+                this.tagService.RemoveTagByIdAsync(inputTagId);
+
+            // then
+            await Assert.ThrowsAsync<TagValidationException>(() => actualTagTask.AsTask());
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedTagValidationException))),
+                    Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectTagByIdAsync(inputTagId),
+                    Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.DeleteTagAsync(It.IsAny<Tag>()),
+                    Times.Never);
+
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+        }
     }
 }
