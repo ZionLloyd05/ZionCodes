@@ -21,7 +21,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
                 new TagDependencyException(sqlException);
 
             this.storageBrokerMock.Setup(broker =>
-                broker.SelectAllCategories())
+                broker.SelectAllTags())
                     .Throws(sqlException);
 
             // when . then
@@ -29,7 +29,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
                 this.tagService.RetrieveAllTags());
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectAllCategories(),
+                broker.SelectAllTags(),
                     Times.Once);
 
             this.loggingBrokerMock.Verify(broker =>

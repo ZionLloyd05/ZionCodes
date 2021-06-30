@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using EFxceptions.Models.Exceptions;
 using Microsoft.Data.SqlClient;
@@ -11,6 +12,7 @@ namespace ZionCodes.Core.Services.Tags
     public partial class TagService
     {
         private delegate ValueTask<Tag> ReturningTagFunction();
+        private delegate IQueryable<Tag> ReturningQueryableTagFunction();
 
         private async ValueTask<Tag> TryCatch(
             ReturningTagFunction returningTagFunction)
@@ -59,6 +61,19 @@ namespace ZionCodes.Core.Services.Tags
             catch (Exception exception)
             {
                 throw CreateAndLogServiceException(exception);
+            }
+        }
+
+        private IQueryable<Tag> TryCatch
+           (ReturningQueryableTagFunction returningQueryableTagFunction)
+        {
+            try
+            {
+                return returningQueryableTagFunction();
+            }
+            catch (SqlException sqlException)
+            {
+                throw CreateAndLogCriticalDependencyException(sqlException);
             }
         }
 
