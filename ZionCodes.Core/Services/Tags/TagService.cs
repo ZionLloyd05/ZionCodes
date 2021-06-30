@@ -67,5 +67,18 @@ namespace ZionCodes.Core.Services.Tags
 
                 return await this.storageBroker.UpdateTagAsync(tag);
             });
+
+        public ValueTask<Tag> RemoveTagByIdAsync(Guid tagId) =>
+            TryCatch(async () =>
+            {
+                ValidateTagIdIsNull(tagId);
+
+                Tag storageTag =
+                await this.storageBroker.SelectTagByIdAsync(tagId);
+
+                ValidateStorageTag(storageTag, tagId);
+
+                return await this.storageBroker.DeleteTagAsync(storageTag);
+            });
     }
 }

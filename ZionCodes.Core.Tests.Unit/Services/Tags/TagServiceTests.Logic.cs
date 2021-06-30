@@ -169,6 +169,46 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
             this.loggingBrokerMock.VerifyNoOtherCalls();
         }
 
+        [Fact]
+        public async Task ShouldDeleteTagByIdAsync()
+        {
+            // given
+            DateTimeOffset randomDateTime = GetRandomDateTime();
+            DateTimeOffset dateTime = randomDateTime;
+            Tag randomTag = CreateRandomTag(dateTime);
+            Tag inputTag = randomTag;
+            Guid inputTagId = inputTag.Id;
+            inputTag.UpdatedBy = inputTag.CreatedBy;
+            inputTag.UpdatedDate = inputTag.CreatedDate;
+            Tag storageTag = inputTag;
+            Tag expectedTag = inputTag;
 
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectTagByIdAsync(inputTagId))
+                    .ReturnsAsync(inputTag);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.DeleteTagAsync(inputTag))
+                    .ReturnsAsync(storageTag);
+
+            // when
+            Tag actualTag =
+                await this.tagService.RemoveTagByIdAsync(inputTagId);
+
+            // then
+            actualTag.Should().BeEquivalentTo(expectedTag);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectTagByIdAsync(inputTagId),
+                    Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.DeleteTagAsync(inputTag),
+                    Times.Once);
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+        }
     }
 }
