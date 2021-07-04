@@ -8,7 +8,7 @@ using ZionCodes.Core.Models.Tags;
 
 namespace ZionCodes.Core.Services.Tags
 {
-    public partial class TagService : ITagServices
+    public partial class TagService : ITagService
     {
         private readonly IStorageBroker storageBroker;
         private readonly IDateTimeBroker dateTimeBroker;
