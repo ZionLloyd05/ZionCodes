@@ -5,7 +5,7 @@ using ZionCodes.Core.Models.Tags;
 
 namespace ZionCodes.Core.Services.Tags
 {
-    public interface ITagServices
+    public interface ITagService
     {
         ValueTask<Tag> AddTagAsync(Tag tag);
         ValueTask<Tag> RetrieveTagByIdAsync(Guid tagId);

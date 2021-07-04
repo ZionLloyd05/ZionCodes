@@ -187,7 +187,10 @@ namespace ZionCodes.Core.Controllers
             }
         }
 
+        #region HelperMethods
         private static string GetInnerMessage(Exception exception) =>
             exception.InnerException.Message;
+        #endregion
+
     }
 }

@@ -19,7 +19,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
         private readonly Mock<IStorageBroker> storageBrokerMock;
         private readonly Mock<ILoggingBroker> loggingBrokerMock;
         private readonly Mock<IDateTimeBroker> dateTimeBrokerMock;
-        private readonly ITagServices tagService;
+        private readonly ITagService tagService;
 
         public TagServiceTests()
         {
