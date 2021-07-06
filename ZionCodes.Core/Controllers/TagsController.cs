@@ -11,7 +11,7 @@ namespace ZionCodes.Core.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TagsController : RESTFulController
+    public class TagsController : BaseController<Tag>
     {
         private readonly ITagService tagService;
 
@@ -22,170 +22,55 @@ namespace ZionCodes.Core.Controllers
 
 
         [HttpPost]
-        public async ValueTask<ActionResult<Tag>> PostTagAsync(Tag tag)
+        public ValueTask<ActionResult<Tag>> PostTagAsync(Tag tag) =>
+        TryCatchTagFunction(async () =>
         {
-            try
-            {
-                Tag persistedTag =
+            Tag persistedTag =
                     await this.tagService.AddTagAsync(tag);
 
-                return Ok(persistedTag);
-            }
-            catch (TagValidationException tagValidationException)
-                when (tagValidationException.InnerException is AlreadyExistsTagException)
-            {
-                string innerMessage = GetInnerMessage(tagValidationException);
-
-                return Conflict(innerMessage);
-            }
-            catch (TagValidationException tagValidationException)
-            {
-                string innerMessage = GetInnerMessage(tagValidationException);
-
-                return BadRequest(innerMessage);
-            }
-            catch (TagDependencyException tagDependencyException)
-            {
-                return Problem(tagDependencyException.Message);
-            }
-            catch (TagServiceException tagServiceException)
-            {
-                return Problem(tagServiceException.Message);
-            }
-        }
+            return Ok(persistedTag);
+        });
 
         [HttpGet]
-        public ActionResult<IQueryable<Tag>> GetAllCategories()
+        public ActionResult<IQueryable<Tag>> GetAllCategories() =>
+        TryCatchTagFunction(() =>
         {
-            try
-            {
-                IQueryable storageTag =
+            IQueryable storageTag =
                     this.tagService.RetrieveAllTags();
 
-                return Ok(storageTag);
-            }
-            catch (TagDependencyException tagDependencyException)
-            {
-                return Problem(tagDependencyException.Message);
-            }
-            catch (TagServiceException tagServiceException)
-            {
-                return Problem(tagServiceException.Message);
-            }
-        }
+            return Ok(storageTag);
+        });
 
         [HttpGet("{tagId}")]
-        public async ValueTask<ActionResult<Tag>> GetTagAsync(Guid tagId)
+        public ValueTask<ActionResult<Tag>> GetTagAsync(Guid tagId) =>
+        TryCatchTagFunction(async () =>
         {
-            try
-            {
-                Tag storageTag =
-                    await this.tagService.RetrieveTagByIdAsync(tagId);
+            Tag storageTag =
+                   await this.tagService.RetrieveTagByIdAsync(tagId);
 
-                return Ok(storageTag);
-            }
-            catch (TagValidationException tagValidationException)
-                when (tagValidationException.InnerException is NotFoundTagException)
-            {
-                string innerMessage = GetInnerMessage(tagValidationException);
-
-                return NotFound(innerMessage);
-            }
-            catch (TagValidationException tagValidationException)
-            {
-                string innerMessage = GetInnerMessage(tagValidationException);
-
-                return BadRequest(innerMessage);
-            }
-            catch (TagDependencyException tagDependencyException)
-            {
-                return Problem(tagDependencyException.Message);
-            }
-            catch (TagServiceException tagServiceException)
-            {
-                return Problem(tagServiceException.Message);
-            }
-        }
+            return Ok(storageTag);
+        });
 
         [HttpPut]
-        public async ValueTask<ActionResult<Tag>> PutTagAsync(Tag tag)
+        public ValueTask<ActionResult<Tag>> PutTagAsync(Tag tag) =>
+        TryCatchTagFunction(async () =>
         {
-            try
-            {
-                Tag registeredTag =
+            Tag registeredTag =
                     await this.tagService.ModifyTagAsync(tag);
 
-                return Ok(registeredTag);
-            }
-            catch (TagValidationException tagValidationException)
-                when (tagValidationException.InnerException is NotFoundTagException)
-            {
-                string innerMessage = GetInnerMessage(tagValidationException);
+            return Ok(registeredTag);
+        });
 
-                return NotFound(innerMessage);
-            }
-            catch (TagValidationException tagValidationException)
-            {
-                string innerMessage = GetInnerMessage(tagValidationException);
-
-                return BadRequest(innerMessage);
-            }
-            catch (TagDependencyException tagDependencyException)
-                when (tagDependencyException.InnerException is LockedTagException)
-            {
-                string innerMessage = GetInnerMessage(tagDependencyException);
-
-                return Locked(innerMessage);
-            }
-            catch (TagDependencyException tagDependencyException)
-            {
-                return Problem(tagDependencyException.Message);
-            }
-            catch (TagServiceException tagServiceException)
-            {
-                return Problem(tagServiceException.Message);
-            }
-        }
 
         [HttpDelete("{tagId}")]
-        public async ValueTask<ActionResult<Tag>> DeleteTagAsync(Guid tagId)
+        public ValueTask<ActionResult<Tag>> DeleteTagAsync(Guid tagId) =>
+        TryCatchTagFunction(async () =>
         {
-            try
-            {
-                Tag storageTag =
+            Tag storageTag =
                     await this.tagService.RemoveTagByIdAsync(tagId);
 
-                return Ok(storageTag);
-            }
-            catch (TagValidationException tagValidationException)
-                when (tagValidationException.InnerException is NotFoundTagException)
-            {
-                string innerMessage = GetInnerMessage(tagValidationException);
-
-                return NotFound(innerMessage);
-            }
-            catch (TagValidationException tagValidationException)
-            {
-                string innerMessage = GetInnerMessage(tagValidationException);
-
-                return BadRequest(tagValidationException);
-            }
-            catch (TagDependencyException tagDependencyException)
-               when (tagDependencyException.InnerException is LockedTagException)
-            {
-                string innerMessage = GetInnerMessage(tagDependencyException);
-
-                return Locked(innerMessage);
-            }
-            catch (TagDependencyException tagDependencyException)
-            {
-                return Problem(tagDependencyException.Message);
-            }
-            catch (TagServiceException tagServiceException)
-            {
-                return Problem(tagServiceException.Message);
-            }
-        }
+            return Ok(storageTag);
+        });
 
         #region HelperMethods
         private static string GetInnerMessage(Exception exception) =>

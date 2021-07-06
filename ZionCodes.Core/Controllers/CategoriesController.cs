@@ -11,7 +11,7 @@ namespace ZionCodes.Core.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoriesController : RESTFulController
+    public class CategoriesController : BaseController<Category>
     {
         private readonly ICategoryService categoryService;
 
@@ -21,171 +21,56 @@ namespace ZionCodes.Core.Controllers
         }
 
         [HttpPost]
-        public async ValueTask<ActionResult<Category>> PostCategoryAsync(Category category)
+        public ValueTask<ActionResult<Category>> PostCategoryAsync(Category category) =>
+        TryCatchCategoryFunction(async () =>
         {
-            try
-            {
-                Category persistedCategory =
+            Category persistedCategory =
                     await this.categoryService.AddCategoryAsync(category);
 
-                return Ok(persistedCategory);
-            }
-            catch (CategoryValidationException categoryValidationException)
-                when (categoryValidationException.InnerException is AlreadyExistsCategoryException)
-            {
-                string innerMessage = GetInnerMessage(categoryValidationException);
-
-                return Conflict(innerMessage);
-            }
-            catch (CategoryValidationException categoryValidationException)
-            {
-                string innerMessage = GetInnerMessage(categoryValidationException);
-
-                return BadRequest(innerMessage);
-            }
-            catch (CategoryDependencyException categoryDependencyException)
-            {
-                return Problem(categoryDependencyException.Message);
-            }
-            catch (CategoryServiceException categoryServiceException)
-            {
-                return Problem(categoryServiceException.Message);
-            }
-        }
+            return Ok(persistedCategory);
+        });
 
         [HttpGet]
-        public ActionResult<IQueryable<Category>> GetAllCategories()
+        public ActionResult<IQueryable<Category>> GetAllCategories() =>
+        TryCatchCategoryFunction(() =>
         {
-            try
-            {
-                IQueryable storageCategory =
+            IQueryable storageCategory =
                     this.categoryService.RetrieveAllCategories();
 
-                return Ok(storageCategory);
-            }
-            catch (CategoryDependencyException categoryDependencyException)
-            {
-                return Problem(categoryDependencyException.Message);
-            }
-            catch (CategoryServiceException categoryServiceException)
-            {
-                return Problem(categoryServiceException.Message);
-            }
-        }
+            return Ok(storageCategory);
+        });
 
         [HttpGet("{categoryId}")]
-        public async ValueTask<ActionResult<Category>> GetCategoryAsync(Guid categoryId)
+        public ValueTask<ActionResult<Category>> GetCategoryAsync(Guid categoryId) =>
+        TryCatchCategoryFunction(async () =>
         {
-            try
-            {
-                Category storageCategory =
-                    await this.categoryService.RetrieveCategoryByIdAsync(categoryId);
+            Category storageCategory =
+                   await this.categoryService.RetrieveCategoryByIdAsync(categoryId);
 
-                return Ok(storageCategory);
-            }
-            catch (CategoryValidationException categoryValidationException)
-                when (categoryValidationException.InnerException is NotFoundCategoryException)
-            {
-                string innerMessage = GetInnerMessage(categoryValidationException);
-
-                return NotFound(innerMessage);
-            }
-            catch (CategoryValidationException categoryValidationException)
-            {
-                string innerMessage = GetInnerMessage(categoryValidationException);
-
-                return BadRequest(innerMessage);
-            }
-            catch (CategoryDependencyException categoryDependencyException)
-            {
-                return Problem(categoryDependencyException.Message);
-            }
-            catch (CategoryServiceException categoryServiceException)
-            {
-                return Problem(categoryServiceException.Message);
-            }
-        }
-
+            return Ok(storageCategory);
+        });
+        
         [HttpPut]
-        public async ValueTask<ActionResult<Category>> PutCategoryAsync(Category category)
+        public ValueTask<ActionResult<Category>> PutCategoryAsync(Category category) =>
+        TryCatchCategoryFunction(async () =>
         {
-            try
-            {
-                Category registeredCategory =
+            Category registeredCategory =
                     await this.categoryService.ModifyCategoryAsync(category);
 
-                return Ok(registeredCategory);
-            }
-            catch (CategoryValidationException categoryValidationException)
-                when (categoryValidationException.InnerException is NotFoundCategoryException)
-            {
-                string innerMessage = GetInnerMessage(categoryValidationException);
+            return Ok(registeredCategory);
+        });
 
-                return NotFound(innerMessage);
-            }
-            catch (CategoryValidationException categoryValidationException)
-            {
-                string innerMessage = GetInnerMessage(categoryValidationException);
-
-                return BadRequest(innerMessage);
-            }
-            catch (CategoryDependencyException categoryDependencyException)
-                when (categoryDependencyException.InnerException is LockedCategoryException)
-            {
-                string innerMessage = GetInnerMessage(categoryDependencyException);
-
-                return Locked(innerMessage);
-            }
-            catch (CategoryDependencyException categoryDependencyException)
-            {
-                return Problem(categoryDependencyException.Message);
-            }
-            catch (CategoryServiceException categoryServiceException)
-            {
-                return Problem(categoryServiceException.Message);
-            }
-        }
-
-
+        
         [HttpDelete("{categoryId}")]
-        public async ValueTask<ActionResult<Category>> DeleteCategoryAsync(Guid categoryId)
+        public ValueTask<ActionResult<Category>> DeleteCategoryAsync(Guid categoryId) =>
+        TryCatchCategoryFunction(async () =>
         {
-            try
-            {
-                Category storageCategory =
+            Category storageCategory =
                     await this.categoryService.RemoveCategoryByIdAsync(categoryId);
 
-                return Ok(storageCategory);
-            }
-            catch (CategoryValidationException categoryValidationException)
-                when (categoryValidationException.InnerException is NotFoundCategoryException)
-            {
-                string innerMessage = GetInnerMessage(categoryValidationException);
-
-                return NotFound(innerMessage);
-            }
-            catch (CategoryValidationException categoryValidationException)
-            {
-                string innerMessage = GetInnerMessage(categoryValidationException);
-
-                return BadRequest(categoryValidationException);
-            }
-            catch (CategoryDependencyException categoryDependencyException)
-               when (categoryDependencyException.InnerException is LockedCategoryException)
-            {
-                string innerMessage = GetInnerMessage(categoryDependencyException);
-
-                return Locked(innerMessage);
-            }
-            catch (CategoryDependencyException categoryDependencyException)
-            {
-                return Problem(categoryDependencyException.Message);
-            }
-            catch (CategoryServiceException categoryServiceException)
-            {
-                return Problem(categoryServiceException.Message);
-            }
-        }
+            return Ok(storageCategory);
+        });
+       
 
         #region HelperMethods
         private static string GetInnerMessage(Exception exception) =>

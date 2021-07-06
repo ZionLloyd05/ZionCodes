@@ -104,15 +104,26 @@ namespace ZionCodes.Core.Services.Tags
         {
             switch (tag)
             {
+                case { } when IsInvalid(input: tag.CreatedBy):
+                    throw new InvalidTagException(
+                        parameterName: nameof(tag.CreatedBy),
+                        parameterValue: tag.CreatedBy);
+
+                case { } when IsInvalid(input: tag.UpdatedBy):
+                    throw new InvalidTagException(
+                        parameterName: nameof(tag.UpdatedBy),
+                        parameterValue: tag.UpdatedBy);
+
+                case { } when IsInvalid(input: tag.CreatedDate):
+                    throw new InvalidTagException(
+                        parameterName: nameof(tag.CreatedDate),
+                        parameterValue: tag.CreatedDate);
+
                 case { } when IsInvalid(input: tag.UpdatedDate):
                     throw new InvalidTagException(
                         parameterName: nameof(tag.UpdatedDate),
                         parameterValue: tag.UpdatedDate);
 
-                    //case { } when IsDateNotRecent(tag.UpdatedDate):
-                    //    throw new InvalidTagException(
-                    //        parameterName: nameof(Tag.UpdatedDate),
-                    //        parameterValue: tag.UpdatedDate);
             }
         }
 
