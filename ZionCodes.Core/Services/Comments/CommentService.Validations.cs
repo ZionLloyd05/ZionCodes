@@ -41,7 +41,10 @@ namespace ZionCodes.Core.Services.Comments
                     throw new InvalidCommentException(
                         parameterName: nameof(comment.CreatedDate),
                         parameterValue: comment.CreatedDate);
-
+                case { } when IsInvalid(input: comment.UpdatedDate):
+                    throw new InvalidCommentException(
+                        parameterName: nameof(comment.UpdatedDate),
+                        parameterValue: comment.UpdatedDate);
                 default:
                     break;
             }
