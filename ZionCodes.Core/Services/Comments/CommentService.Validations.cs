@@ -12,6 +12,7 @@ namespace ZionCodes.Core.Services.Comments
         private void ValidateCommentOnCreate(Comment Comment)
         {
             ValidateCommentIsNull(Comment);
+            ValidateCommentAuditFieldsOnCreate(Comment);
         }
 
         private void ValidateCommentIsNull(Comment Comment)
@@ -31,5 +32,21 @@ namespace ZionCodes.Core.Services.Comments
                     parameterValue: commentId);
             }
         }
+
+        private void ValidateCommentAuditFieldsOnCreate(Comment comment)
+        {
+            switch (comment)
+            {
+                case { } when IsInvalid(input: comment.CreatedDate):
+                    throw new InvalidCommentException(
+                        parameterName: nameof(comment.CreatedDate),
+                        parameterValue: comment.CreatedDate);
+
+                default:
+                    break;
+            }
+        }
+
+        private bool IsInvalid(DateTimeOffset input) => input == default;
     }
 }
