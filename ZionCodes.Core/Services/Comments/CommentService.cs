@@ -28,7 +28,7 @@ namespace ZionCodes.Core.Services.Comments
 
         public ValueTask<Comment> AddCommentAsync(Comment comment)
         {
-            throw new NotImplementedException();
+            return this.storageBroker.InsertCommentAsync(comment);
         }
     }
 }

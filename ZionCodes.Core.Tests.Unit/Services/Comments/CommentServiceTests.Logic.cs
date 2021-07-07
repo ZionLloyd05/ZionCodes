@@ -23,9 +23,9 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
             inputComment.UpdatedDate = inputComment.CreatedDate;
             Comment expectedComment = inputComment;
 
-            this.dateTimeBrokerMock.Setup(broker =>
-                broker.GetCurrentDateTime())
-                    .Returns(dateTime);
+            //this.dateTimeBrokerMock.Setup(broker =>
+            //    broker.GetCurrentDateTime())
+            //        .Returns(dateTime);
 
             this.storageBrokerMock.Setup(broker =>
                 broker.InsertCommentAsync(inputComment))
@@ -42,9 +42,9 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
                 broker.InsertCommentAsync(inputComment),
                     Times.Once);
 
-            this.dateTimeBrokerMock.Verify(broker =>
-                broker.GetCurrentDateTime(),
-                    Times.Once);
+            //this.dateTimeBrokerMock.Verify(broker =>
+            //    broker.GetCurrentDateTime(),
+            //        Times.Once);
 
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
