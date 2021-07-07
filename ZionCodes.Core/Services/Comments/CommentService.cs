@@ -26,9 +26,12 @@ namespace ZionCodes.Core.Services.Comments
             this.loggingBroker = loggingBroker;
         }
 
-        public ValueTask<Comment> AddCommentAsync(Comment comment)
+        public ValueTask<Comment> AddCommentAsync(Comment comment) =>
+        TryCatch(() =>
         {
+            ValidateCommentOnCreate(comment);
+
             return this.storageBroker.InsertCommentAsync(comment);
-        }
+        });
     }
 }
