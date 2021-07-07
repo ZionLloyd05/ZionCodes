@@ -22,6 +22,10 @@ namespace ZionCodes.Core.Services.Comments
             {
                 throw CreateAndLogValidationException(nullCommentException);
             }
+            catch (InvalidCommentException invalidCommentException)
+            {
+                throw CreateAndLogValidationException(invalidCommentException);
+            }
         }
 
 

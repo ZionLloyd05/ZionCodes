@@ -21,5 +21,15 @@ namespace ZionCodes.Core.Services.Comments
                 throw new NullCommentException();
             }
         }
+
+        private void ValidateCommentIdIsNull(Guid commentId)
+        {
+            if (commentId == default)
+            {
+                throw new InvalidCommentException(
+                    parameterName: nameof(Comment.Id),
+                    parameterValue: commentId);
+            }
+        }
     }
 }

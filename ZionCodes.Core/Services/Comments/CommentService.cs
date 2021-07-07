@@ -30,7 +30,7 @@ namespace ZionCodes.Core.Services.Comments
         TryCatch(() =>
         {
             ValidateCommentOnCreate(comment);
-
+            ValidateCommentIdIsNull(comment.Id);
             return this.storageBroker.InsertCommentAsync(comment);
         });
     }
