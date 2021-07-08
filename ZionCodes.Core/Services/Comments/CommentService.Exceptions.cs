@@ -36,6 +36,10 @@ namespace ZionCodes.Core.Services.Comments
             {
                 throw CreateAndLogDependencyException(dbUpdateException);
             }
+            catch (Exception exception)
+            {
+                throw CreateAndLogServiceException(exception);
+            }
         }
 
 
@@ -63,5 +67,12 @@ namespace ZionCodes.Core.Services.Comments
             return commentDependencyException;
         }
 
+        private CommentServiceException CreateAndLogServiceException(Exception exception)
+        {
+            var commentServiceException = new CommentServiceException(exception);
+            this.loggingBroker.LogError(commentServiceException);
+
+            return commentServiceException;
+        }
     }
 }
