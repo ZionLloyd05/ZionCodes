@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using ZionCodes.Core.Models.Comments;
 using ZionCodes.Core.Models.Comments.Exceptions;
 
@@ -9,6 +10,7 @@ namespace ZionCodes.Core.Services.Comments
         private void ValidateCommentOnCreate(Comment Comment)
         {
             ValidateCommentIsNull(Comment);
+            ValidateCommentIdIsNull(Comment.Id);
             ValidateCommentProperties(Comment);
             ValidateCommentAuditFieldsOnCreate(Comment);
         }
@@ -42,6 +44,14 @@ namespace ZionCodes.Core.Services.Comments
             }
         }
 
+        private void ValidateStorageComments(IQueryable<Comment> storageComments)
+        {
+            if (storageComments.Count() == 0)
+            {
+                this.loggingBroker.LogWarning("No comments found in storage.");
+            }
+        }
+
         private void ValidateCommentAuditFieldsOnCreate(Comment comment)
         {
             switch (comment)
@@ -68,7 +78,7 @@ namespace ZionCodes.Core.Services.Comments
         }
 
         private bool IsInvalid(DateTimeOffset input) => input == default;
-        private bool IsInvalid(string categoryTitle) => String.IsNullOrWhiteSpace(categoryTitle);
+        private bool IsInvalid(string commentBody) => String.IsNullOrWhiteSpace(commentBody);
 
 
         private bool IsDateNotRecent(DateTimeOffset dateTime)

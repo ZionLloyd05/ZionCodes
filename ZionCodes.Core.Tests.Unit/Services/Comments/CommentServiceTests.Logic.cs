@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
@@ -20,9 +21,9 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
             inputComment.UpdatedDate = inputComment.CreatedDate;
             Comment expectedComment = inputComment;
 
-            //this.dateTimeBrokerMock.Setup(broker =>
-            //    broker.GetCurrentDateTime())
-            //        .Returns(dateTime);
+            this.dateTimeBrokerMock.Setup(broker =>
+                broker.GetCurrentDateTime())
+                    .Returns(dateTime);
 
             this.storageBrokerMock.Setup(broker =>
                 broker.InsertCommentAsync(inputComment))
@@ -39,9 +40,43 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
                 broker.InsertCommentAsync(inputComment),
                     Times.Once);
 
-            //this.dateTimeBrokerMock.Verify(broker =>
-            //    broker.GetCurrentDateTime(),
-            //        Times.Once);
+            this.dateTimeBrokerMock.Verify(broker =>
+                broker.GetCurrentDateTime(),
+                    Times.Once);
+
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public void ShouldRetriveAllComments()
+        {
+            // given
+            DateTimeOffset randomDateTime = GetRandomDateTime();
+            IQueryable<Comment> randomComments =
+                CreateRandomComments(randomDateTime);
+
+            IQueryable<Comment> storageComments =
+                randomComments;
+
+            IQueryable<Comment> expectedComments =
+                storageComments;
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectAllComments())
+                    .Returns(storageComments);
+
+            // when
+            IQueryable<Comment> actualComments =
+                this.commentService.RetrieveAllComments();
+
+            // then
+            actualComments.Should().BeEquivalentTo(expectedComments);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectAllComments(),
+                    Times.Once);
 
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
