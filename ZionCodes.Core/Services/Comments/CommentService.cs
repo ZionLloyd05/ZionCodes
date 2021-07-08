@@ -45,9 +45,14 @@ namespace ZionCodes.Core.Services.Comments
                 return storageComments;
             });
 
-        public async ValueTask<Comment> RetrieveCommentByIdAsync(Guid commentId)
-        {
-            return await this.storageBroker.SelectCommentByIdAsync(commentId);
-        }
+        public ValueTask<Comment> RetrieveCommentByIdAsync(Guid commentId) =>
+            TryCatch(async () =>
+            {
+                ValidateCommentId(commentId);
+                Comment storageComment = 
+                    await this.storageBroker.SelectCommentByIdAsync(commentId);
+
+                return storageComment;
+            });
     }
 }

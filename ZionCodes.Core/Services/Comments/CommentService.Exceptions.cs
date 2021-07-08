@@ -44,6 +44,10 @@ namespace ZionCodes.Core.Services.Comments
 
                 throw CreateAndLogValidationException(alreadyExistsCommentException);
             }
+            catch (InvalidCommentInputException invalidCommentInputException)
+            {
+                throw CreateAndLogValidationException(invalidCommentInputException);
+            }
             catch (Exception exception)
             {
                 throw CreateAndLogServiceException(exception);

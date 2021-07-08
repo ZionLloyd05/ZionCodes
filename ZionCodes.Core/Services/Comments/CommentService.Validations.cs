@@ -23,6 +23,17 @@ namespace ZionCodes.Core.Services.Comments
             }
         }
 
+
+        private void ValidateCommentId(Guid categoryId)
+        {
+            if (categoryId == Guid.Empty)
+            {
+                throw new InvalidCommentInputException(
+                    parameterName: nameof(Comment.Id),
+                    parameterValue: categoryId);
+            }
+        }
+
         private void ValidateCommentIdIsNull(Guid commentId)
         {
             if (commentId == default)
