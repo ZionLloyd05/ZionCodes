@@ -34,7 +34,9 @@ namespace ZionCodes.Core.Services.Comments
 
         public IQueryable<Comment> RetrieveAllComments()
         {
-            return this.storageBroker.SelectAllComments();
+            IQueryable<Comment> storageComments = this.storageBroker.SelectAllComments();
+            ValidateStorageComments(storageComments);
+            return storageComments;
         }
     }
 }

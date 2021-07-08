@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using ZionCodes.Core.Models.Comments;
 using ZionCodes.Core.Models.Comments.Exceptions;
 
@@ -39,6 +40,14 @@ namespace ZionCodes.Core.Services.Comments
                     throw new InvalidCommentException(
                         parameterName: nameof(Comment.Body),
                         parameterValue: comment.Body);
+            }
+        }
+
+        private void ValidateStorageComments(IQueryable<Comment> storageComments)
+        {
+            if (storageComments.Count() == 0)
+            {
+                this.loggingBroker.LogWarning("No comments found in storage.");
             }
         }
 
