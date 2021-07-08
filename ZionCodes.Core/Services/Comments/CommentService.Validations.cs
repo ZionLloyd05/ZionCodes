@@ -10,6 +10,7 @@ namespace ZionCodes.Core.Services.Comments
         private void ValidateCommentOnCreate(Comment Comment)
         {
             ValidateCommentIsNull(Comment);
+            ValidateCommentIdIsNull(Comment.Id);
             ValidateCommentProperties(Comment);
             ValidateCommentAuditFieldsOnCreate(Comment);
         }
@@ -77,7 +78,7 @@ namespace ZionCodes.Core.Services.Comments
         }
 
         private bool IsInvalid(DateTimeOffset input) => input == default;
-        private bool IsInvalid(string categoryTitle) => String.IsNullOrWhiteSpace(categoryTitle);
+        private bool IsInvalid(string commentBody) => String.IsNullOrWhiteSpace(commentBody);
 
 
         private bool IsDateNotRecent(DateTimeOffset dateTime)
