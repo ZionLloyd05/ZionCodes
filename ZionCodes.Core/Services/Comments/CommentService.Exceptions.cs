@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EFxceptions.Models.Exceptions;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using ZionCodes.Core.Models.Comments;
@@ -35,6 +36,13 @@ namespace ZionCodes.Core.Services.Comments
             catch (DbUpdateException dbUpdateException)
             {
                 throw CreateAndLogDependencyException(dbUpdateException);
+            }
+            catch (DuplicateKeyException duplicateKeyException)
+            {
+                var alreadyExistsCategoryException =
+                    new AlreadyExistsCommentException(duplicateKeyException);
+
+                throw CreateAndLogValidationException(alreadyExistsCategoryException);
             }
             catch (Exception exception)
             {
