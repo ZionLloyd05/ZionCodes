@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using EFxceptions.Models.Exceptions;
 using Moq;
 using Xunit;
 using ZionCodes.Core.Models.Comments;
@@ -227,6 +228,57 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
                 broker.InsertCommentAsync(It.IsAny<Comment>()),
                     Times.Never);
 
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public async void ShouldThrowValidationExceptionOnAddWhenCommentAlreadyExistsAndLogItAsync()
+        {
+            // given
+            DateTimeOffset dateTime = GetRandomDateTime();
+            Comment randomComment = CreateRandomComment(dateTime);
+            Comment alreadyExistsComment = randomComment;
+
+            string randomMessage = GetRandomMessage();
+            string exceptionMessage = randomMessage;
+            var duplicateKeyException = new DuplicateKeyException(exceptionMessage);
+
+            var alreadyExistsCommentException =
+                new AlreadyExistsCommentException(duplicateKeyException);
+
+            var expectedCommentValidationException =
+                new CommentValidationException(alreadyExistsCommentException);
+
+            this.dateTimeBrokerMock.Setup(broker =>
+                broker.GetCurrentDateTime())
+                    .Returns(dateTime);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.InsertCommentAsync(alreadyExistsComment))
+                    .ThrowsAsync(duplicateKeyException);
+
+            // when
+            ValueTask<Comment> createCommentTask =
+                this.commentService.AddCommentAsync(alreadyExistsComment);
+
+            // then
+            await Assert.ThrowsAsync<CommentValidationException>(() =>
+                createCommentTask.AsTask());
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedCommentValidationException))),
+                    Times.Once);
+
+            this.dateTimeBrokerMock.Verify(broker =>
+                broker.GetCurrentDateTime(),
+                    Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.InsertCommentAsync(alreadyExistsComment),
+                    Times.Once);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
