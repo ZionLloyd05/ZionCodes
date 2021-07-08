@@ -51,5 +51,46 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
             this.storageBrokerMock.VerifyNoOtherCalls();
         }
 
+        [Fact]
+        public async void ShouldThrowValidationExceptionOnRetrieveByIdWhenStorageCommentIsNullAndLogItAsync()
+        {
+            // given
+            Guid randomCommentId = Guid.NewGuid();
+            Guid someCommentId = randomCommentId;
+            Comment invalidStorageComment = null;
+            var notFoundCommentException = new NotFoundCommentException(someCommentId);
+
+            var exceptionCommentValidationException =
+                new CommentValidationException(notFoundCommentException);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectCommentByIdAsync(It.IsAny<Guid>()))
+                    .ReturnsAsync(invalidStorageComment);
+
+            // when
+            ValueTask<Comment> retrieveCommentByIdTask =
+                this.commentService.RetrieveCommentByIdAsync(someCommentId);
+
+            // then
+            await Assert.ThrowsAsync<CommentValidationException>(() =>
+                retrieveCommentByIdTask.AsTask());
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(exceptionCommentValidationException))),
+                    Times.Once);
+
+            this.dateTimeBrokerMock.Verify(broker =>
+                broker.GetCurrentDateTime(),
+                    Times.Never);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectCommentByIdAsync(It.IsAny<Guid>()),
+                    Times.Once);
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+        }
+
     }
 }
