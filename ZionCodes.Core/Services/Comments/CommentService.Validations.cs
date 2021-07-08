@@ -12,6 +12,7 @@ namespace ZionCodes.Core.Services.Comments
         private void ValidateCommentOnCreate(Comment Comment)
         {
             ValidateCommentIsNull(Comment);
+            ValidateCommentProperties(Comment);
             ValidateCommentAuditFieldsOnCreate(Comment);
         }
 
@@ -30,6 +31,17 @@ namespace ZionCodes.Core.Services.Comments
                 throw new InvalidCommentException(
                     parameterName: nameof(Comment.Id),
                     parameterValue: commentId);
+            }
+        }
+
+        private void ValidateCommentProperties(Comment comment)
+        {
+            switch (comment)
+            {
+                case { } when IsInvalid(comment.Body):
+                    throw new InvalidCommentException(
+                        parameterName: nameof(Comment.Body),
+                        parameterValue: comment.Body);
             }
         }
 
@@ -59,6 +71,8 @@ namespace ZionCodes.Core.Services.Comments
         }
 
         private bool IsInvalid(DateTimeOffset input) => input == default;
+        private bool IsInvalid(string categoryTitle) => String.IsNullOrWhiteSpace(categoryTitle);
+
 
         private bool IsDateNotRecent(DateTimeOffset dateTime)
         {
