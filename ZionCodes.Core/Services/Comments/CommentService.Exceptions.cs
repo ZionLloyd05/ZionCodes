@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using EFxceptions.Models.Exceptions;
 using Microsoft.Data.SqlClient;
@@ -11,6 +12,7 @@ namespace ZionCodes.Core.Services.Comments
     public partial class CommentService
     {
         private delegate ValueTask<Comment> ReturningCommentFunction();
+        private delegate IQueryable<Comment> ReturningQueryableCommentFunction();
 
         private async ValueTask<Comment> TryCatch(
             ReturningCommentFunction returningCommentFunction)
@@ -37,10 +39,27 @@ namespace ZionCodes.Core.Services.Comments
             }
             catch (DuplicateKeyException duplicateKeyException)
             {
-                var alreadyExistsCategoryException =
+                var alreadyExistsCommentException =
                     new AlreadyExistsCommentException(duplicateKeyException);
 
-                throw CreateAndLogValidationException(alreadyExistsCategoryException);
+                throw CreateAndLogValidationException(alreadyExistsCommentException);
+            }
+            catch (Exception exception)
+            {
+                throw CreateAndLogServiceException(exception);
+            }
+        }
+
+        private IQueryable<Comment> TryCatch
+           (ReturningQueryableCommentFunction returningQueryableCommentFunction)
+        {
+            try
+            {
+                return returningQueryableCommentFunction();
+            }
+            catch (SqlException sqlException)
+            {
+                throw CreateAndLogCriticalDependencyException(sqlException);
             }
             catch (Exception exception)
             {

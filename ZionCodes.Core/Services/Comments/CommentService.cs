@@ -25,18 +25,23 @@ namespace ZionCodes.Core.Services.Comments
         }
 
         public ValueTask<Comment> AddCommentAsync(Comment comment) =>
-        TryCatch(() =>
-        {
-            ValidateCommentOnCreate(comment);
-            ValidateCommentIdIsNull(comment.Id);
-            return this.storageBroker.InsertCommentAsync(comment);
-        });
+            TryCatch(() =>
+            {
+                ValidateCommentOnCreate(comment);
+            
+                ValidateCommentIdIsNull(comment.Id);
+            
+                return this.storageBroker.InsertCommentAsync(comment);
+            });
 
-        public IQueryable<Comment> RetrieveAllComments()
-        {
-            IQueryable<Comment> storageComments = this.storageBroker.SelectAllComments();
-            ValidateStorageComments(storageComments);
-            return storageComments;
-        }
+        public IQueryable<Comment> RetrieveAllComments() =>
+            TryCatch(() =>
+            {
+                IQueryable<Comment> storageComments = this.storageBroker.SelectAllComments();
+            
+                ValidateStorageComments(storageComments);
+            
+                return storageComments;
+            });
     }
 }
