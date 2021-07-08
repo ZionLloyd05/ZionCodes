@@ -2,9 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using RESTFulSense.Controllers;
 using ZionCodes.Core.Models.Tags;
-using ZionCodes.Core.Models.Tags.Exceptions;
 using ZionCodes.Core.Services.Tags;
 
 namespace ZionCodes.Core.Controllers

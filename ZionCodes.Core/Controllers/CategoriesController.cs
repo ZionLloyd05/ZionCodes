@@ -2,9 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using RESTFulSense.Controllers;
 using ZionCodes.Core.Models.Categories;
-using ZionCodes.Core.Models.Categories.Exceptions;
 using ZionCodes.Core.Services.Categories;
 
 namespace ZionCodes.Core.Controllers
@@ -49,7 +47,7 @@ namespace ZionCodes.Core.Controllers
 
             return Ok(storageCategory);
         });
-        
+
         [HttpPut]
         public ValueTask<ActionResult<Category>> PutCategoryAsync(Category category) =>
         TryCatchCategoryFunction(async () =>
@@ -60,7 +58,7 @@ namespace ZionCodes.Core.Controllers
             return Ok(registeredCategory);
         });
 
-        
+
         [HttpDelete("{categoryId}")]
         public ValueTask<ActionResult<Category>> DeleteCategoryAsync(Guid categoryId) =>
         TryCatchCategoryFunction(async () =>
@@ -70,7 +68,7 @@ namespace ZionCodes.Core.Controllers
 
             return Ok(storageCategory);
         });
-       
+
 
         #region HelperMethods
         private static string GetInnerMessage(Exception exception) =>

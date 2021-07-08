@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ZionCodes.Core.Models.Comments
 {
@@ -12,7 +9,7 @@ namespace ZionCodes.Core.Models.Comments
         public int Upvote { get; set; }
         public int Downvote { get; set; }
         public Guid ParentCommentId { get; set; }
-        public DateTimeOffset CreatedDate { get ; set ; }
-        public DateTimeOffset UpdatedDate { get ; set ; }
+        public DateTimeOffset CreatedDate { get; set; }
+        public DateTimeOffset UpdatedDate { get; set; }
     }
 }
