@@ -34,7 +34,7 @@ namespace ZionCodes.Core.Services.Comments
 
         public IQueryable<Comment> RetrieveAllComments()
         {
-            throw new System.NotImplementedException();
+            return this.storageBroker.SelectAllComments();
         }
     }
 }
