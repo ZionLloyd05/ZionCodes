@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using ZionCodes.Core.Brokers.DateTimes;
 using ZionCodes.Core.Brokers.Loggings;
 using ZionCodes.Core.Brokers.Storages;
@@ -30,5 +31,10 @@ namespace ZionCodes.Core.Services.Comments
             ValidateCommentIdIsNull(comment.Id);
             return this.storageBroker.InsertCommentAsync(comment);
         });
+
+        public IQueryable<Comment> RetrieveAllComments()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
