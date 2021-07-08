@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Data.SqlClient;
 using ZionCodes.Core.Models.Comments;
 using ZionCodes.Core.Models.Comments.Exceptions;
 
@@ -26,6 +27,10 @@ namespace ZionCodes.Core.Services.Comments
             {
                 throw CreateAndLogValidationException(invalidCommentException);
             }
+            catch (SqlException sqlException)
+            {
+                throw CreateAndLogCriticalDependencyException(sqlException);
+            }
         }
 
 
@@ -35,6 +40,13 @@ namespace ZionCodes.Core.Services.Comments
             this.loggingBroker.LogError((Exception)CommentValidationException);
 
             return CommentValidationException;
+        }
+        private CommentDependencyException CreateAndLogCriticalDependencyException(Exception exception)
+        {
+            var CommentDependencyException = new CommentDependencyException(exception);
+            this.loggingBroker.LogCritical(CommentDependencyException);
+
+            return CommentDependencyException;
         }
     }
 }
