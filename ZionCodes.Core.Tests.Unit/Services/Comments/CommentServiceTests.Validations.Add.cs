@@ -188,5 +188,50 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
             this.loggingBrokerMock.VerifyNoOtherCalls();
             this.storageBrokerMock.VerifyNoOtherCalls();
         }
+
+        [Theory]
+        [MemberData(nameof(InvalidMinuteCases))]
+        public async void ShouldThrowValidationExceptionOnAddWhenCreatedDateIsNotRecentAndLogItAsync(int minutes)
+        {
+            // given
+            DateTimeOffset dateTime = GetRandomDateTime();
+            Comment randomComment = CreateRandomComment(dateTime);
+            Comment inputComment = randomComment;
+            inputComment.CreatedDate = dateTime.AddMinutes(minutes);
+            inputComment.UpdatedDate = inputComment.CreatedDate;
+
+            var invalidCommentValidationException = new InvalidCommentException(
+                parameterName: nameof(Comment.CreatedDate),
+                parameterValue: inputComment.CreatedDate);
+
+            var expectedCommentValidationException =
+                new CommentValidationException(invalidCommentValidationException);
+
+            // when 
+            ValueTask<Comment> createCommentTask =
+                this.commentService.AddCommentAsync(inputComment);
+
+            // then
+            await Assert.ThrowsAsync<CommentValidationException>(() =>
+                createCommentTask.AsTask());
+
+            this.dateTimeBrokerMock.Verify(broker =>
+                broker.GetCurrentDateTime(),
+                    Times.Once);
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedCommentValidationException))),
+                    Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.InsertCommentAsync(It.IsAny<Comment>()),
+                    Times.Never);
+
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+        }
+
     }
 }

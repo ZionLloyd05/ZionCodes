@@ -49,11 +49,24 @@ namespace ZionCodes.Core.Services.Comments
                     throw new InvalidCommentException(
                         parameterName: nameof(comment.UpdatedDate),
                         parameterValue: comment.UpdatedDate);
+                case { } when IsDateNotRecent(comment.CreatedDate):
+                    throw new InvalidCommentException(
+                        parameterName: nameof(Comment.CreatedDate),
+                        parameterValue: comment.CreatedDate);
                 default:
                     break;
             }
         }
 
         private bool IsInvalid(DateTimeOffset input) => input == default;
+
+        private bool IsDateNotRecent(DateTimeOffset dateTime)
+        {
+            DateTimeOffset now = this.dateTimeBroker.GetCurrentDateTime();
+            int oneMinute = 1;
+            TimeSpan difference = now.Subtract(dateTime);
+
+            return Math.Abs(difference.TotalMinutes) > oneMinute;
+        }
     }
 }
