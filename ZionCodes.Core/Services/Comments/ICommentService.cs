@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using ZionCodes.Core.Models.Comments;
 
@@ -8,5 +9,6 @@ namespace ZionCodes.Core.Services.Comments
     {
         ValueTask<Comment> AddCommentAsync(Comment comment);
         IQueryable<Comment> RetrieveAllComments();
+        ValueTask<Comment> RetrieveCommentByIdAsync(Guid commentId);
     }
 }

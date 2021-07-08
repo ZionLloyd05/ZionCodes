@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using ZionCodes.Core.Brokers.DateTimes;
 using ZionCodes.Core.Brokers.Loggings;
@@ -43,5 +44,10 @@ namespace ZionCodes.Core.Services.Comments
             
                 return storageComments;
             });
+
+        public ValueTask<Comment> RetrieveCommentByIdAsync(Guid commentId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

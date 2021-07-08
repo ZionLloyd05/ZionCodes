@@ -82,5 +82,38 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
             this.loggingBrokerMock.VerifyNoOtherCalls();
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
         }
+
+        [Fact]
+        public async Task ShouldRetrieveCommentByIdAsync()
+        {
+            // given
+            Guid randomCommentId = Guid.NewGuid();
+            Guid inputCommentId = randomCommentId;
+            DateTimeOffset randomDateTime = GetRandomDateTime();
+            Comment randomComment = CreateRandomComment(randomDateTime);
+            Comment storageComment = randomComment;
+            Comment expectedComment = storageComment;
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectCommentByIdAsync(inputCommentId))
+                    .ReturnsAsync(storageComment);
+
+            // when
+            Comment actualComment =
+                await this.commentService.RetrieveCommentByIdAsync(inputCommentId);
+
+            // then
+            actualComment.Should().BeEquivalentTo(expectedComment);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectCommentByIdAsync(inputCommentId),
+                    Times.Once);
+
+
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+        }
+
     }
 }
