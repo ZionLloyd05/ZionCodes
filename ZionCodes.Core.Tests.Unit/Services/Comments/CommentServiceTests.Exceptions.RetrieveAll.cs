@@ -40,5 +40,36 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
         }
+
+        [Fact]
+        public void ShouldThrowServiceExceptionOnRetrieveAllCommentsWhenExceptionOccursAndLogIt()
+        {
+            // given
+            var exception = new Exception();
+
+            var expectedCommentServiceException =
+                new CommentServiceException(exception);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectAllComments())
+                    .Throws(exception);
+
+            // when . then
+            Assert.Throws<CommentServiceException>(() =>
+                this.commentService.RetrieveAllComments());
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectAllComments(),
+                    Times.Once);
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedCommentServiceException))),
+                    Times.Once);
+
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+        }
+
     }
 }
