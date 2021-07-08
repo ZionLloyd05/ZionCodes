@@ -49,8 +49,11 @@ namespace ZionCodes.Core.Services.Comments
             TryCatch(async () =>
             {
                 ValidateCommentId(commentId);
+                
                 Comment storageComment = 
                     await this.storageBroker.SelectCommentByIdAsync(commentId);
+
+                ValidateStorageComment(storageComment, commentId);
 
                 return storageComment;
             });

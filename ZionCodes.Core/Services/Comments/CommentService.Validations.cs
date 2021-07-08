@@ -24,13 +24,13 @@ namespace ZionCodes.Core.Services.Comments
         }
 
 
-        private void ValidateCommentId(Guid categoryId)
+        private void ValidateCommentId(Guid commentId)
         {
-            if (categoryId == Guid.Empty)
+            if (commentId == Guid.Empty)
             {
                 throw new InvalidCommentInputException(
                     parameterName: nameof(Comment.Id),
-                    parameterValue: categoryId);
+                    parameterValue: commentId);
             }
         }
 
@@ -41,6 +41,14 @@ namespace ZionCodes.Core.Services.Comments
                 throw new InvalidCommentException(
                     parameterName: nameof(Comment.Id),
                     parameterValue: commentId);
+            }
+        }
+
+        private void ValidateStorageComment(Comment storageComment, Guid commentId)
+        {
+            if (storageComment == null)
+            {
+                throw new NotFoundCommentException(commentId);
             }
         }
 
