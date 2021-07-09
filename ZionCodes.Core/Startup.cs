@@ -9,6 +9,7 @@ using ZionCodes.Core.Brokers.DateTimes;
 using ZionCodes.Core.Brokers.Loggings;
 using ZionCodes.Core.Brokers.Storages;
 using ZionCodes.Core.Services.Categories;
+using ZionCodes.Core.Services.Comments;
 using ZionCodes.Core.Services.Tags;
 
 namespace ZionCodes.Core
@@ -31,6 +32,7 @@ namespace ZionCodes.Core
             services.AddTransient<IDateTimeBroker, DateTimeBroker>();
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<ITagService, TagService>();
+            services.AddTransient<ICommentService, CommentService>();
 
             services.AddSwaggerGen(c =>
             {
@@ -59,7 +61,7 @@ namespace ZionCodes.Core
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint(
                 "/swagger/v1/swagger.json",
-                "ZionCodes v1"
+                "ZionCodes API v1"
                 ));
 
             app.UseHttpsRedirection();
