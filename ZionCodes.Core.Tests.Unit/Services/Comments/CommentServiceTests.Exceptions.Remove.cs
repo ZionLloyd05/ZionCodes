@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit;
 using ZionCodes.Core.Models.Comments;
@@ -47,6 +48,44 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
             this.storageBrokerMock.Verify(broker =>
                 broker.DeleteCommentAsync(It.IsAny<Comment>()),
                     Times.Never);
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public async Task ShouldThrowDependencyExceptionOnDeleteWhenDbUpdateConcurrencyExceptionOccursAndLogItAsync()
+        {
+            // given
+            Guid randomCommentId = Guid.NewGuid();
+            Guid inputCommentId = randomCommentId;
+            var databaseUpdateConcurrencyException = new DbUpdateConcurrencyException();
+
+            var lockedCommentException =
+                new LockedCommentException(databaseUpdateConcurrencyException);
+
+            var expectedStudentCommentException =
+                new CommentDependencyException(lockedCommentException);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectCommentByIdAsync(inputCommentId))
+                    .ThrowsAsync(databaseUpdateConcurrencyException);
+
+            // when
+            ValueTask<Comment> deleteStudentCommentTask =
+                this.commentService.RemoveCommentByIdAsync(inputCommentId);
+
+            // then
+            await Assert.ThrowsAsync<CommentDependencyException>(() => deleteStudentCommentTask.AsTask());
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedStudentCommentException))),
+                    Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectCommentByIdAsync(inputCommentId),
+                    Times.Once);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
