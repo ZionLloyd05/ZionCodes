@@ -83,13 +83,13 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
         [InlineData("")]
         [InlineData("   ")]
         public async Task ShouldThrowValidationExceptionOnModifyWhenCategoryTitleIsInvalidAndLogItAsync(
-            string invalidCategoryCategoryName)
+            string invalidCategoryName)
         {
             // given
             DateTimeOffset dateTime = GetRandomDateTime();
             Category randomCategory = CreateRandomCategory(dateTime);
             Category invalidCategory = randomCategory;
-            invalidCategory.Title = invalidCategoryCategoryName;
+            invalidCategory.Title = invalidCategoryName;
 
             var invalidCategoryException = new InvalidCategoryException(
                parameterName: nameof(Category.Title),

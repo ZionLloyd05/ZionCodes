@@ -45,23 +45,7 @@ namespace ZionCodes.Core.Services.Categories
         {
             ValidateCategoryIsNull(category);
             ValidateCategoryProperties(category);
-            ValidateCategoryAuditFields(category);
-        }
-
-        private void ValidateCategoryAuditFieldsOnModify(Category category)
-        {
-            switch (category)
-            {
-                case { } when category.UpdatedDate == category.CreatedDate:
-                    throw new InvalidCategoryException(
-                        parameterName: nameof(Category.UpdatedDate),
-                        parameterValue: category.UpdatedDate);
-
-                case { } when IsDateNotRecent(category.UpdatedDate):
-                    throw new InvalidCategoryException(
-                        parameterName: nameof(Category.UpdatedDate),
-                        parameterValue: category.UpdatedDate);
-            }
+            ValidateCategoryAuditFieldsOnModify(category);
         }
 
         private void ValidateCategoryId(Guid categoryId)
@@ -133,7 +117,7 @@ namespace ZionCodes.Core.Services.Categories
             }
         }
 
-        private void ValidateCategoryAuditFields(Category category)
+        private void ValidateCategoryAuditFieldsOnModify(Category category)
         {
             switch (category)
             {

@@ -71,6 +71,15 @@ namespace ZionCodes.Core.Services.Comments
             }
         }
 
+
+        private void ValidateCommentOnModify(Comment comment)
+        {
+            ValidateCommentIsNull(comment);
+            ValidateCommentProperties(comment);
+            ValidateCommentAuditFieldsOnModify(comment);
+        }
+
+
         private void ValidateCommentAuditFieldsOnCreate(Comment comment)
         {
             switch (comment)
@@ -93,6 +102,22 @@ namespace ZionCodes.Core.Services.Comments
                         parameterValue: comment.CreatedDate);
                 default:
                     break;
+            }
+        }
+
+        private void ValidateCommentAuditFieldsOnModify(Comment category)
+        {
+            switch (category)
+            {
+                case { } when IsInvalid(input: category.CreatedDate):
+                    throw new InvalidCommentException(
+                        parameterName: nameof(Comment.CreatedDate),
+                        parameterValue: category.CreatedDate);
+
+                case { } when IsInvalid(input: category.UpdatedDate):
+                    throw new InvalidCommentException(
+                        parameterName: nameof(Comment.UpdatedDate),
+                        parameterValue: category.UpdatedDate);
             }
         }
 
