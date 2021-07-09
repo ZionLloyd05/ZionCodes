@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using ZionCodes.Core.Brokers.DateTimes;
 using ZionCodes.Core.Brokers.Loggings;
@@ -42,6 +43,19 @@ namespace ZionCodes.Core.Services.Comments
                 ValidateStorageComments(storageComments);
             
                 return storageComments;
+            });
+
+        public ValueTask<Comment> RetrieveCommentByIdAsync(Guid commentId) =>
+            TryCatch(async () =>
+            {
+                ValidateCommentId(commentId);
+                
+                Comment storageComment = 
+                    await this.storageBroker.SelectCommentByIdAsync(commentId);
+
+                ValidateStorageComment(storageComment, commentId);
+
+                return storageComment;
             });
     }
 }

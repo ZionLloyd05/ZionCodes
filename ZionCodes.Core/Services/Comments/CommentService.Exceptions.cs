@@ -29,6 +29,12 @@ namespace ZionCodes.Core.Services.Comments
             {
                 throw CreateAndLogValidationException(invalidCommentException);
             }
+            catch (DbUpdateConcurrencyException dbUpdateConcurrencyException)
+            {
+                var lockedCommentException = new LockedCommentException(dbUpdateConcurrencyException);
+
+                throw CreateAndLogDependencyException(lockedCommentException);
+            }
             catch (SqlException sqlException)
             {
                 throw CreateAndLogCriticalDependencyException(sqlException);
@@ -43,6 +49,14 @@ namespace ZionCodes.Core.Services.Comments
                     new AlreadyExistsCommentException(duplicateKeyException);
 
                 throw CreateAndLogValidationException(alreadyExistsCommentException);
+            }
+            catch (NotFoundCommentException notFoundCommentException)
+            {
+                throw CreateAndLogValidationException(notFoundCommentException);
+            }
+            catch (InvalidCommentInputException invalidCommentInputException)
+            {
+                throw CreateAndLogValidationException(invalidCommentInputException);
             }
             catch (Exception exception)
             {
