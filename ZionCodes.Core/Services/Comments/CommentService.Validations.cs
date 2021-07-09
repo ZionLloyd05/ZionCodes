@@ -71,6 +71,13 @@ namespace ZionCodes.Core.Services.Comments
             }
         }
 
+
+        private void ValidateCommentOnModify(Comment comment)
+        {
+            ValidateCommentIsNull(comment);
+        }
+
+
         private void ValidateCommentAuditFieldsOnCreate(Comment comment)
         {
             switch (comment)
