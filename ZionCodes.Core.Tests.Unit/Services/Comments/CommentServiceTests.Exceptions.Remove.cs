@@ -92,5 +92,40 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
             this.storageBrokerMock.VerifyNoOtherCalls();
         }
 
+        [Fact]
+        public async Task ShouldThrowServiceExceptionOnDeleteWhenExceptionOccursAndLogItAsync()
+        {
+            // given
+            Guid randomCommentId = Guid.NewGuid();
+            Guid inputCommentId = randomCommentId;
+            var exception = new Exception();
+
+            var expectedStudentCommentException =
+                new CommentServiceException(exception);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectCommentByIdAsync(inputCommentId))
+                    .ThrowsAsync(exception);
+
+            // when
+            ValueTask<Comment> deleteStudentCommentTask =
+                this.commentService.RemoveCommentByIdAsync(inputCommentId);
+
+            // then
+            await Assert.ThrowsAsync<CommentServiceException>(() =>
+                deleteStudentCommentTask.AsTask());
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedStudentCommentException))),
+                    Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectCommentByIdAsync(inputCommentId),
+                    Times.Once);
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+        }
     }
 }
