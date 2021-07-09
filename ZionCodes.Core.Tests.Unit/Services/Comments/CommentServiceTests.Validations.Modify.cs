@@ -120,5 +120,41 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
         }
 
 
+        [Fact]
+        public async void ShouldThrowValidationExceptionOnModifyWhenUpdatedDateIsInvalidAndLogItAsync()
+        {
+            // given
+            DateTimeOffset dateTime = GetRandomDateTime();
+            Comment randomComment = CreateRandomComment(dateTime);
+            Comment inputComment = randomComment;
+            inputComment.UpdatedDate = default;
+
+            var invalidCommentException = new InvalidCommentException(
+                parameterName: nameof(Comment.UpdatedDate),
+                parameterValue: inputComment.UpdatedDate);
+
+            var expectedCommentValidationException =
+                new CommentValidationException(invalidCommentException);
+
+            // when
+            ValueTask<Comment> modifyCommentTask =
+                this.commentService.ModifyCommentAsync(inputComment);
+
+            // then
+            await Assert.ThrowsAsync<CommentValidationException>(() =>
+                modifyCommentTask.AsTask());
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedCommentValidationException))),
+                    Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectCommentByIdAsync(It.IsAny<Guid>()),
+                    Times.Never);
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+        }
     }
 }
