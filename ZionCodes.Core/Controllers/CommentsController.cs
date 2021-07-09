@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -31,7 +30,7 @@ namespace ZionCodes.Core.Controllers
         });
 
         [HttpGet]
-        public ActionResult<IQueryable<Comment>> GetAllCategories() =>
+        public ActionResult<IQueryable<Comment>> GetAllComments() =>
         TryCatchCommentFunction(() =>
         {
             IQueryable storageComment =

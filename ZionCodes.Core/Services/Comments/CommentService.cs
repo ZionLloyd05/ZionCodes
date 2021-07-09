@@ -29,9 +29,9 @@ namespace ZionCodes.Core.Services.Comments
             TryCatch(() =>
             {
                 ValidateCommentOnCreate(comment);
-            
+
                 ValidateCommentIdIsNull(comment.Id);
-            
+
                 return this.storageBroker.InsertCommentAsync(comment);
             });
 
@@ -39,9 +39,9 @@ namespace ZionCodes.Core.Services.Comments
             TryCatch(() =>
             {
                 IQueryable<Comment> storageComments = this.storageBroker.SelectAllComments();
-            
+
                 ValidateStorageComments(storageComments);
-            
+
                 return storageComments;
             });
 
@@ -49,8 +49,8 @@ namespace ZionCodes.Core.Services.Comments
             TryCatch(async () =>
             {
                 ValidateCommentId(commentId);
-                
-                Comment storageComment = 
+
+                Comment storageComment =
                     await this.storageBroker.SelectCommentByIdAsync(commentId);
 
                 ValidateStorageComment(storageComment, commentId);
@@ -75,9 +75,9 @@ namespace ZionCodes.Core.Services.Comments
                 ValidateCommentIdIsNull(commentId);
                 Comment maybeComment =
                     await this.storageBroker.SelectCommentByIdAsync(commentId);
-                
+
                 ValidateStorageComment(maybeComment, commentId);
-                
+
                 return await this.storageBroker.DeleteCommentAsync(maybeComment);
             });
     }
