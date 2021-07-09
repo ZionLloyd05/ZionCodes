@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Force.DeepCloner;
 using Moq;
 using Xunit;
 using ZionCodes.Core.Models.Comments;
@@ -113,6 +114,50 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public async Task ShouldModifyCommentAsync()
+        {
+            // given
+            int randomNumber = GetRandomNumber();
+            int randomDays = randomNumber;
+            DateTimeOffset randomDate = GetRandomDateTime();
+            DateTimeOffset randomInputDate = GetRandomDateTime();
+            Comment randomComment = CreateRandomComment(randomInputDate);
+            Comment inputComment = randomComment;
+            Comment afterUpdateStorageComment = inputComment;
+            Comment expectedComment = afterUpdateStorageComment;
+            Comment beforeUpdateStorageComment = randomComment.DeepClone();
+            inputComment.UpdatedDate = randomDate;
+            Guid commentId = inputComment.Id;
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectCommentByIdAsync(commentId))
+                    .ReturnsAsync(beforeUpdateStorageComment);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.UpdateCommentAsync(inputComment))
+                    .ReturnsAsync(afterUpdateStorageComment);
+
+            // when
+            Comment actualComment =
+                await this.commentService.ModifyCommentAsync(inputComment);
+
+            // then
+            actualComment.Should().BeEquivalentTo(expectedComment);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectCommentByIdAsync(commentId),
+                    Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.UpdateCommentAsync(inputComment),
+                    Times.Once);
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
         }
 
     }

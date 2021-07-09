@@ -10,5 +10,6 @@ namespace ZionCodes.Core.Services.Comments
         ValueTask<Comment> AddCommentAsync(Comment comment);
         IQueryable<Comment> RetrieveAllComments();
         ValueTask<Comment> RetrieveCommentByIdAsync(Guid commentId);
+        ValueTask<Comment> ModifyCommentAsync(Comment comment);
     }
 }

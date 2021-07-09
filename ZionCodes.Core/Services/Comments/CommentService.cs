@@ -57,5 +57,10 @@ namespace ZionCodes.Core.Services.Comments
 
                 return storageComment;
             });
+
+        public ValueTask<Comment> ModifyCommentAsync(Comment comment)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
