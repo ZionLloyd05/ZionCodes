@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit;
-using ZionCodes.Core.Models.Categories;
 using ZionCodes.Core.Models.Categories.Exceptions;
 
 namespace ZionCodes.Core.Tests.Unit.Services.Categories
@@ -71,6 +68,6 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
         }
 
-       
+
     }
 }

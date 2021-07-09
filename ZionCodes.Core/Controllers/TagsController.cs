@@ -30,7 +30,7 @@ namespace ZionCodes.Core.Controllers
         });
 
         [HttpGet]
-        public ActionResult<IQueryable<Tag>> GetAllCategories() =>
+        public ActionResult<IQueryable<Tag>> GetAllTags() =>
         TryCatchTagFunction(() =>
         {
             IQueryable storageTag =

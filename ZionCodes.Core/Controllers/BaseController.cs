@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RESTFulSense.Controllers;
 using ZionCodes.Core.Models.Categories.Exceptions;
+using ZionCodes.Core.Models.Comments.Exceptions;
 using ZionCodes.Core.Models.Tags.Exceptions;
 
 namespace ZionCodes.Core.Controllers
@@ -137,6 +138,70 @@ namespace ZionCodes.Core.Controllers
             catch (TagServiceException tagServiceException)
             {
                 return Problem(tagServiceException.Message);
+            }
+        }
+        #endregion
+
+        #region CommentsControllerFunction
+        protected async ValueTask<ActionResult<T>> TryCatchCommentFunction(
+            ReturningSingleControllerFunction returningControllerFunction)
+        {
+            try
+            {
+                return await returningControllerFunction();
+            }
+            catch (CommentValidationException commentValidationException)
+                when (commentValidationException.InnerException is NotFoundCommentException)
+            {
+                string innerMessage = GetInnerMessage(commentValidationException);
+
+                return NotFound(innerMessage);
+            }
+            catch (CommentValidationException commentValidationException)
+                when (commentValidationException.InnerException is AlreadyExistsCommentException)
+            {
+                string innerMessage = GetInnerMessage(commentValidationException);
+
+                return Conflict(innerMessage);
+            }
+            catch (CommentValidationException commentValidationException)
+            {
+                string innerMessage = GetInnerMessage(commentValidationException);
+
+                return BadRequest(innerMessage);
+            }
+            catch (CommentDependencyException commentDependencyException)
+                when (commentDependencyException.InnerException is LockedCommentException)
+            {
+                string innerMessage = GetInnerMessage(commentDependencyException);
+
+                return Locked(innerMessage);
+            }
+            catch (CommentDependencyException commentDependencyException)
+            {
+                return Problem(commentDependencyException.Message);
+            }
+            catch (CommentServiceException commentServiceException)
+            {
+                return Problem(commentServiceException.Message);
+            }
+
+        }
+
+        protected ActionResult<IQueryable<T>> TryCatchCommentFunction(
+            ReturningMultipleControllerFunction returningControllerFunction)
+        {
+            try
+            {
+                return returningControllerFunction();
+            }
+            catch (CommentDependencyException commentDependencyException)
+            {
+                return Problem(commentDependencyException.Message);
+            }
+            catch (CommentServiceException commentServiceException)
+            {
+                return Problem(commentServiceException.Message);
             }
         }
         #endregion
