@@ -160,5 +160,45 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
             this.loggingBrokerMock.VerifyNoOtherCalls();
         }
 
+        [Fact]
+        public async Task ShouldDeleteCommentByIdAsync()
+        {
+            // given
+            DateTimeOffset randomDateTime = GetRandomDateTime();
+            DateTimeOffset dateTime = randomDateTime;
+            Comment randomComment = CreateRandomComment(dateTime);
+            Comment inputComment = randomComment;
+            Guid inputCommentId = inputComment.Id;
+            inputComment.UpdatedDate = inputComment.CreatedDate;
+            Comment storageComment = inputComment;
+            Comment expectedComment = inputComment;
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectCommentByIdAsync(inputCommentId))
+                    .ReturnsAsync(inputComment);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.DeleteCommentAsync(inputComment))
+                    .ReturnsAsync(storageComment);
+
+            // when
+            Comment actualComment =
+                await this.commentService.RemoveCommentByIdAsync(inputCommentId);
+
+            // then
+            actualComment.Should().BeEquivalentTo(expectedComment);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectCommentByIdAsync(inputCommentId),
+                    Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.DeleteCommentAsync(inputComment),
+                    Times.Once);
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+        }
     }
 }

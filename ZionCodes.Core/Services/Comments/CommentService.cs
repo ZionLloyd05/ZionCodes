@@ -68,5 +68,17 @@ namespace ZionCodes.Core.Services.Comments
 
                 return await this.storageBroker.UpdateCommentAsync(comment);
             });
+
+        public ValueTask<Comment> RemoveCommentByIdAsync(Guid commentId) =>
+            TryCatch(async () =>
+            {
+                ValidateCommentIdIsNull(commentId);
+                Comment maybeComment =
+                    await this.storageBroker.SelectCommentByIdAsync(commentId);
+                
+                ValidateStorageComment(maybeComment, commentId);
+                
+                return await this.storageBroker.DeleteCommentAsync(maybeComment);
+            });
     }
 }
