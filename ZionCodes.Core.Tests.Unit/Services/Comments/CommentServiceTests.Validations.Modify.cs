@@ -82,5 +82,43 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
             this.storageBrokerMock.VerifyNoOtherCalls();
         }
 
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("   ")]
+        public async Task ShouldThrowValidationExceptionOnModifyWhenCommentBodyIsInvalidAndLogItAsync(
+           string invalidCommentBody)
+        {
+            // given
+            DateTimeOffset dateTime = GetRandomDateTime();
+            Comment randomComment = CreateRandomComment(dateTime);
+            Comment invalidComment = randomComment;
+            invalidComment.Body = invalidCommentBody;
+
+            var invalidCommentException = new InvalidCommentException(
+               parameterName: nameof(Comment.Body),
+               parameterValue: invalidComment.Body);
+
+            var expectedCommentValidationException =
+                new CommentValidationException(invalidCommentException);
+
+            // when
+            ValueTask<Comment> modifyCommentTask =
+                this.commentService.ModifyCommentAsync(invalidComment);
+
+            // then
+            await Assert.ThrowsAsync<CommentValidationException>(() =>
+                modifyCommentTask.AsTask());
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedCommentValidationException))),
+                    Times.Once);
+
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+        }
+
+
     }
 }
