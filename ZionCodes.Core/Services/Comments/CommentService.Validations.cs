@@ -75,6 +75,7 @@ namespace ZionCodes.Core.Services.Comments
         private void ValidateCommentOnModify(Comment comment)
         {
             ValidateCommentIsNull(comment);
+            ValidateCommentProperties(comment);
         }
 
 
