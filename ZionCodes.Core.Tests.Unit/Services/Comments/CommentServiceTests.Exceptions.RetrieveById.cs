@@ -121,5 +121,44 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
             this.storageBrokerMock.VerifyNoOtherCalls();
         }
 
+        [Fact]
+        public async Task
+          ShouldThrowDependencyExceptionOnRetrieveByIdWhenDbUpdateConcurrencyExceptionOccursAndLogItAsync()
+        {
+            // given
+            Guid someCommentId = Guid.NewGuid();
+            var databaseUpdateConcurrencyException = new DbUpdateConcurrencyException();
+
+            var lockedCommentException =
+                new LockedCommentException(databaseUpdateConcurrencyException);
+
+            var expectedCommentDependencyException =
+                new CommentDependencyException(lockedCommentException);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectCommentByIdAsync(It.IsAny<Guid>()))
+                    .ThrowsAsync(databaseUpdateConcurrencyException);
+
+            // when
+            ValueTask<Comment> retrieveByIdCommentTask =
+                this.commentService.RetrieveCommentByIdAsync(someCommentId);
+
+            // then
+            await Assert.ThrowsAsync<CommentDependencyException>(() =>
+                retrieveByIdCommentTask.AsTask());
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedCommentDependencyException))),
+                    Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectCommentByIdAsync(It.IsAny<Guid>()),
+                    Times.Once);
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+        }
+
     }
 }

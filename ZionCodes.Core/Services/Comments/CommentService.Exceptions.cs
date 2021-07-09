@@ -29,6 +29,12 @@ namespace ZionCodes.Core.Services.Comments
             {
                 throw CreateAndLogValidationException(invalidCommentException);
             }
+            catch (DbUpdateConcurrencyException dbUpdateConcurrencyException)
+            {
+                var lockedCommentException = new LockedCommentException(dbUpdateConcurrencyException);
+
+                throw CreateAndLogDependencyException(lockedCommentException);
+            }
             catch (SqlException sqlException)
             {
                 throw CreateAndLogCriticalDependencyException(sqlException);
