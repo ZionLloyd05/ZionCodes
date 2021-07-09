@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit;
 using ZionCodes.Core.Models.Comments;
@@ -49,6 +50,40 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
             this.storageBrokerMock.VerifyNoOtherCalls();
         }
 
+        [Fact]
+        public async Task ShouldThrowDependencyExceptionOnRetrieveByIdWhenDbExceptionOccursAndLogItAsync()
+        {
+            // given
+            Guid someCommentId = Guid.NewGuid();
+            var databaseUpdateException = new DbUpdateException();
+
+            var expectedCommentDependencyException =
+                new CommentDependencyException(databaseUpdateException);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectCommentByIdAsync(It.IsAny<Guid>()))
+                    .ThrowsAsync(databaseUpdateException);
+
+            // when
+            ValueTask<Comment> retrieveByIdCommentTask =
+                this.commentService.RetrieveCommentByIdAsync(someCommentId);
+
+            // then
+            await Assert.ThrowsAsync<CommentDependencyException>(() =>
+                retrieveByIdCommentTask.AsTask());
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedCommentDependencyException))),
+                    Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectCommentByIdAsync(It.IsAny<Guid>()),
+                    Times.Once);
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+        }
 
     }
 }
