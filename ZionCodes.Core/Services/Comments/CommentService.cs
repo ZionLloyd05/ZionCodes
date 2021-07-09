@@ -75,7 +75,9 @@ namespace ZionCodes.Core.Services.Comments
                 ValidateCommentIdIsNull(commentId);
                 Comment maybeComment =
                     await this.storageBroker.SelectCommentByIdAsync(commentId);
-
+                
+                ValidateStorageComment(maybeComment, commentId);
+                
                 return await this.storageBroker.DeleteCommentAsync(maybeComment);
             });
     }
