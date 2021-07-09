@@ -38,7 +38,7 @@ namespace ZionCodes.Core
             {
                 var openApiInfo = new OpenApiInfo
                 {
-                    Title = "ZionCodes",
+                    Title = "ZionCodes API",
                     Version = "v1"
                 };
 
