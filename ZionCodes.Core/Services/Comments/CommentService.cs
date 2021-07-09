@@ -62,6 +62,7 @@ namespace ZionCodes.Core.Services.Comments
             TryCatch(async () =>
             {
                 ValidateCommentOnModify(comment);
+                ValidateCommentIdIsNull(comment.Id);
                 Comment maybeComment =
                     await this.storageBroker.SelectCommentByIdAsync(comment.Id);
 
