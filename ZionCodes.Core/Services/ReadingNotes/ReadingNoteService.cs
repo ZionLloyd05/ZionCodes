@@ -26,9 +26,11 @@ namespace ZionCodes.Core.Services.ReadingNotes
             this.loggingBroker = loggingBroker;
         }
 
-        public ValueTask<ReadingNote> AddReadingNoteAsync(ReadingNote readingNote)
+        public ValueTask<ReadingNote> AddReadingNoteAsync(ReadingNote readingNote) =>
+        TryCatch(() =>
         {
+            ValidateReadingNoteIsNull(readingNote);
             return this.storageBroker.InsertReadingNoteAsync(readingNote);
-        }
+        });
     }
 }
