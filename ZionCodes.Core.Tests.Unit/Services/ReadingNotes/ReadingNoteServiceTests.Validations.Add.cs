@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EFxceptions.Models.Exceptions;
 using Moq;
 using Xunit;
 using ZionCodes.Core.Models.ReadingNotes;
@@ -75,6 +76,58 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
             this.storageBrokerMock.Verify(broker =>
                 broker.InsertReadingNoteAsync(It.IsAny<ReadingNote>()),
                     Times.Never);
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public async void ShouldThrowValidationExceptionOnAddWhenReadingNoteAlreadyExistsAndLogItAsync()
+        {
+            // given
+            DateTimeOffset dateTime = GetRandomDateTime();
+            ReadingNote randomReadingNote = CreateRandomReadingNote(dateTime);
+            ReadingNote alreadyExistsReadingNote = randomReadingNote;
+            alreadyExistsReadingNote.UpdatedBy = alreadyExistsReadingNote.CreatedBy;
+
+            string randomMessage = GetRandomMessage();
+            string exceptionMessage = randomMessage;
+            var duplicateKeyException = new DuplicateKeyException(exceptionMessage);
+
+            var alreadyExistsReadingNoteException =
+                new AlreadyExistsReadingNoteException(duplicateKeyException);
+
+            var expectedReadingNoteValidationException =
+                new ReadingNoteValidationException(alreadyExistsReadingNoteException);
+
+            //this.dateTimeBrokerMock.Setup(broker =>
+            //    broker.GetCurrentDateTime())
+            //        .Returns(dateTime);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.InsertReadingNoteAsync(alreadyExistsReadingNote))
+                    .ThrowsAsync(duplicateKeyException);
+
+            // when
+            ValueTask<ReadingNote> createReadingNoteTask =
+                this.readingNoteService.AddReadingNoteAsync(alreadyExistsReadingNote);
+
+            // then
+            await Assert.ThrowsAsync<ReadingNoteValidationException>(() =>
+                createReadingNoteTask.AsTask());
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedReadingNoteValidationException))),
+                    Times.Once);
+
+            //this.dateTimeBrokerMock.Verify(broker =>
+            //    broker.GetCurrentDateTime(),
+            //        Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.InsertReadingNoteAsync(alreadyExistsReadingNote),
+                    Times.Once);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
