@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EFxceptions.Models.Exceptions;
 using ZionCodes.Core.Models.ReadingNotes;
 using ZionCodes.Core.Models.ReadingNotes.Exceptions;
 
@@ -25,6 +26,13 @@ namespace ZionCodes.Core.Services.ReadingNotes
             catch (InvalidReadingNoteException invalidReadingNoteException)
             {
                 throw CreateAndLogValidationException(invalidReadingNoteException);
+            }
+            catch (DuplicateKeyException duplicateKeyException)
+            {
+                var alreadyExistsReadingNoteException =
+                    new AlreadyExistsReadingNoteException(duplicateKeyException);
+
+                throw CreateAndLogValidationException(alreadyExistsReadingNoteException);
             }
         }
 
