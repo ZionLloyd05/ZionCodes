@@ -29,7 +29,7 @@ namespace ZionCodes.Core.Services.ReadingNotes
         public ValueTask<ReadingNote> AddReadingNoteAsync(ReadingNote readingNote) =>
         TryCatch(() =>
         {
-            ValidateReadingNoteIsNull(readingNote);
+            ValidateReadingNoteOnCreate(readingNote);
             return this.storageBroker.InsertReadingNoteAsync(readingNote);
         });
     }

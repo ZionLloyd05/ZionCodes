@@ -22,6 +22,10 @@ namespace ZionCodes.Core.Services.ReadingNotes
             {
                 throw CreateAndLogValidationException(nullReadingNoteException);
             }
+            catch (InvalidReadingNoteException invalidReadingNoteException)
+            {
+                throw CreateAndLogValidationException(invalidReadingNoteException);
+            }
         }
 
 
