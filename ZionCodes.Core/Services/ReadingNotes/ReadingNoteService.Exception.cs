@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EFxceptions.Models.Exceptions;
+using Microsoft.Data.SqlClient;
 using ZionCodes.Core.Models.ReadingNotes;
 using ZionCodes.Core.Models.ReadingNotes.Exceptions;
 
@@ -34,6 +35,10 @@ namespace ZionCodes.Core.Services.ReadingNotes
 
                 throw CreateAndLogValidationException(alreadyExistsReadingNoteException);
             }
+            catch (SqlException sqlException)
+            {
+                throw CreateAndLogCriticalDependencyException(sqlException);
+            }
         }
 
 
@@ -44,5 +49,14 @@ namespace ZionCodes.Core.Services.ReadingNotes
 
             return ReadingNoteValidationException;
         }
+
+        private ReadingNoteDependencyException CreateAndLogCriticalDependencyException(Exception exception)
+        {
+            var readingNoteDependencyException = new ReadingNoteDependencyException(exception);
+            this.loggingBroker.LogCritical(readingNoteDependencyException);
+
+            return readingNoteDependencyException;
+        }
+
     }
 }

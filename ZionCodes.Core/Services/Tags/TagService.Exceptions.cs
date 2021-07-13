@@ -84,10 +84,10 @@ namespace ZionCodes.Core.Services.Tags
 
         private TagDependencyException CreateAndLogCriticalDependencyException(Exception exception)
         {
-            var categoryDependencyException = new TagDependencyException(exception);
-            this.loggingBroker.LogCritical(categoryDependencyException);
+            var tagDependencyException = new TagDependencyException(exception);
+            this.loggingBroker.LogCritical(tagDependencyException);
 
-            return categoryDependencyException;
+            return tagDependencyException;
         }
 
         private TagValidationException CreateAndLogValidationException(Exception exception)
