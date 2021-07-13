@@ -13,6 +13,7 @@ namespace ZionCodes.Core.Services.ReadingNotes
         {
             ValidateReadingNoteIsNull(readingNote);
             ValidateReadingNoteIdIsNull(readingNote.Id);
+            ValidateReadingNoteAuditFields(readingNote);
         }
 
         private void ValidateReadingNoteIsNull(ReadingNote readingNote)
@@ -32,5 +33,21 @@ namespace ZionCodes.Core.Services.ReadingNotes
                     parameterValue: readingNoteId);
             }
         }
+
+        private void ValidateReadingNoteAuditFields(ReadingNote readingNote)
+        {
+            switch (readingNote)
+            {
+                case { } when IsInvalid(input: readingNote.CreatedBy):
+                    throw new InvalidReadingNoteException(
+                        parameterName: nameof(readingNote.CreatedBy),
+                        parameterValue: readingNote.CreatedBy);
+
+                default:
+                    break;
+            }
+        }
+
+        private bool IsInvalid(Guid input) => input == default;
     }
 }
