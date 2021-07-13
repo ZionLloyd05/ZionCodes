@@ -209,5 +209,42 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
             this.storageBrokerMock.VerifyNoOtherCalls();
         }
 
+        [Fact]
+        public async void ShouldThrowValidationExceptionOnAddWhenCreatedDateIsInvalidAndLogItAsync()
+        {
+            // given
+            DateTimeOffset dateTime = GetRandomDateTime();
+            ReadingNote randomReadingNote = CreateRandomReadingNote(dateTime);
+            ReadingNote inputReadingNote = randomReadingNote;
+            inputReadingNote.CreatedDate = default;
+
+            var invalidReadingNoteException = new InvalidReadingNoteException(
+                parameterName: nameof(ReadingNote.CreatedDate),
+                parameterValue: inputReadingNote.CreatedDate);
+
+            var expectedReadingNoteValidationException =
+                new ReadingNoteValidationException(invalidReadingNoteException);
+
+            // when
+            ValueTask<ReadingNote> createReadingNoteTask =
+                this.readingNoteService.AddReadingNoteAsync(inputReadingNote);
+
+            // then
+            await Assert.ThrowsAsync<ReadingNoteValidationException>(() =>
+                createReadingNoteTask.AsTask());
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedReadingNoteValidationException))),
+                    Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.InsertReadingNoteAsync(It.IsAny<ReadingNote>()),
+                    Times.Never);
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+        }
+
     }
 }
