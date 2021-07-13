@@ -43,6 +43,11 @@ namespace ZionCodes.Core.Services.ReadingNotes
                         parameterName: nameof(readingNote.CreatedBy),
                         parameterValue: readingNote.CreatedBy);
 
+                case { } when IsInvalid(input: readingNote.UpdatedBy):
+                    throw new InvalidReadingNoteException(
+                        parameterName: nameof(readingNote.UpdatedBy),
+                        parameterValue: readingNote.UpdatedBy);
+
                 default:
                     break;
             }
