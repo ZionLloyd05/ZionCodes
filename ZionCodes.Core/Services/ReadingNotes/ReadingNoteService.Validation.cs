@@ -63,6 +63,10 @@ namespace ZionCodes.Core.Services.ReadingNotes
                         parameterName: nameof(readingNote.UpdatedDate),
                         parameterValue: readingNote.UpdatedDate);
 
+                case { } when IsDateNotRecent(readingNote.CreatedDate):
+                    throw new InvalidReadingNoteException(
+                        parameterName: nameof(ReadingNote.CreatedDate),
+                        parameterValue: readingNote.CreatedDate);
                 default:
                     break;
             }
@@ -70,6 +74,13 @@ namespace ZionCodes.Core.Services.ReadingNotes
 
         private bool IsInvalid(Guid input) => input == default;
         private bool IsInvalid(DateTimeOffset input) => input == default;
+        private bool IsDateNotRecent(DateTimeOffset dateTime)
+        {
+            DateTimeOffset now = this.dateTimeBroker.GetCurrentDateTime();
+            int oneMinute = 1;
+            TimeSpan difference = now.Subtract(dateTime);
 
+            return Math.Abs(difference.TotalMinutes) > oneMinute;
+        }
     }
 }
