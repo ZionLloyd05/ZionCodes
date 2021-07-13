@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit;
 using ZionCodes.Core.Models.ReadingNotes;
@@ -43,6 +44,53 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
 
             this.loggingBrokerMock.Verify(broker =>
                 broker.LogCritical(It.Is(SameExceptionAs(expectedReadingNoteDependencyException))),
+                    Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.InsertReadingNoteAsync(inputReadingNote),
+                    Times.Once);
+
+            this.dateTimeBrokerMock.Verify(broker =>
+                broker.GetCurrentDateTime(),
+                    Times.Once);
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+        }
+
+
+        [Fact]
+        public async Task ShouldThrowDependencyExceptionOnAddWhenDbExceptionOccursAndLogItAsync()
+        {
+            // given
+            DateTimeOffset dateTime = GetRandomDateTime();
+            ReadingNote randomReadingNote = CreateRandomReadingNote(dateTime);
+            ReadingNote inputReadingNote = randomReadingNote;
+            inputReadingNote.UpdatedBy = inputReadingNote.CreatedBy;
+            var databaseUpdateException = new DbUpdateException();
+
+            var expectedReadingNoteDependencyException =
+                new ReadingNoteDependencyException(databaseUpdateException);
+
+            this.dateTimeBrokerMock.Setup(broker =>
+                broker.GetCurrentDateTime())
+                    .Returns(dateTime);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.InsertReadingNoteAsync(inputReadingNote))
+                    .ThrowsAsync(databaseUpdateException);
+
+            // when
+            ValueTask<ReadingNote> createReadingNoteTask =
+                this.readingNoteService.AddReadingNoteAsync(inputReadingNote);
+
+            // then
+            await Assert.ThrowsAsync<ReadingNoteDependencyException>(() =>
+                createReadingNoteTask.AsTask());
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedReadingNoteDependencyException))),
                     Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
