@@ -58,6 +58,11 @@ namespace ZionCodes.Core.Services.ReadingNotes
                         parameterName: nameof(readingNote.UpdatedDate),
                         parameterValue: readingNote.UpdatedDate);
 
+                case { } when readingNote.UpdatedDate != readingNote.CreatedDate:
+                    throw new InvalidReadingNoteException(
+                        parameterName: nameof(readingNote.UpdatedDate),
+                        parameterValue: readingNote.UpdatedDate);
+
                 default:
                     break;
             }
