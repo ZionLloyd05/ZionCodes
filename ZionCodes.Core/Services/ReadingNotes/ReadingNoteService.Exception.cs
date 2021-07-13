@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using EFxceptions.Models.Exceptions;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using ZionCodes.Core.Models.ReadingNotes;
 using ZionCodes.Core.Models.ReadingNotes.Exceptions;
 
@@ -39,6 +40,10 @@ namespace ZionCodes.Core.Services.ReadingNotes
             {
                 throw CreateAndLogCriticalDependencyException(sqlException);
             }
+            catch (DbUpdateException dbUpdateException)
+            {
+                throw CreateAndLogDependencyException(dbUpdateException);
+            }
         }
 
 
@@ -54,6 +59,14 @@ namespace ZionCodes.Core.Services.ReadingNotes
         {
             var readingNoteDependencyException = new ReadingNoteDependencyException(exception);
             this.loggingBroker.LogCritical(readingNoteDependencyException);
+
+            return readingNoteDependencyException;
+        }
+
+        private ReadingNoteDependencyException CreateAndLogDependencyException(Exception exception)
+        {
+            var readingNoteDependencyException = new ReadingNoteDependencyException(exception);
+            this.loggingBroker.LogError(readingNoteDependencyException);
 
             return readingNoteDependencyException;
         }
