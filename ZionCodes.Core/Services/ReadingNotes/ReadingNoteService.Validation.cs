@@ -48,11 +48,18 @@ namespace ZionCodes.Core.Services.ReadingNotes
                         parameterName: nameof(readingNote.UpdatedBy),
                         parameterValue: readingNote.UpdatedBy);
 
+                case { } when IsInvalid(input: readingNote.CreatedDate):
+                    throw new InvalidReadingNoteException(
+                        parameterName: nameof(ReadingNote.CreatedDate),
+                        parameterValue: readingNote.CreatedDate);
+
                 default:
                     break;
             }
         }
 
         private bool IsInvalid(Guid input) => input == default;
+        private bool IsInvalid(DateTimeOffset input) => input == default;
+
     }
 }
