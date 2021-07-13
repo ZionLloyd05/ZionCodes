@@ -323,5 +323,50 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
             this.storageBrokerMock.VerifyNoOtherCalls();
         }
 
+
+        [Theory]
+        [MemberData(nameof(InvalidMinuteCases))]
+        public async void ShouldThrowValidationExceptionOnAddWhenCreatedDateIsNotRecentAndLogItAsync(int minutes)
+        {
+            // given
+            DateTimeOffset dateTime = GetRandomDateTime();
+            ReadingNote randomReadingNote = CreateRandomReadingNote(dateTime);
+            ReadingNote inputReadingNote = randomReadingNote;
+            inputReadingNote.UpdatedBy = randomReadingNote.CreatedBy;
+            inputReadingNote.CreatedDate = dateTime.AddMinutes(minutes);
+            inputReadingNote.UpdatedDate = inputReadingNote.CreatedDate;
+
+            var invalidReadingNoteValidationException = new InvalidReadingNoteException(
+                parameterName: nameof(ReadingNote.CreatedDate),
+                parameterValue: inputReadingNote.CreatedDate);
+
+            var expectedReadingNoteValidationException =
+                new ReadingNoteValidationException(invalidReadingNoteValidationException);
+
+            // when 
+            ValueTask<ReadingNote> createReadingNoteTask =
+                this.readingNoteService.AddReadingNoteAsync(inputReadingNote);
+
+            // then
+            await Assert.ThrowsAsync<ReadingNoteValidationException>(() =>
+                createReadingNoteTask.AsTask());
+
+            this.dateTimeBrokerMock.Verify(broker =>
+                broker.GetCurrentDateTime(),
+                    Times.Once);
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedReadingNoteValidationException))),
+                    Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.InsertReadingNoteAsync(It.IsAny<ReadingNote>()),
+                    Times.Never);
+
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+        }
     }
 }
