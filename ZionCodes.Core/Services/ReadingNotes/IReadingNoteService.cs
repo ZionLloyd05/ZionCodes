@@ -10,5 +10,6 @@ namespace ZionCodes.Core.Services.ReadingNotes
         ValueTask<ReadingNote> AddReadingNoteAsync(ReadingNote readingNote);
         IQueryable<ReadingNote> RetrieveAllReadingNotes();
         ValueTask<ReadingNote> RetrieveReadingNoteByIdAsync(Guid readingNoteId);
+        ValueTask<ReadingNote> ModifyReadingNoteAsync(ReadingNote readingNote);
     }
 }

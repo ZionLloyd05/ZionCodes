@@ -55,5 +55,15 @@ namespace ZionCodes.Core.Services.ReadingNotes
 
                 return storageReadingNote;
             });
+
+        public ValueTask<ReadingNote> ModifyReadingNoteAsync(ReadingNote readingNote) =>
+            TryCatch(async () =>
+            {
+                ValidateReadingNoteOnModify(readingNote);
+                ReadingNote maybeReadingNote =
+                await this.storageBroker.SelectReadingNoteByIdAsync(readingNote.Id);
+
+                return await this.storageBroker.UpdateReadingNoteAsync(readingNote);
+            });
     }
 }
