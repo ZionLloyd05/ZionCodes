@@ -31,14 +31,15 @@ namespace ZionCodes.Core.Services.ReadingNotes
             return this.storageBroker.InsertReadingNoteAsync(readingNote);
         });
 
-        public IQueryable<ReadingNote> RetrieveAllReadingNotes()
-        {
-            IQueryable<ReadingNote> storageReadingNotes =
+        public IQueryable<ReadingNote> RetrieveAllReadingNotes() =>
+            TryCatch(() =>
+            {
+                IQueryable<ReadingNote> storageReadingNotes =
                 this.storageBroker.SelectAllReadingNotes();
 
-            ValidateStorageReadingNotes(storageReadingNotes);
+                ValidateStorageReadingNotes(storageReadingNotes);
 
-            return storageReadingNotes;
-        }
+                return storageReadingNotes;
+            });
     }
 }
