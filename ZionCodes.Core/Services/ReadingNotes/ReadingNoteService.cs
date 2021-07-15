@@ -33,7 +33,7 @@ namespace ZionCodes.Core.Services.ReadingNotes
 
         public IQueryable<ReadingNote> RetrieveAllReadingNotes()
         {
-            throw new System.NotImplementedException();
+            return this.storageBroker.SelectAllReadingNotes();
         }
     }
 }
