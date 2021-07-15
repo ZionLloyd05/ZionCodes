@@ -37,6 +37,12 @@ namespace ZionCodes.Core.Services.ReadingNotes
 
                 throw CreateAndLogValidationException(alreadyExistsReadingNoteException);
             }
+            catch (DbUpdateConcurrencyException dbUpdateConcurrencyException)
+            {
+                var lockedReadingNoteException = new LockedReadingNoteException(dbUpdateConcurrencyException);
+
+                throw CreateAndLogDependencyException(lockedReadingNoteException);
+            }
             catch (SqlException sqlException)
             {
                 throw CreateAndLogCriticalDependencyException(sqlException);
@@ -44,6 +50,14 @@ namespace ZionCodes.Core.Services.ReadingNotes
             catch (DbUpdateException dbUpdateException)
             {
                 throw CreateAndLogDependencyException(dbUpdateException);
+            }
+            catch (InvalidReadingNoteInputException invalidReadingNoteInputException)
+            {
+                throw CreateAndLogValidationException(invalidReadingNoteInputException);
+            }
+            catch (NotFoundReadingNoteException notFoundReadingNoteException)
+            {
+                throw CreateAndLogValidationException(notFoundReadingNoteException);
             }
             catch (Exception exception)
             {

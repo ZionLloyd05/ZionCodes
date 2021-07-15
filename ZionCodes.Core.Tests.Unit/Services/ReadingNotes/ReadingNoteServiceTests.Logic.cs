@@ -84,5 +84,38 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
         }
 
+        [Fact]
+        public async Task ShouldRetrieveReadingNoteByIdAsync()
+        {
+            // given
+            Guid randomReadingNoteId = Guid.NewGuid();
+            Guid inputReadingNoteId = randomReadingNoteId;
+            DateTimeOffset randomDateTime = GetRandomDateTime();
+            ReadingNote randomReadingNote = CreateRandomReadingNote(randomDateTime);
+            ReadingNote storageReadingNote = randomReadingNote;
+            ReadingNote expectedReadingNote = storageReadingNote;
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectReadingNoteByIdAsync(inputReadingNoteId))
+                    .ReturnsAsync(storageReadingNote);
+
+            // when
+            ReadingNote actualReadingNote =
+                await this.readingNoteService.RetrieveReadingNoteByIdAsync(inputReadingNoteId);
+
+            // then
+            actualReadingNote.Should().BeEquivalentTo(expectedReadingNote);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectReadingNoteByIdAsync(inputReadingNoteId),
+                    Times.Once);
+
+
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+        }
+
+
     }
 }

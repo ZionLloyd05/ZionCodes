@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using ZionCodes.Core.Brokers.DateTimes;
 using ZionCodes.Core.Brokers.Loggings;
@@ -40,6 +41,19 @@ namespace ZionCodes.Core.Services.ReadingNotes
                 ValidateStorageReadingNotes(storageReadingNotes);
 
                 return storageReadingNotes;
+            });
+
+        public ValueTask<ReadingNote> RetrieveReadingNoteByIdAsync(Guid readingNoteId) =>
+            TryCatch(async () =>
+            {
+                ValidateReadingNoteId(readingNoteId);
+
+                ReadingNote storageReadingNote =
+                    await this.storageBroker.SelectReadingNoteByIdAsync(readingNoteId);
+
+                ValidateStorageReadingNote(storageReadingNote, readingNoteId);
+
+                return storageReadingNote;
             });
     }
 }

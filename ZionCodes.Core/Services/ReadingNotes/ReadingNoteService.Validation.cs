@@ -31,6 +31,18 @@ namespace ZionCodes.Core.Services.ReadingNotes
                     parameterValue: readingNoteId);
             }
         }
+
+        private void ValidateReadingNoteId(Guid tagId)
+        {
+            if (tagId == Guid.Empty)
+            {
+                throw new InvalidReadingNoteInputException(
+                    parameterName: nameof(ReadingNote.Id),
+                    parameterValue: tagId);
+            }
+        }
+
+
         private void ValidateStorageReadingNotes(IQueryable<ReadingNote> storageCategories)
         {
             if (storageCategories.Count() == 0)
@@ -39,6 +51,14 @@ namespace ZionCodes.Core.Services.ReadingNotes
             }
         }
 
+
+        private void ValidateStorageReadingNote(ReadingNote storageReadingNote, Guid tagId)
+        {
+            if (storageReadingNote == null)
+            {
+                throw new NotFoundReadingNoteException(tagId);
+            }
+        }
 
         private void ValidateReadingNoteAuditFields(ReadingNote readingNote)
         {
