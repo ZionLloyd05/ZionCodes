@@ -42,6 +42,10 @@ namespace ZionCodes.Core.Services.ReadingNotes
             }
         }
 
+        private void ValidateReadingNoteOnModify(ReadingNote readingNote)
+        {
+            ValidateReadingNoteIsNull(readingNote);
+        }
 
         private void ValidateStorageReadingNotes(IQueryable<ReadingNote> storageCategories)
         {
