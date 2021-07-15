@@ -50,5 +50,46 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
             this.loggingBrokerMock.VerifyNoOtherCalls();
             this.storageBrokerMock.VerifyNoOtherCalls();
         }
+
+        [Fact]
+        public async void ShouldThrowValidationExceptionOnRetrieveByIdWhenStorageReadingNoteIsNullAndLogItAsync()
+        {
+            // given
+            Guid randomReadingNoteId = Guid.NewGuid();
+            Guid someReadingNoteId = randomReadingNoteId;
+            ReadingNote invalidStorageReadingNote = null;
+            var notFoundReadingNoteException = new NotFoundReadingNoteException(someReadingNoteId);
+
+            var exceptionReadingNoteValidationException =
+                new ReadingNoteValidationException(notFoundReadingNoteException);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectReadingNoteByIdAsync(It.IsAny<Guid>()))
+                    .ReturnsAsync(invalidStorageReadingNote);
+
+            // when
+            ValueTask<ReadingNote> retrieveReadingNoteByIdTask =
+                this.readingNoteService.RetrieveReadingNoteByIdAsync(someReadingNoteId);
+
+            // then
+            await Assert.ThrowsAsync<ReadingNoteValidationException>(() =>
+                retrieveReadingNoteByIdTask.AsTask());
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(exceptionReadingNoteValidationException))),
+                    Times.Once);
+
+            this.dateTimeBrokerMock.Verify(broker =>
+                broker.GetCurrentDateTime(),
+                    Times.Never);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectReadingNoteByIdAsync(It.IsAny<Guid>()),
+                    Times.Once);
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+        }
     }
 }
