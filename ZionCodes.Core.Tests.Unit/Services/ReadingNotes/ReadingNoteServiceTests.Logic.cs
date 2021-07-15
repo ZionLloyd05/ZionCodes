@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Force.DeepCloner;
 using Moq;
 using Xunit;
 using ZionCodes.Core.Models.ReadingNotes;
@@ -116,6 +117,50 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
         }
 
+
+        [Fact]
+        public async Task ShouldModifyReadingNoteAsync()
+        {
+            // given
+            int randomNumber = GetRandomNumber();
+            int randomDays = randomNumber;
+            DateTimeOffset randomDate = GetRandomDateTime();
+            DateTimeOffset randomInputDate = GetRandomDateTime();
+            ReadingNote randomReadingNote = CreateRandomReadingNote(randomInputDate);
+            ReadingNote inputReadingNote = randomReadingNote;
+            ReadingNote afterUpdateStorageReadingNote = inputReadingNote;
+            ReadingNote expectedReadingNote = afterUpdateStorageReadingNote;
+            ReadingNote beforeUpdateStorageReadingNote = randomReadingNote.DeepClone();
+            inputReadingNote.UpdatedDate = randomDate;
+            Guid tagId = inputReadingNote.Id;
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectReadingNoteByIdAsync(tagId))
+                    .ReturnsAsync(beforeUpdateStorageReadingNote);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.UpdateReadingNoteAsync(inputReadingNote))
+                    .ReturnsAsync(afterUpdateStorageReadingNote);
+
+            // when
+            ReadingNote actualReadingNote =
+                await this.readingNoteService.ModifyReadingNoteAsync(inputReadingNote);
+
+            // then
+            actualReadingNote.Should().BeEquivalentTo(expectedReadingNote);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectReadingNoteByIdAsync(tagId),
+                    Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.UpdateReadingNoteAsync(inputReadingNote),
+                    Times.Once);
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+        }
 
     }
 }

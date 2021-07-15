@@ -55,5 +55,10 @@ namespace ZionCodes.Core.Services.ReadingNotes
 
                 return storageReadingNote;
             });
+
+        public ValueTask<ReadingNote> ModifyReadingNoteAsync(ReadingNote readingNote)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
