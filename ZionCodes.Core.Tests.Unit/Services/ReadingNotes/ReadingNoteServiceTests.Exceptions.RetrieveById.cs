@@ -85,5 +85,44 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
             this.storageBrokerMock.VerifyNoOtherCalls();
         }
 
+        [Fact]
+        public async Task
+         ShouldThrowDependencyExceptionOnRetrieveByIdWhenDbUpdateConcurrencyExceptionOccursAndLogItAsync()
+        {
+            // given
+            Guid someReadingNoteId = Guid.NewGuid();
+            var databaseUpdateConcurrencyException = new DbUpdateConcurrencyException();
+
+            var lockedReadingNoteException =
+                new LockedReadingNoteException(databaseUpdateConcurrencyException);
+
+            var expectedReadingNoteDependencyException =
+                new ReadingNoteDependencyException(lockedReadingNoteException);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectReadingNoteByIdAsync(It.IsAny<Guid>()))
+                    .ThrowsAsync(databaseUpdateConcurrencyException);
+
+            // when
+            ValueTask<ReadingNote> retrieveByIdReadingNoteTask =
+                this.readingNoteService.RetrieveReadingNoteByIdAsync(someReadingNoteId);
+
+            // then
+            await Assert.ThrowsAsync<ReadingNoteDependencyException>(() =>
+                retrieveByIdReadingNoteTask.AsTask());
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedReadingNoteDependencyException))),
+                    Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectReadingNoteByIdAsync(It.IsAny<Guid>()),
+                    Times.Once);
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+        }
+
     }
 }
