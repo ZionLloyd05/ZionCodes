@@ -99,5 +99,46 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
             this.loggingBrokerMock.VerifyNoOtherCalls();
         }
 
+
+        [Fact]
+        public async Task ShouldThrowDependencyExceptionOnModifyIfDbUpdateConcurrencyExceptionOccursAndLogItAsync()
+        {
+            // given
+            int randomNegativeNumber = GetNegativeRandomNumber();
+            DateTimeOffset randomDateTime = GetRandomDateTime();
+            ReadingNote randomReadingNote = CreateRandomReadingNote(randomDateTime);
+            ReadingNote someReadingNote = randomReadingNote;
+            someReadingNote.CreatedDate = randomDateTime.AddMinutes(randomNegativeNumber);
+            var databaseUpdateConcurrencyException = new DbUpdateConcurrencyException();
+            var lockedReadingNoteException = new LockedReadingNoteException(databaseUpdateConcurrencyException);
+
+            var expectedReadingNoteDependencyException =
+                new ReadingNoteDependencyException(lockedReadingNoteException);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectReadingNoteByIdAsync(someReadingNote.Id))
+                    .ThrowsAsync(databaseUpdateConcurrencyException);
+
+            // when
+            ValueTask<ReadingNote> modifyReadingNoteTask =
+                this.readingNoteService.ModifyReadingNoteAsync(someReadingNote);
+
+            // then
+            await Assert.ThrowsAsync<ReadingNoteDependencyException>(() =>
+                modifyReadingNoteTask.AsTask());
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectReadingNoteByIdAsync(someReadingNote.Id),
+                    Times.Once);
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedReadingNoteDependencyException))),
+                    Times.Once);
+
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+        }
+
     }
 }
