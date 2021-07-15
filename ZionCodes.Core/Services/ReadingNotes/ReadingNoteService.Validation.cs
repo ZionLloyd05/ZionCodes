@@ -31,6 +31,18 @@ namespace ZionCodes.Core.Services.ReadingNotes
                     parameterValue: readingNoteId);
             }
         }
+
+        private void ValidateReadingNoteId(Guid tagId)
+        {
+            if (tagId == Guid.Empty)
+            {
+                throw new InvalidReadingNoteInputException(
+                    parameterName: nameof(ReadingNote.Id),
+                    parameterValue: tagId);
+            }
+        }
+
+
         private void ValidateStorageReadingNotes(IQueryable<ReadingNote> storageCategories)
         {
             if (storageCategories.Count() == 0)
