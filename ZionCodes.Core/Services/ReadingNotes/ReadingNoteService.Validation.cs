@@ -32,35 +32,46 @@ namespace ZionCodes.Core.Services.ReadingNotes
             }
         }
 
-        private void ValidateReadingNoteId(Guid tagId)
+        private void ValidateReadingNoteId(Guid readingNoteId)
         {
-            if (tagId == Guid.Empty)
+            if (readingNoteId == Guid.Empty)
             {
                 throw new InvalidReadingNoteInputException(
                     parameterName: nameof(ReadingNote.Id),
-                    parameterValue: tagId);
+                    parameterValue: readingNoteId);
             }
         }
 
         private void ValidateReadingNoteOnModify(ReadingNote readingNote)
         {
             ValidateReadingNoteIsNull(readingNote);
+            ValidateReadingNoteAuditFieldsOnModify(readingNote);
         }
+        private void ValidateReadingNoteAuditFieldsOnModify(ReadingNote readingNote)
+        {
+            switch (readingNote)
+            {                
+                case { } when IsInvalid(input: readingNote.UpdatedDate):
+                    throw new InvalidReadingNoteException(
+                        parameterName: nameof(readingNote.UpdatedDate),
+                        parameterValue: readingNote.UpdatedDate);
 
+            }
+        }
         private void ValidateStorageReadingNotes(IQueryable<ReadingNote> storageCategories)
         {
             if (storageCategories.Count() == 0)
             {
-                this.loggingBroker.LogWarning("No tags found in storage.");
+                this.loggingBroker.LogWarning("No readingNotes found in storage.");
             }
         }
 
 
-        private void ValidateStorageReadingNote(ReadingNote storageReadingNote, Guid tagId)
+        private void ValidateStorageReadingNote(ReadingNote storageReadingNote, Guid readingNoteId)
         {
             if (storageReadingNote == null)
             {
-                throw new NotFoundReadingNoteException(tagId);
+                throw new NotFoundReadingNoteException(readingNoteId);
             }
         }
 
