@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using ZionCodes.Core.Models.ReadingNotes;
 using ZionCodes.Core.Models.ReadingNotes.Exceptions;
 
@@ -30,6 +31,14 @@ namespace ZionCodes.Core.Services.ReadingNotes
                     parameterValue: readingNoteId);
             }
         }
+        private void ValidateStorageReadingNotes(IQueryable<ReadingNote> storageCategories)
+        {
+            if (storageCategories.Count() == 0)
+            {
+                this.loggingBroker.LogWarning("No tags found in storage.");
+            }
+        }
+
 
         private void ValidateReadingNoteAuditFields(ReadingNote readingNote)
         {
