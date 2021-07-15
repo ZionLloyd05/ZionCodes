@@ -44,6 +44,10 @@ namespace ZionCodes.Core.Services.ReadingNotes
             {
                 throw CreateAndLogDependencyException(dbUpdateException);
             }
+            catch (Exception exception)
+            {
+                throw CreateAndLogServiceException(exception);
+            }
         }
 
 
@@ -71,5 +75,12 @@ namespace ZionCodes.Core.Services.ReadingNotes
             return readingNoteDependencyException;
         }
 
+        private ReadingNoteServiceException CreateAndLogServiceException(Exception exception)
+        {
+            var readingNoteServiceException = new ReadingNoteServiceException(exception);
+            this.loggingBroker.LogError(readingNoteServiceException);
+
+            return readingNoteServiceException;
+        }
     }
 }
