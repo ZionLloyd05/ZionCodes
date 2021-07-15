@@ -62,7 +62,7 @@ namespace ZionCodes.Core.Services.ReadingNotes
         {
             if (storageCategories.Count() == 0)
             {
-                this.loggingBroker.LogWarning("No readingNotes found in storage.");
+                this.loggingBroker.LogWarning("No reading notes found in storage.");
             }
         }
 

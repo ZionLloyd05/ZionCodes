@@ -28,7 +28,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
             actualReadingNote.Should().BeEquivalentTo(expectedReadingNotes);
 
             this.loggingBrokerMock.Verify(broker =>
-                broker.LogWarning("No tags found in storage."));
+                broker.LogWarning("No reading notes found in storage."));
 
             this.dateTimeBrokerMock.Verify(broker =>
                 broker.GetCurrentDateTime(),
