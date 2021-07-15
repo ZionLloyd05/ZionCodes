@@ -47,7 +47,7 @@ namespace ZionCodes.Core.Services.ReadingNotes
             TryCatch(async () =>
             {
                 ValidateReadingNoteId(readingNoteId);
-                
+
                 ReadingNote storageReadingNote =
                     await this.storageBroker.SelectReadingNoteByIdAsync(readingNoteId);
 
