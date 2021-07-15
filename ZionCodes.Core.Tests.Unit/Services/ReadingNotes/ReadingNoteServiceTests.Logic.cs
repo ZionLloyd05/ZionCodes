@@ -162,5 +162,46 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
             this.loggingBrokerMock.VerifyNoOtherCalls();
         }
 
+        [Fact]
+        public async Task ShouldDeleteReadingNoteByIdAsync()
+        {
+            // given
+            DateTimeOffset randomDateTime = GetRandomDateTime();
+            DateTimeOffset dateTime = randomDateTime;
+            ReadingNote randomReadingNote = CreateRandomReadingNote(dateTime);
+            ReadingNote inputReadingNote = randomReadingNote;
+            Guid inputReadingNoteId = inputReadingNote.Id;
+            inputReadingNote.UpdatedBy = inputReadingNote.CreatedBy;
+            inputReadingNote.UpdatedDate = inputReadingNote.CreatedDate;
+            ReadingNote storageReadingNote = inputReadingNote;
+            ReadingNote expectedReadingNote = inputReadingNote;
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectReadingNoteByIdAsync(inputReadingNoteId))
+                    .ReturnsAsync(inputReadingNote);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.DeleteReadingNoteAsync(inputReadingNote))
+                    .ReturnsAsync(storageReadingNote);
+
+            // when
+            ReadingNote actualReadingNote =
+                await this.readingNoteService.RemoveReadingNoteByIdAsync(inputReadingNoteId);
+
+            // then
+            actualReadingNote.Should().BeEquivalentTo(expectedReadingNote);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectReadingNoteByIdAsync(inputReadingNoteId),
+                    Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.DeleteReadingNoteAsync(inputReadingNote),
+                    Times.Once);
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+        }
     }
 }
