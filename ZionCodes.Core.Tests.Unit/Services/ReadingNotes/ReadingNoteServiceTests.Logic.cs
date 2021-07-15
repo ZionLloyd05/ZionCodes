@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
@@ -24,9 +21,9 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
             inputReadingNote.UpdatedDate = inputReadingNote.CreatedDate;
             ReadingNote expectedReadingNote = inputReadingNote;
 
-            //this.dateTimeBrokerMock.Setup(broker =>
-            //    broker.GetCurrentDateTime())
-            //        .Returns(dateTime);
+            this.dateTimeBrokerMock.Setup(broker =>
+                broker.GetCurrentDateTime())
+                    .Returns(dateTime);
 
             this.storageBrokerMock.Setup(broker =>
                 broker.InsertReadingNoteAsync(inputReadingNote))
@@ -43,9 +40,9 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
                 broker.InsertReadingNoteAsync(inputReadingNote),
                     Times.Once);
 
-            //this.dateTimeBrokerMock.Verify(broker =>
-            //    broker.GetCurrentDateTime(),
-            //        Times.Once);
+            this.dateTimeBrokerMock.Verify(broker =>
+                broker.GetCurrentDateTime(),
+                    Times.Once);
 
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();

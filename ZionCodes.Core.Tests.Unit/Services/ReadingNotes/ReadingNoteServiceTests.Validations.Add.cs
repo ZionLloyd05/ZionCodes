@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using EFxceptions.Models.Exceptions;
 using Moq;
@@ -101,9 +98,9 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
             var expectedReadingNoteValidationException =
                 new ReadingNoteValidationException(alreadyExistsReadingNoteException);
 
-            //this.dateTimeBrokerMock.Setup(broker =>
-            //    broker.GetCurrentDateTime())
-            //        .Returns(dateTime);
+            this.dateTimeBrokerMock.Setup(broker =>
+                broker.GetCurrentDateTime())
+                    .Returns(dateTime);
 
             this.storageBrokerMock.Setup(broker =>
                 broker.InsertReadingNoteAsync(alreadyExistsReadingNote))
@@ -121,9 +118,9 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
                 broker.LogError(It.Is(SameExceptionAs(expectedReadingNoteValidationException))),
                     Times.Once);
 
-            //this.dateTimeBrokerMock.Verify(broker =>
-            //    broker.GetCurrentDateTime(),
-            //        Times.Once);
+            this.dateTimeBrokerMock.Verify(broker =>
+                broker.GetCurrentDateTime(),
+                    Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
                 broker.InsertReadingNoteAsync(alreadyExistsReadingNote),
