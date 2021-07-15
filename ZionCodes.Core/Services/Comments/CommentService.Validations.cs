@@ -15,9 +15,9 @@ namespace ZionCodes.Core.Services.Comments
             ValidateCommentAuditFieldsOnCreate(Comment);
         }
 
-        private void ValidateCommentIsNull(Comment Comment)
+        private void ValidateCommentIsNull(Comment comment)
         {
-            if (Comment is null)
+            if (comment is null)
             {
                 throw new NullCommentException();
             }
