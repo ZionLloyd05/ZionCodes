@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using ZionCodes.Core.Brokers.DateTimes;
 using ZionCodes.Core.Brokers.Loggings;
@@ -41,5 +42,10 @@ namespace ZionCodes.Core.Services.ReadingNotes
 
                 return storageReadingNotes;
             });
+
+        public ValueTask<ReadingNote> RetrieveReadingNoteByIdAsync(Guid readingNoteId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
