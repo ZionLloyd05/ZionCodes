@@ -40,5 +40,35 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
         }
+
+        [Fact]
+        public void ShouldThrowServiceExceptionOnRetrieveAllReadingNotesWhenExceptionOccursAndLogIt()
+        {
+            // given
+            var exception = new Exception();
+
+            var expectedReadingNoteServiceException =
+                new ReadingNoteServiceException(exception);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectAllReadingNotes())
+                    .Throws(exception);
+
+            // when . then
+            Assert.Throws<ReadingNoteServiceException>(() =>
+                this.readingNoteService.RetrieveAllReadingNotes());
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectAllReadingNotes(),
+                    Times.Once);
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedReadingNoteServiceException))),
+                    Times.Once);
+
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+        }
     }
 }
