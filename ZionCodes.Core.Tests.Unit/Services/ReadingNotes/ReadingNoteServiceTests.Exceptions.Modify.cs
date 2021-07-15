@@ -140,5 +140,45 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
         }
 
+
+        [Fact]
+        public async Task ShouldThrowServiceExceptionOnModifyIfServiceExceptionOccursAndLogItAsync()
+        {
+            // given
+            int randomNegativeNumber = GetNegativeRandomNumber();
+            DateTimeOffset randomDateTime = GetRandomDateTime();
+            ReadingNote randomReadingNote = CreateRandomReadingNote(randomDateTime);
+            ReadingNote someReadingNote = randomReadingNote;
+            someReadingNote.CreatedDate = randomDateTime.AddMinutes(randomNegativeNumber);
+            var serviceException = new Exception();
+
+            var expectedReadingNoteServiceException =
+                new ReadingNoteServiceException(serviceException);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectReadingNoteByIdAsync(someReadingNote.Id))
+                    .ThrowsAsync(serviceException);
+
+            // when
+            ValueTask<ReadingNote> modifyReadingNoteTask =
+                this.readingNoteService.ModifyReadingNoteAsync(someReadingNote);
+
+            // then
+            await Assert.ThrowsAsync<ReadingNoteServiceException>(() =>
+                modifyReadingNoteTask.AsTask());
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectReadingNoteByIdAsync(someReadingNote.Id),
+                    Times.Once);
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedReadingNoteServiceException))),
+                    Times.Once);
+
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+        }
+
     }
 }
