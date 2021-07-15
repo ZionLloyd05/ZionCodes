@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
@@ -42,6 +43,40 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
 
             this.dateTimeBrokerMock.Verify(broker =>
                 broker.GetCurrentDateTime(),
+                    Times.Once);
+
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public void ShouldRetriveAllReadingNotes()
+        {
+            // given
+            DateTimeOffset randomDateTime = GetRandomDateTime();
+            IQueryable<ReadingNote> randomReadingNotes =
+                CreateRandomReadingNotes(randomDateTime);
+
+            IQueryable<ReadingNote> storageReadingNotes =
+                randomReadingNotes;
+
+            IQueryable<ReadingNote> expectedReadingNotes =
+                storageReadingNotes;
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectAllReadingNotes())
+                    .Returns(storageReadingNotes);
+
+            // when
+            IQueryable<ReadingNote> actualReadingNotes =
+                this.readingNoteService.RetrieveAllReadingNotes();
+
+            // then
+            actualReadingNotes.Should().BeEquivalentTo(expectedReadingNotes);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectAllReadingNotes(),
                     Times.Once);
 
             this.storageBrokerMock.VerifyNoOtherCalls();
