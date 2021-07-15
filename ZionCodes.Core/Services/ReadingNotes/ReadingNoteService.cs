@@ -45,7 +45,7 @@ namespace ZionCodes.Core.Services.ReadingNotes
 
         public ValueTask<ReadingNote> RetrieveReadingNoteByIdAsync(Guid readingNoteId)
         {
-            throw new NotImplementedException();
+            return this.storageBroker.SelectReadingNoteByIdAsync(readingNoteId);
         }
     }
 }
