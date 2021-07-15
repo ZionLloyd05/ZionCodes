@@ -47,7 +47,13 @@ namespace ZionCodes.Core.Services.ReadingNotes
             TryCatch(async () =>
             {
                 ValidateReadingNoteId(readingNoteId);
-                return await this.storageBroker.SelectReadingNoteByIdAsync(readingNoteId);
+                
+                ReadingNote storageReadingNote =
+                    await this.storageBroker.SelectReadingNoteByIdAsync(readingNoteId);
+
+                ValidateStorageReadingNote(storageReadingNote, readingNoteId);
+
+                return storageReadingNote;
             });
     }
 }

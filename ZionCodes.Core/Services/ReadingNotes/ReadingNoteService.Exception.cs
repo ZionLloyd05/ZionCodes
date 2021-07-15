@@ -49,6 +49,10 @@ namespace ZionCodes.Core.Services.ReadingNotes
             {
                 throw CreateAndLogValidationException(invalidReadingNoteInputException);
             }
+            catch (NotFoundReadingNoteException notFoundReadingNoteException)
+            {
+                throw CreateAndLogValidationException(notFoundReadingNoteException);
+            }
             catch (Exception exception)
             {
                 throw CreateAndLogServiceException(exception);

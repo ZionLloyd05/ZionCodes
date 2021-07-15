@@ -52,6 +52,14 @@ namespace ZionCodes.Core.Services.ReadingNotes
         }
 
 
+        private void ValidateStorageReadingNote(ReadingNote storageReadingNote, Guid tagId)
+        {
+            if (storageReadingNote == null)
+            {
+                throw new NotFoundReadingNoteException(tagId);
+            }
+        }
+
         private void ValidateReadingNoteAuditFields(ReadingNote readingNote)
         {
             switch (readingNote)
