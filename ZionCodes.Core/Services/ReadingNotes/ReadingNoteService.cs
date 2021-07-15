@@ -33,7 +33,12 @@ namespace ZionCodes.Core.Services.ReadingNotes
 
         public IQueryable<ReadingNote> RetrieveAllReadingNotes()
         {
-            return this.storageBroker.SelectAllReadingNotes();
+            IQueryable<ReadingNote> storageReadingNotes =
+                this.storageBroker.SelectAllReadingNotes();
+
+            ValidateStorageReadingNotes(storageReadingNotes);
+
+            return storageReadingNotes;
         }
     }
 }
