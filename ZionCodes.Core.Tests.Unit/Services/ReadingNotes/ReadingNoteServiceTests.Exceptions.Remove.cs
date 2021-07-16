@@ -92,5 +92,41 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
             this.storageBrokerMock.VerifyNoOtherCalls();
         }
 
+
+        [Fact]
+        public async Task ShouldThrowServiceExceptionOnDeleteWhenExceptionOccursAndLogItAsync()
+        {
+            // given
+            Guid randomReadingNoteId = Guid.NewGuid();
+            Guid inputReadingNoteId = randomReadingNoteId;
+            var exception = new Exception();
+
+            var expectedReadingNoteException =
+                new ReadingNoteServiceException(exception);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectReadingNoteByIdAsync(inputReadingNoteId))
+                    .ThrowsAsync(exception);
+
+            // when
+            ValueTask<ReadingNote> deleteReadingNoteTask =
+                this.readingNoteService.RemoveReadingNoteByIdAsync(inputReadingNoteId);
+
+            // then
+            await Assert.ThrowsAsync<ReadingNoteServiceException>(() =>
+                deleteReadingNoteTask.AsTask());
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedReadingNoteException))),
+                    Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectReadingNoteByIdAsync(inputReadingNoteId),
+                    Times.Once);
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+        }
     }
 }
