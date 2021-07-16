@@ -50,7 +50,7 @@ namespace ZionCodes.Core.Services.ReadingNotes
         private void ValidateReadingNoteAuditFieldsOnModify(ReadingNote readingNote)
         {
             switch (readingNote)
-            {                
+            {
                 case { } when IsInvalid(input: readingNote.UpdatedDate):
                     throw new InvalidReadingNoteException(
                         parameterName: nameof(readingNote.UpdatedDate),
