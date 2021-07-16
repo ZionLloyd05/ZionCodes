@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit;
 using ZionCodes.Core.Models.ReadingNotes;
@@ -47,6 +48,44 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
             this.storageBrokerMock.Verify(broker =>
                 broker.DeleteReadingNoteAsync(It.IsAny<ReadingNote>()),
                     Times.Never);
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public async Task ShouldThrowDependencyExceptionOnDeleteWhenDbUpdateConcurrencyExceptionOccursAndLogItAsync()
+        {
+            // given
+            Guid randomReadingNoteId = Guid.NewGuid();
+            Guid inputReadingNoteId = randomReadingNoteId;
+            var databaseUpdateConcurrencyException = new DbUpdateConcurrencyException();
+
+            var lockedReadingNoteException =
+                new LockedReadingNoteException(databaseUpdateConcurrencyException);
+
+            var expectedReadingNoteException =
+                new ReadingNoteDependencyException(lockedReadingNoteException);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectReadingNoteByIdAsync(inputReadingNoteId))
+                    .ThrowsAsync(databaseUpdateConcurrencyException);
+
+            // when
+            ValueTask<ReadingNote> deleteReadingNoteTask =
+                this.readingNoteService.RemoveReadingNoteByIdAsync(inputReadingNoteId);
+
+            // then
+            await Assert.ThrowsAsync<ReadingNoteDependencyException>(() => deleteReadingNoteTask.AsTask());
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedReadingNoteException))),
+                    Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectReadingNoteByIdAsync(inputReadingNoteId),
+                    Times.Once);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
