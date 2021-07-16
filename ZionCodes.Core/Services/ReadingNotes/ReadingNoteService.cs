@@ -65,5 +65,18 @@ namespace ZionCodes.Core.Services.ReadingNotes
 
                 return await this.storageBroker.UpdateReadingNoteAsync(readingNote);
             });
+
+        public ValueTask<ReadingNote> RemoveReadingNoteByIdAsync(Guid readingNoteId) =>
+            TryCatch(async () =>
+            {
+                ValidateReadingNoteIdIsNull(readingNoteId);
+
+                ReadingNote storageReadingNote =
+                await this.storageBroker.SelectReadingNoteByIdAsync(readingNoteId);
+
+                ValidateStorageReadingNote(storageReadingNote, readingNoteId);
+
+                return await this.storageBroker.DeleteReadingNoteAsync(storageReadingNote);
+            });
     }
 }
