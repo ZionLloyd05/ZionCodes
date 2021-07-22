@@ -25,7 +25,14 @@ namespace ZionCodes.Core.Tests.Acceptance.APIs.Categories
                  await this.apiBroker.GetCategoryByIdAsync(inputCategory.Id);
 
             // then
-            actualCategory.Should().BeEquivalentTo(expectedCategory);
+            actualCategory.Id.Should().Be(expectedCategory.Id);
+            actualCategory.Title.Should().Be(expectedCategory.Title);
+            actualCategory.Description.Should().Be(expectedCategory.Description);
+            actualCategory.CreatedBy.Should().Be(expectedCategory.CreatedBy);
+            actualCategory.UpdatedBy.Should().Be(expectedCategory.UpdatedBy);
+            actualCategory.CreatedDate.Date.Should().Be(expectedCategory.CreatedDate.Date);
+            actualCategory.UpdatedDate.Date.Should().Be(expectedCategory.UpdatedDate.Date);
+
             await this.apiBroker.DeleteCategoryByIdAsync(actualCategory.Id);
         }
 
@@ -43,7 +50,14 @@ namespace ZionCodes.Core.Tests.Acceptance.APIs.Categories
                 await this.apiBroker.GetCategoryByIdAsync(randomCategory.Id);
 
             // then
-            actualCategory.Should().BeEquivalentTo(modifiedCategory);
+            actualCategory.Id.Should().Be(modifiedCategory.Id);
+            actualCategory.Title.Should().Be(modifiedCategory.Title);
+            actualCategory.Description.Should().Be(modifiedCategory.Description);
+            actualCategory.CreatedBy.Should().Be(modifiedCategory.CreatedBy);
+            actualCategory.UpdatedBy.Should().Be(modifiedCategory.UpdatedBy);
+            actualCategory.CreatedDate.Date.Should().Be(modifiedCategory.CreatedDate.Date);
+            actualCategory.UpdatedDate.Date.Should().Be(modifiedCategory.UpdatedDate.Date);
+
             await this.apiBroker.DeleteCategoryByIdAsync(actualCategory.Id);
         }
 
@@ -65,11 +79,18 @@ namespace ZionCodes.Core.Tests.Acceptance.APIs.Categories
             List<Category> actualCategories = await this.apiBroker.GetAllCategoriesAsync();
 
             //then
-            foreach (var expectedcalendar in expectedCategories)
+            foreach (var expectedCategory in expectedCategories)
             {
-                Category actualCategory = actualCategories.Single(calendar => calendar.Id == expectedcalendar.Id);
+                Category actualCategory = actualCategories.Single(Category => Category.Id == expectedCategory.Id);
 
-                actualCategory.Should().BeEquivalentTo(expectedcalendar);
+                actualCategory.Id.Should().Be(expectedCategory.Id);
+                actualCategory.Title.Should().Be(expectedCategory.Title);
+                actualCategory.Description.Should().Be(expectedCategory.Description);
+                actualCategory.CreatedBy.Should().Be(expectedCategory.CreatedBy);
+                actualCategory.UpdatedBy.Should().Be(expectedCategory.UpdatedBy);
+                actualCategory.CreatedDate.Date.Should().Be(expectedCategory.CreatedDate.Date);
+                actualCategory.UpdatedDate.Date.Should().Be(expectedCategory.UpdatedDate.Date);
+
                 await this.apiBroker.DeleteCategoryByIdAsync(actualCategory.Id);
             }
         }
@@ -90,7 +111,13 @@ namespace ZionCodes.Core.Tests.Acceptance.APIs.Categories
                 this.apiBroker.DeleteCategoryByIdAsync(inputCategory.Id);
 
             // then
-            deletedCategory.Should().BeEquivalentTo(expectedCategory);
+            deletedCategory.Id.Should().Be(expectedCategory.Id);
+            deletedCategory.Title.Should().Be(expectedCategory.Title);
+            deletedCategory.Description.Should().Be(expectedCategory.Description);
+            deletedCategory.CreatedBy.Should().Be(expectedCategory.CreatedBy);
+            deletedCategory.UpdatedBy.Should().Be(expectedCategory.UpdatedBy);
+            deletedCategory.CreatedDate.Date.Should().Be(expectedCategory.CreatedDate.Date);
+            deletedCategory.UpdatedDate.Date.Should().Be(expectedCategory.UpdatedDate.Date);
 
             await Assert.ThrowsAsync<HttpResponseNotFoundException>(() =>
                getCategoryByIdTask.AsTask());

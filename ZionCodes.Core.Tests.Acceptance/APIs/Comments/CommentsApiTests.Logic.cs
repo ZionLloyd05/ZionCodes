@@ -25,7 +25,14 @@ namespace ZionCodes.Core.Tests.Acceptance.APIs.Comments
                  await this.apiBroker.GetCommentByIdAsync(inputComment.Id);
 
             // then
-            actualComment.Should().BeEquivalentTo(expectedComment);
+            actualComment.Id.Should().Be(expectedComment.Id);
+            actualComment.Body.Should().Be(expectedComment.Body);
+            actualComment.Upvote.Should().Be(expectedComment.Upvote);
+            actualComment.Downvote.Should().Be(expectedComment.Downvote);
+            actualComment.ParentCommentId.Should().Be(expectedComment.ParentCommentId);
+            actualComment.CreatedDate.Date.Should().Be(expectedComment.CreatedDate.Date);
+            actualComment.UpdatedDate.Date.Should().Be(expectedComment.UpdatedDate.Date);
+
             await this.apiBroker.DeleteCommentByIdAsync(actualComment.Id);
         }
 
@@ -43,7 +50,14 @@ namespace ZionCodes.Core.Tests.Acceptance.APIs.Comments
                 await this.apiBroker.GetCommentByIdAsync(randomComment.Id);
 
             // then
-            actualComment.Should().BeEquivalentTo(modifiedComment);
+            actualComment.Id.Should().Be(modifiedComment.Id);
+            actualComment.Body.Should().Be(modifiedComment.Body);
+            actualComment.Upvote.Should().Be(modifiedComment.Upvote);
+            actualComment.Downvote.Should().Be(modifiedComment.Downvote);
+            actualComment.ParentCommentId.Should().Be(modifiedComment.ParentCommentId);
+            actualComment.CreatedDate.Date.Should().Be(modifiedComment.CreatedDate.Date);
+            actualComment.UpdatedDate.Date.Should().Be(modifiedComment.UpdatedDate.Date);
+
             await this.apiBroker.DeleteCommentByIdAsync(actualComment.Id);
         }
 
@@ -65,11 +79,18 @@ namespace ZionCodes.Core.Tests.Acceptance.APIs.Comments
             List<Comment> actualComments = await this.apiBroker.GetAllCommentsAsync();
 
             //then
-            foreach (var expectedcalendar in expectedComments)
+            foreach (var expectedComment in expectedComments)
             {
-                Comment actualComment = actualComments.Single(calendar => calendar.Id == expectedcalendar.Id);
+                Comment actualComment = actualComments.Single(Comment => Comment.Id == expectedComment.Id);
 
-                actualComment.Should().BeEquivalentTo(expectedcalendar);
+                actualComment.Id.Should().Be(expectedComment.Id);
+                actualComment.Body.Should().Be(expectedComment.Body);
+                actualComment.Upvote.Should().Be(expectedComment.Upvote);
+                actualComment.Downvote.Should().Be(expectedComment.Downvote);
+                actualComment.ParentCommentId.Should().Be(expectedComment.ParentCommentId);
+                actualComment.CreatedDate.Date.Should().Be(expectedComment.CreatedDate.Date);
+                actualComment.UpdatedDate.Date.Should().Be(expectedComment.UpdatedDate.Date);
+
                 await this.apiBroker.DeleteCommentByIdAsync(actualComment.Id);
             }
         }
@@ -90,7 +111,13 @@ namespace ZionCodes.Core.Tests.Acceptance.APIs.Comments
                 this.apiBroker.DeleteCommentByIdAsync(inputComment.Id);
 
             // then
-            deletedComment.Should().BeEquivalentTo(expectedComment);
+            deletedComment.Id.Should().Be(expectedComment.Id);
+            deletedComment.Body.Should().Be(expectedComment.Body);
+            deletedComment.Upvote.Should().Be(expectedComment.Upvote);
+            deletedComment.Downvote.Should().Be(expectedComment.Downvote);
+            deletedComment.ParentCommentId.Should().Be(expectedComment.ParentCommentId);
+            deletedComment.CreatedDate.Date.Should().Be(expectedComment.CreatedDate.Date);
+            deletedComment.UpdatedDate.Date.Should().Be(expectedComment.UpdatedDate.Date);
 
             await Assert.ThrowsAsync<HttpResponseNotFoundException>(() =>
                getCommentByIdTask.AsTask());

@@ -24,7 +24,7 @@ namespace ZionCodes.Core.Brokers.Storages
             string connectionString = this.configuration
                 .GetConnectionString(name: "DefaultConnection");
 
-            optionsBuilder.UseSqlServer(connectionString);
+            optionsBuilder.UseMySQL(connectionString);
         }
 
     }
