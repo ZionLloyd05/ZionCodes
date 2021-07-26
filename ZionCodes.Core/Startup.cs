@@ -8,6 +8,7 @@ using Microsoft.OpenApi.Models;
 using ZionCodes.Core.Brokers.DateTimes;
 using ZionCodes.Core.Brokers.Loggings;
 using ZionCodes.Core.Brokers.Storages;
+using ZionCodes.Core.Services.Articles;
 using ZionCodes.Core.Services.Categories;
 using ZionCodes.Core.Services.Comments;
 using ZionCodes.Core.Services.Tags;
@@ -32,6 +33,7 @@ namespace ZionCodes.Core
             services.AddTransient<IDateTimeBroker, DateTimeBroker>();
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<ITagService, TagService>();
+            services.AddTransient<IArticleService, ArticleService>();
             services.AddTransient<ICommentService, CommentService>();
 
             services.AddSwaggerGen(c =>

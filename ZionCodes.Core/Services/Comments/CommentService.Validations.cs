@@ -105,19 +105,19 @@ namespace ZionCodes.Core.Services.Comments
             }
         }
 
-        private void ValidateCommentAuditFieldsOnModify(Comment category)
+        private void ValidateCommentAuditFieldsOnModify(Comment comment)
         {
-            switch (category)
+            switch (comment)
             {
-                case { } when IsInvalid(input: category.CreatedDate):
+                case { } when IsInvalid(input: comment.CreatedDate):
                     throw new InvalidCommentException(
                         parameterName: nameof(Comment.CreatedDate),
-                        parameterValue: category.CreatedDate);
+                        parameterValue: comment.CreatedDate);
 
-                case { } when IsInvalid(input: category.UpdatedDate):
+                case { } when IsInvalid(input: comment.UpdatedDate):
                     throw new InvalidCommentException(
                         parameterName: nameof(Comment.UpdatedDate),
-                        parameterValue: category.UpdatedDate);
+                        parameterValue: comment.UpdatedDate);
             }
         }
 

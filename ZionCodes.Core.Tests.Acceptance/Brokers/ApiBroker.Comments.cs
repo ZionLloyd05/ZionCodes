@@ -9,17 +9,17 @@ namespace ZionCodes.Core.Tests.Acceptance.Brokers
     {
         private const string CommentsRelativeUrl = "api/comments";
 
-        public async ValueTask<Comment> PostCommentAsync(Comment tag) =>
-            await this.apiFactoryClient.PostContentAsync(CommentsRelativeUrl, tag);
+        public async ValueTask<Comment> PostCommentAsync(Comment comment) =>
+            await this.apiFactoryClient.PostContentAsync(CommentsRelativeUrl, comment);
 
-        public async ValueTask<Comment> GetCommentByIdAsync(Guid tagId) =>
-            await this.apiFactoryClient.GetContentAsync<Comment>($"{CommentsRelativeUrl}/{tagId}");
+        public async ValueTask<Comment> GetCommentByIdAsync(Guid commentId) =>
+            await this.apiFactoryClient.GetContentAsync<Comment>($"{CommentsRelativeUrl}/{commentId}");
 
-        public async ValueTask<Comment> DeleteCommentByIdAsync(Guid tagId) =>
-            await this.apiFactoryClient.DeleteContentAsync<Comment>($"{CommentsRelativeUrl}/{tagId}");
+        public async ValueTask<Comment> DeleteCommentByIdAsync(Guid commentId) =>
+            await this.apiFactoryClient.DeleteContentAsync<Comment>($"{CommentsRelativeUrl}/{commentId}");
 
-        public async ValueTask<Comment> PutCommentAsync(Comment tag) =>
-            await this.apiFactoryClient.PutContentAsync(CommentsRelativeUrl, tag);
+        public async ValueTask<Comment> PutCommentAsync(Comment comment) =>
+            await this.apiFactoryClient.PutContentAsync(CommentsRelativeUrl, comment);
 
         public async ValueTask<List<Comment>> GetAllCommentsAsync() =>
             await this.apiFactoryClient.GetContentAsync<List<Comment>>($"{CommentsRelativeUrl}/");
