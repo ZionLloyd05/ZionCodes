@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RESTFulSense.Controllers;
+using ZionCodes.Core.Models.Articles.Exceptions;
 using ZionCodes.Core.Models.Categories.Exceptions;
 using ZionCodes.Core.Models.Comments.Exceptions;
 using ZionCodes.Core.Models.Tags.Exceptions;
@@ -202,6 +203,70 @@ namespace ZionCodes.Core.Controllers
             catch (CommentServiceException commentServiceException)
             {
                 return Problem(commentServiceException.Message);
+            }
+        }
+        #endregion
+
+        #region ArticlesControllerFunction
+        protected async ValueTask<ActionResult<T>> TryCatchArticleFunction(
+            ReturningSingleControllerFunction returningControllerFunction)
+        {
+            try
+            {
+                return await returningControllerFunction();
+            }
+            catch (ArticleValidationException articleValidationException)
+                when (articleValidationException.InnerException is NotFoundArticleException)
+            {
+                string innerMessage = GetInnerMessage(articleValidationException);
+
+                return NotFound(innerMessage);
+            }
+            catch (ArticleValidationException articleValidationException)
+                when (articleValidationException.InnerException is AlreadyExistsArticleException)
+            {
+                string innerMessage = GetInnerMessage(articleValidationException);
+
+                return Conflict(innerMessage);
+            }
+            catch (ArticleValidationException articleValidationException)
+            {
+                string innerMessage = GetInnerMessage(articleValidationException);
+
+                return BadRequest(innerMessage);
+            }
+            catch (ArticleDependencyException articleDependencyException)
+                when (articleDependencyException.InnerException is LockedArticleException)
+            {
+                string innerMessage = GetInnerMessage(articleDependencyException);
+
+                return Locked(innerMessage);
+            }
+            catch (ArticleDependencyException articleDependencyException)
+            {
+                return Problem(articleDependencyException.Message);
+            }
+            catch (ArticleServiceException articleServiceException)
+            {
+                return Problem(articleServiceException.Message);
+            }
+
+        }
+
+        protected ActionResult<IQueryable<T>> TryCatchArticleFunction(
+            ReturningMultipleControllerFunction returningControllerFunction)
+        {
+            try
+            {
+                return returningControllerFunction();
+            }
+            catch (ArticleDependencyException articleDependencyException)
+            {
+                return Problem(articleDependencyException.Message);
+            }
+            catch (ArticleServiceException articleServiceException)
+            {
+                return Problem(articleServiceException.Message);
             }
         }
         #endregion
