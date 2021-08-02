@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using ZionCodes.Core.Models.Articles;
 using ZionCodes.Core.Models.Articles.Exceptions;
 using ZionCodes.Core.Models.Categories.Exceptions;

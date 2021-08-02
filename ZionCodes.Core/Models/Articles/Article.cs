@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+using ZionCodes.Core.Models.ArticleComments;
 using ZionCodes.Core.Models.Articles.Enums;
 using ZionCodes.Core.Models.Categories;
 
@@ -21,8 +20,11 @@ namespace ZionCodes.Core.Models.Articles
         public DateTimeOffset UpdatedDate { get; set; }
         public Guid CreatedBy { get; set; }
         public Guid UpdatedBy { get; set; }
-  
+
         [JsonIgnore]
         public virtual Category Category { get; set; }
+
+        [JsonIgnore]
+        public IEnumerable<ArticleComment> ArticleComments { get; set; }
     }
 }
