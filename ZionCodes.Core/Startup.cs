@@ -1,17 +1,21 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 using ZionCodes.Core.Brokers.DateTimes;
 using ZionCodes.Core.Brokers.Loggings;
 using ZionCodes.Core.Brokers.Storages;
+using ZionCodes.Core.Models.Users;
 using ZionCodes.Core.Services.Articles;
 using ZionCodes.Core.Services.Categories;
 using ZionCodes.Core.Services.Comments;
 using ZionCodes.Core.Services.Tags;
+using ZionCodes.Web.Api.Brokers.UserManagement;
 
 namespace ZionCodes.Core
 {
@@ -25,7 +29,9 @@ namespace ZionCodes.Core
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            AddNewtonSoftJson(services);
             services.AddControllers();
+            services.AddScoped<IUserManagementBroker, UserManagementBroker>();
             services.AddDbContext<StorageBroker>();
             services.AddScoped<IStorageBroker, StorageBroker>();
             services.AddTransient<ILogger, Logger<LoggingBroker>>();
@@ -35,6 +41,11 @@ namespace ZionCodes.Core
             services.AddTransient<ITagService, TagService>();
             services.AddTransient<IArticleService, ArticleService>();
             services.AddTransient<ICommentService, CommentService>();
+
+            services.AddIdentityCore<User>()
+                    .AddRoles<Role>()
+                    .AddEntityFrameworkStores<StorageBroker>()
+                    .AddDefaultTokenProviders();
 
             services.AddSwaggerGen(c =>
             {
@@ -72,6 +83,16 @@ namespace ZionCodes.Core
 
             app.UseEndpoints(endpoints =>
                 endpoints.MapControllers());
+        }
+
+        private static void AddNewtonSoftJson(IServiceCollection services)
+        {
+            services.AddMvc().AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
+                options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+            });
         }
     }
 }
