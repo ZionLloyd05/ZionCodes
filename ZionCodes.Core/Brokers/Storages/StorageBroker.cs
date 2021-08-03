@@ -1,10 +1,13 @@
-﻿using EFxceptions;
+﻿using System;
+using EFxceptions;
+using EFxceptions.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using ZionCodes.Core.Models.Users;
 
 namespace ZionCodes.Core.Brokers.Storages
 {
-    public partial class StorageBroker : EFxceptionsContext, IStorageBroker
+    public partial class StorageBroker : EFxceptionsIdentityContext<User, Role, Guid>, IStorageBroker
     {
         private readonly IConfiguration configuration;
 
