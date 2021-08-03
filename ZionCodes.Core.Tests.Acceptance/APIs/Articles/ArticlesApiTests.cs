@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Tynamix.ObjectFiller;
 using Xunit;
@@ -23,12 +20,12 @@ namespace ZionCodes.Core.Tests.Acceptance.APIs.Articles
         {
             Category persistedCategory = await PostCategoryAsync();
 
-            Article persistedArticle = 
+            Article persistedArticle =
                 CreateRandomArticleFiller(persistedCategory.Id).Create();
 
             return persistedArticle;
         }
-             
+
         private async ValueTask<Article> PostRandomArticleAsync()
         {
             Article randomArticle = await CreateRandomArticle();
