@@ -11,6 +11,7 @@ namespace ZionCodes.Core.Services.Comments
         {
             ValidateCommentIsNull(Comment);
             ValidateCommentIdIsNull(Comment.Id);
+            ValidateCommentArticleIdIsNull(Comment.ArticleId);
             ValidateCommentProperties(Comment);
             ValidateCommentAuditFieldsOnCreate(Comment);
         }
@@ -41,6 +42,16 @@ namespace ZionCodes.Core.Services.Comments
                 throw new InvalidCommentException(
                     parameterName: nameof(Comment.Id),
                     parameterValue: commentId);
+            }
+        }
+
+        private void ValidateCommentArticleIdIsNull(Guid commentArticleId)
+        {
+            if (commentArticleId == default)
+            {
+                throw new InvalidCommentException(
+                    parameterName: nameof(Comment.ArticleId),
+                    parameterValue: commentArticleId);
             }
         }
 

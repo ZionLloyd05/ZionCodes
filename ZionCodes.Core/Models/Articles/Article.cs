@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
-using ZionCodes.Core.Models.ArticleComments;
 using ZionCodes.Core.Models.Articles.Enums;
 using ZionCodes.Core.Models.Categories;
+using ZionCodes.Core.Models.Comments;
 
 namespace ZionCodes.Core.Models.Articles
 {
@@ -25,6 +25,6 @@ namespace ZionCodes.Core.Models.Articles
         public virtual Category Category { get; set; }
 
         [JsonIgnore]
-        public IEnumerable<ArticleComment> ArticleComments { get; set; }
+        public IEnumerable<Comment> Comments { get; set; }
     }
 }

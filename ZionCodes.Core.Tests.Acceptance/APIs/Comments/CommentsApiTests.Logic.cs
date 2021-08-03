@@ -5,6 +5,7 @@ using FluentAssertions;
 using RESTFulSense.Exceptions;
 using Xunit;
 using ZionCodes.Core.Models.Comments;
+using ZionCodes.Core.Tests.Acceptance.Models.Articles;
 
 namespace ZionCodes.Core.Tests.Acceptance.APIs.Comments
 {
@@ -14,7 +15,8 @@ namespace ZionCodes.Core.Tests.Acceptance.APIs.Comments
         public async Task ShouldPostCommentAsync()
         {
             // given
-            Comment randomComment = CreateRandomComment();
+            Article randomArticle = await PostRandomArticleAsync();
+            Comment randomComment = CreateRandomComment(randomArticle.Id);
             Comment inputComment = randomComment;
             Comment expectedComment = inputComment;
 

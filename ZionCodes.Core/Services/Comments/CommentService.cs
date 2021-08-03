@@ -30,8 +30,6 @@ namespace ZionCodes.Core.Services.Comments
             {
                 ValidateCommentOnCreate(comment);
 
-                ValidateCommentIdIsNull(comment.Id);
-
                 return this.storageBroker.InsertCommentAsync(comment);
             });
 
