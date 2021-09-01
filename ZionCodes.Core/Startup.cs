@@ -15,6 +15,7 @@ using ZionCodes.Core.Services.Articles;
 using ZionCodes.Core.Services.Categories;
 using ZionCodes.Core.Services.Comments;
 using ZionCodes.Core.Services.Tags;
+using ZionCodes.Core.Services.Users;
 using ZionCodes.Web.Api.Brokers.UserManagement;
 
 namespace ZionCodes.Core
@@ -41,6 +42,7 @@ namespace ZionCodes.Core
             services.AddTransient<ITagService, TagService>();
             services.AddTransient<IArticleService, ArticleService>();
             services.AddTransient<ICommentService, CommentService>();
+            services.AddTransient<IUserService, UserService>();
 
             services.AddIdentityCore<User>()
                     .AddRoles<Role>()

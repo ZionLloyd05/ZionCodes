@@ -7,6 +7,7 @@ using ZionCodes.Core.Models.Articles.Exceptions;
 using ZionCodes.Core.Models.Categories.Exceptions;
 using ZionCodes.Core.Models.Comments.Exceptions;
 using ZionCodes.Core.Models.Tags.Exceptions;
+using ZionCodes.Web.Api.Models.Users.Exceptions;
 
 namespace ZionCodes.Core.Controllers
 {
@@ -267,6 +268,70 @@ namespace ZionCodes.Core.Controllers
             catch (ArticleServiceException articleServiceException)
             {
                 return Problem(articleServiceException.Message);
+            }
+        }
+        #endregion
+
+        #region UsersControllerFunction
+        protected async ValueTask<ActionResult<T>> TryCatchUserFunction(
+            ReturningSingleControllerFunction returningControllerFunction)
+        {
+            try
+            {
+                return await returningControllerFunction();
+            }
+            catch (UserValidationException userValidationException)
+                when (userValidationException.InnerException is NotFoundUserException)
+            {
+                string innerMessage = GetInnerMessage(userValidationException);
+
+                return NotFound(innerMessage);
+            }
+            catch (UserValidationException userValidationException)
+                when (userValidationException.InnerException is AlreadyExistsUserException)
+            {
+                string innerMessage = GetInnerMessage(userValidationException);
+
+                return Conflict(innerMessage);
+            }
+            catch (UserValidationException userValidationException)
+            {
+                string innerMessage = GetInnerMessage(userValidationException);
+
+                return BadRequest(innerMessage);
+            }
+            catch (UserDependencyException userDependencyException)
+                when (userDependencyException.InnerException is LockedUserException)
+            {
+                string innerMessage = GetInnerMessage(userDependencyException);
+
+                return Locked(innerMessage);
+            }
+            catch (UserDependencyException userDependencyException)
+            {
+                return Problem(userDependencyException.Message);
+            }
+            catch (UserServiceException userServiceException)
+            {
+                return Problem(userServiceException.Message);
+            }
+
+        }
+
+        protected ActionResult<IQueryable<T>> TryCatchUserFunction(
+            ReturningMultipleControllerFunction returningControllerFunction)
+        {
+            try
+            {
+                return returningControllerFunction();
+            }
+            catch (UserDependencyException userDependencyException)
+            {
+                return Problem(userDependencyException.Message);
+            }
+            catch (UserServiceException userServiceException)
+            {
+                return Problem(userServiceException.Message);
             }
         }
         #endregion
