@@ -1,5 +1,4 @@
 ﻿using System;
-using EFxceptions;
 using EFxceptions.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
