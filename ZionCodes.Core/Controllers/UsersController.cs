@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using ZionCodes.Core.Dtos.Users;
 using ZionCodes.Core.Models.Users;
 using ZionCodes.Core.Services.Users;
 
@@ -12,18 +14,23 @@ namespace ZionCodes.Core.Controllers
     public class UsersController : BaseController<User>
     {
         private readonly IUserService userService;
+        private readonly IMapper mapper;
 
-        public UsersController(IUserService userService)
+        public UsersController(IUserService userService, IMapper mapper)
         {
             this.userService = userService;
+            this.mapper = mapper;
         }
 
         [HttpPost]
-        public ValueTask<ActionResult<User>> PostUserAsync(User user, string password = "Test@123") =>
+        public ValueTask<ActionResult<User>> PostUserAsync(RegisterUserDTO user) =>
        TryCatchUserFunction(async () =>
        {
+           User newUser = this.mapper.Map<User>(user);
+           newUser.Id = Guid.NewGuid();
+
            User persistedUser =
-                   await this.userService.RegisterUserAsync(user, password);
+                   await this.userService.RegisterUserAsync(newUser, user.Password);
 
            return Ok(persistedUser);
        });

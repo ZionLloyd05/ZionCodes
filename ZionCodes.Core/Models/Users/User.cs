@@ -12,7 +12,6 @@ namespace ZionCodes.Core.Models.Users
             get => base.Id;
             set => base.Id = value;
         }
-
         public string Name { get; set; }
         public UserStatus Status { get; set; }
         public DateTimeOffset CreatedDate { get; set; }

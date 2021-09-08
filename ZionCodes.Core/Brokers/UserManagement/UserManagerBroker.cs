@@ -29,7 +29,7 @@ namespace ZionCodes.Web.Api.Brokers.UserManagement
 
         public async ValueTask<User> InsertUserAsync(User user, string password)
         {
-            await this.userManagement.CreateAsync(user, password);
+            IdentityResult result = await this.userManagement.CreateAsync(user, password);
 
             return user;
         }
