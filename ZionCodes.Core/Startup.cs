@@ -32,6 +32,7 @@ namespace ZionCodes.Core
         {
             AddNewtonSoftJson(services);
             services.AddControllers();
+            services.AddAutoMapper(typeof(Startup));
             services.AddScoped<IUserManagementBroker, UserManagementBroker>();
             services.AddDbContext<StorageBroker>();
             services.AddScoped<IStorageBroker, StorageBroker>();
@@ -44,7 +45,15 @@ namespace ZionCodes.Core
             services.AddTransient<ICommentService, CommentService>();
             services.AddTransient<IUserService, UserService>();
 
-            services.AddIdentityCore<User>()
+            services.AddIdentityCore<User>(option => {
+                option.SignIn.RequireConfirmedEmail = true;
+                option.Password.RequireDigit = false;
+                option.Password.RequiredLength = 6;
+                option.Password.RequireNonAlphanumeric = false;
+                option.Password.RequireUppercase = false;
+                option.Password.RequireLowercase = false;
+                option.User.RequireUniqueEmail = true;
+            })
                     .AddRoles<Role>()
                     .AddEntityFrameworkStores<StorageBroker>()
                     .AddDefaultTokenProviders();

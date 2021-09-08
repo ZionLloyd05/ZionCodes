@@ -147,7 +147,7 @@ namespace ZionCodes.Core.Services.Users
         private bool IsDateNotRecent(DateTimeOffset dateTime)
         {
             DateTimeOffset now = this.dateTimeBroker.GetCurrentDateTime();
-            int oneMinute = 1;
+            int oneMinute = 5;
             TimeSpan difference = now.Subtract(dateTime);
 
             return Math.Abs(difference.TotalMinutes) >= oneMinute;
