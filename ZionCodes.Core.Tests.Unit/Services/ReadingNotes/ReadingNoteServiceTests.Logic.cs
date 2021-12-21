@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -56,13 +57,13 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
         {
             // given
             DateTimeOffset randomDateTime = GetRandomDateTime();
-            IQueryable<ReadingNote> randomReadingNotes =
+            ICollection<ReadingNote> randomReadingNotes =
                 CreateRandomReadingNotes(randomDateTime);
 
-            IQueryable<ReadingNote> storageReadingNotes =
+            ICollection<ReadingNote> storageReadingNotes =
                 randomReadingNotes;
 
-            IQueryable<ReadingNote> expectedReadingNotes =
+            ICollection<ReadingNote> expectedReadingNotes =
                 storageReadingNotes;
 
             this.storageBrokerMock.Setup(broker =>
@@ -70,7 +71,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
                     .Returns(storageReadingNotes);
 
             // when
-            IQueryable<ReadingNote> actualReadingNotes =
+            ICollection<ReadingNote> actualReadingNotes =
                 this.readingNoteService.RetrieveAllReadingNotes();
 
             // then
@@ -89,8 +90,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
         public async Task ShouldRetrieveReadingNoteByIdAsync()
         {
             // given
-            Guid randomReadingNoteId = Guid.NewGuid();
-            Guid inputReadingNoteId = randomReadingNoteId;
+            int randomReadingNoteId = 1;
+            int inputReadingNoteId = randomReadingNoteId;
             DateTimeOffset randomDateTime = GetRandomDateTime();
             ReadingNote randomReadingNote = CreateRandomReadingNote(randomDateTime);
             ReadingNote storageReadingNote = randomReadingNote;
@@ -132,7 +133,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
             ReadingNote expectedReadingNote = afterUpdateStorageReadingNote;
             ReadingNote beforeUpdateStorageReadingNote = randomReadingNote.DeepClone();
             inputReadingNote.UpdatedDate = randomDate;
-            Guid tagId = inputReadingNote.Id;
+            int tagId = inputReadingNote.Id;
 
             this.storageBrokerMock.Setup(broker =>
                 broker.SelectReadingNoteByIdAsync(tagId))
@@ -170,7 +171,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
             DateTimeOffset dateTime = randomDateTime;
             ReadingNote randomReadingNote = CreateRandomReadingNote(dateTime);
             ReadingNote inputReadingNote = randomReadingNote;
-            Guid inputReadingNoteId = inputReadingNote.Id;
+            int inputReadingNoteId = inputReadingNote.Id;
             inputReadingNote.UpdatedBy = inputReadingNote.CreatedBy;
             inputReadingNote.UpdatedDate = inputReadingNote.CreatedDate;
             ReadingNote storageReadingNote = inputReadingNote;

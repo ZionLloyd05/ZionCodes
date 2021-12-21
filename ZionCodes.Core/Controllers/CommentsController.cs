@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using ZionCodes.Core.Dtos.Generic;
 using ZionCodes.Core.Models.Comments;
 using ZionCodes.Core.Services.Comments;
+using ZionCodes.Core.Utils;
 
 namespace ZionCodes.Core.Controllers
 {
@@ -30,17 +34,35 @@ namespace ZionCodes.Core.Controllers
         });
 
         [HttpGet]
-        public ActionResult<IQueryable<Comment>> GetAllComments() =>
+        public ActionResult<ICollection<Comment>> GetAllComments([FromQuery] PaginationQuery paginationQuery) =>
         TryCatchCommentFunction(() =>
         {
-            IQueryable storageComment =
+            ICollection<Comment> storageComment =
                     this.commentService.RetrieveAllComments();
+
+            if (paginationQuery != null)
+            {
+                PaginationFilter filter = new()
+                {
+                    PageNumber = paginationQuery.PageNumber,
+                    PageSize = paginationQuery.PageSize,
+                };
+
+                if (paginationQuery.PageNumber < 1 || paginationQuery.PageSize < 1)
+                {
+                    return Ok(new PagedResponse<ICollection<Comment>>(storageComment));
+                }
+
+                var paginationResponse = PaginationBuilder.CreatePaginatedResponse(filter, storageComment);
+
+                return Ok(paginationResponse);
+            }
 
             return Ok(storageComment);
         });
 
         [HttpGet("{commentId}")]
-        public ValueTask<ActionResult<Comment>> GetCommentAsync(Guid commentId) =>
+        public ValueTask<ActionResult<Comment>> GetCommentAsync(int commentId) =>
         TryCatchCommentFunction(async () =>
         {
             Comment storageComment =
@@ -61,7 +83,7 @@ namespace ZionCodes.Core.Controllers
 
 
         [HttpDelete("{commentId}")]
-        public ValueTask<ActionResult<Comment>> DeleteCommentAsync(Guid commentId) =>
+        public ValueTask<ActionResult<Comment>> DeleteCommentAsync(int commentId) =>
         TryCatchCommentFunction(async () =>
         {
             Comment storageComment =

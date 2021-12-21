@@ -13,8 +13,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
         public async void ShouldThrowValidationExceptionOnRetrieveByIdWhenIdIsInvalidAndLogItAsync()
         {
             // given
-            Guid randomCommentId = default;
-            Guid inputCommentId = randomCommentId;
+            int randomCommentId = default;
+            int inputCommentId = randomCommentId;
 
             var invalidCommentInputException = new InvalidCommentInputException(
                     parameterName: nameof(Comment.Id),
@@ -40,7 +40,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
                     Times.Never);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectCommentByIdAsync(It.IsAny<Guid>()),
+                broker.SelectCommentByIdAsync(It.IsAny<int>()),
                     Times.Never);
 
             this.loggingBrokerMock.VerifyNoOtherCalls();
@@ -52,8 +52,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
         public async void ShouldThrowValidationExceptionOnRetrieveByIdWhenStorageCommentIsNullAndLogItAsync()
         {
             // given
-            Guid randomCommentId = Guid.NewGuid();
-            Guid someCommentId = randomCommentId;
+            int randomCommentId = 1;
+            int someCommentId = randomCommentId;
             Comment invalidStorageComment = null;
             var notFoundCommentException = new NotFoundCommentException(someCommentId);
 
@@ -61,7 +61,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
                 new CommentValidationException(notFoundCommentException);
 
             this.storageBrokerMock.Setup(broker =>
-                broker.SelectCommentByIdAsync(It.IsAny<Guid>()))
+                broker.SelectCommentByIdAsync(It.IsAny<int>()))
                     .ReturnsAsync(invalidStorageComment);
 
             // when
@@ -81,7 +81,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
                     Times.Never);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectCommentByIdAsync(It.IsAny<Guid>()),
+                broker.SelectCommentByIdAsync(It.IsAny<int>()),
                     Times.Once);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();

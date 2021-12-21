@@ -13,15 +13,15 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
         public void ShouldLogWarningOnRetrieveAllWhenTagsWasEmptyAndLogIt()
         {
             // given
-            IQueryable<Tag> emptyStorageTags = new List<Tag>().AsQueryable();
-            IQueryable<Tag> expectedTags = emptyStorageTags;
+            ICollection<Tag> emptyStorageTags = new List<Tag>().ToList();
+            ICollection<Tag> expectedTags = emptyStorageTags;
 
             this.storageBrokerMock.Setup(broker =>
                 broker.SelectAllTags())
                     .Returns(expectedTags);
 
             // when
-            IQueryable<Tag> actualTag =
+            ICollection<Tag> actualTag =
                 this.tagService.RetrieveAllTags();
 
             // then

@@ -4,6 +4,7 @@
 // ---------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EFxceptions.Models.Exceptions;
@@ -17,7 +18,7 @@ namespace ZionCodes.Core.Services.Users
     public partial class UserService
     {
         private delegate ValueTask<User> ReturningUserFunction();
-        private delegate IQueryable<User> ReturningQueryableUserFunction();
+        private delegate ICollection<User> ReturningCollectionUserFunction();
 
         private async ValueTask<User> TryCatch(ReturningUserFunction returningUserFunction)
         {
@@ -64,11 +65,11 @@ namespace ZionCodes.Core.Services.Users
             }
         }
 
-        private IQueryable<User> TryCatch(ReturningQueryableUserFunction returningQueryableUserFunction)
+        private ICollection<User> TryCatch(ReturningCollectionUserFunction ReturningCollectionUserFunction)
         {
             try
             {
-                return returningQueryableUserFunction();
+                return ReturningCollectionUserFunction();
             }
             catch (SqlException sqlException)
             {

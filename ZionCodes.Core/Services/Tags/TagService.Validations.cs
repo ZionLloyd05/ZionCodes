@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ZionCodes.Core.Models.Tags;
 using ZionCodes.Core.Models.Tags.Exceptions;
@@ -22,7 +23,7 @@ namespace ZionCodes.Core.Services.Tags
             }
         }
 
-        private void ValidateTagIdIsNull(Guid tagId)
+        private void ValidateTagIdIsNull(int tagId)
         {
             if (tagId == default)
             {
@@ -32,9 +33,9 @@ namespace ZionCodes.Core.Services.Tags
             }
         }
 
-        private void ValidateTagId(Guid tagId)
+        private void ValidateTagId(int tagId)
         {
-            if (tagId == Guid.Empty)
+            if (tagId < 1)
             {
                 throw new InvalidTagInputException(
                     parameterName: nameof(Tag.Id),
@@ -42,7 +43,7 @@ namespace ZionCodes.Core.Services.Tags
             }
         }
 
-        private void ValidateStorageTags(IQueryable<Tag> storageCategories)
+        private void ValidateStorageTags(ICollection<Tag> storageCategories)
         {
             if (storageCategories.Count() == 0)
             {
@@ -50,7 +51,7 @@ namespace ZionCodes.Core.Services.Tags
             }
         }
 
-        private void ValidateStorageTag(Tag storageTag, Guid tagId)
+        private void ValidateStorageTag(Tag storageTag, int tagId)
         {
             if (storageTag == null)
             {
@@ -127,7 +128,7 @@ namespace ZionCodes.Core.Services.Tags
             }
         }
 
-        private bool IsInvalid(Guid input) => input == default;
+        private bool IsInvalid(int input) => input == default;
         private bool IsInvalid(DateTimeOffset input) => input == default;
 
         private bool IsDateNotRecent(DateTimeOffset dateTime)

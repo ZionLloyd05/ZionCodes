@@ -45,7 +45,7 @@ namespace ZionCodes.Core.Tests.Acceptance.APIs.Articles
         private static Category CreateRandomCategory()
         {
             DateTimeOffset now = DateTimeOffset.UtcNow;
-            Guid posterId = Guid.NewGuid();
+            int posterId = 1;
             var filler = new Filler<Category>();
 
             filler.Setup()
@@ -75,10 +75,10 @@ namespace ZionCodes.Core.Tests.Acceptance.APIs.Articles
             return filler.Create();
         }
 
-        private static Filler<Article> CreateRandomArticleFiller(Guid categoryId)
+        private static Filler<Article> CreateRandomArticleFiller(int categoryId)
         {
             DateTimeOffset now = DateTimeOffset.UtcNow;
-            Guid posterId = Guid.NewGuid();
+            int posterId = 1;
 
             var filler = new Filler<Article>();
 

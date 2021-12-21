@@ -6,7 +6,7 @@ namespace ZionCodes.Core.Models
     {
         DateTimeOffset CreatedDate { get; set; }
         DateTimeOffset UpdatedDate { get; set; }
-        Guid CreatedBy { get; set; }
-        Guid UpdatedBy { get; set; }
+        int CreatedBy { get; set; }
+        int UpdatedBy { get; set; }
     }
 }

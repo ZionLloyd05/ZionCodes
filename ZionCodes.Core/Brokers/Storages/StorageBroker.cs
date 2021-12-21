@@ -19,6 +19,10 @@ namespace ZionCodes.Core.Brokers.Storages
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            AddArticleConfig(modelBuilder);
+            AddCategoryConfig(modelBuilder);
+            AddTagConfig(modelBuilder);
+            AddReadingNoteConfig(modelBuilder);
             AddCommentArticleReferences(modelBuilder);
         }
 

@@ -12,10 +12,10 @@ namespace ZionCodes.Core.Tests.Acceptance.Brokers
         public async ValueTask<Article> PostArticleAsync(Article article) =>
             await this.apiFactoryClient.PostContentAsync(ArticlesRelativeUrl, article);
 
-        public async ValueTask<Article> GetArticleByIdAsync(Guid articleId) =>
+        public async ValueTask<Article> GetArticleByIdAsync(int articleId) =>
             await this.apiFactoryClient.GetContentAsync<Article>($"{ArticlesRelativeUrl}/{articleId}");
 
-        public async ValueTask<Article> DeleteArticleByIdAsync(Guid articleId) =>
+        public async ValueTask<Article> DeleteArticleByIdAsync(int articleId) =>
             await this.apiFactoryClient.DeleteContentAsync<Article>($"{ArticlesRelativeUrl}/{articleId}");
 
         public async ValueTask<Article> PutArticleAsync(Article article) =>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ZionCodes.Core.Brokers.DateTimes;
@@ -33,17 +34,17 @@ namespace ZionCodes.Core.Services.Comments
                 return this.storageBroker.InsertCommentAsync(comment);
             });
 
-        public IQueryable<Comment> RetrieveAllComments() =>
+        public ICollection<Comment> RetrieveAllComments() =>
             TryCatch(() =>
             {
-                IQueryable<Comment> storageComments = this.storageBroker.SelectAllComments();
+                ICollection<Comment> storageComments = this.storageBroker.SelectAllComments();
 
                 ValidateStorageComments(storageComments);
 
                 return storageComments;
             });
 
-        public ValueTask<Comment> RetrieveCommentByIdAsync(Guid commentId) =>
+        public ValueTask<Comment> RetrieveCommentByIdAsync(int commentId) =>
             TryCatch(async () =>
             {
                 ValidateCommentId(commentId);
@@ -67,7 +68,7 @@ namespace ZionCodes.Core.Services.Comments
                 return await this.storageBroker.UpdateCommentAsync(comment);
             });
 
-        public ValueTask<Comment> RemoveCommentByIdAsync(Guid commentId) =>
+        public ValueTask<Comment> RemoveCommentByIdAsync(int commentId) =>
             TryCatch(async () =>
             {
                 ValidateCommentIdIsNull(commentId);

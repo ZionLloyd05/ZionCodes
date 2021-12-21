@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EFxceptions.Models.Exceptions;
@@ -12,7 +13,7 @@ namespace ZionCodes.Core.Services.Categories
     public partial class CategoryService
     {
         private delegate ValueTask<Category> ReturningCategoryFunction();
-        private delegate IQueryable<Category> ReturningQueryableCategoryFunction();
+        private delegate ICollection<Category> ReturningCollectionCategoryFunction();
 
         private async ValueTask<Category> TryCatch(
             ReturningCategoryFunction returningCategoryFunction)
@@ -64,12 +65,12 @@ namespace ZionCodes.Core.Services.Categories
             }
         }
 
-        private IQueryable<Category> TryCatch
-            (ReturningQueryableCategoryFunction returningQueryableCategoryFunction)
+        private ICollection<Category> TryCatch
+            (ReturningCollectionCategoryFunction ReturningCollectionCategoryFunction)
         {
             try
             {
-                return returningQueryableCategoryFunction();
+                return ReturningCollectionCategoryFunction();
             }
             catch (SqlException sqlException)
             {

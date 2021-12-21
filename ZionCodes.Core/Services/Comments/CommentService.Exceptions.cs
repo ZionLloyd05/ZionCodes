@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EFxceptions.Models.Exceptions;
@@ -12,7 +13,7 @@ namespace ZionCodes.Core.Services.Comments
     public partial class CommentService
     {
         private delegate ValueTask<Comment> ReturningCommentFunction();
-        private delegate IQueryable<Comment> ReturningQueryableCommentFunction();
+        private delegate ICollection<Comment> ReturningCollectionCommentFunction();
 
         private async ValueTask<Comment> TryCatch(
             ReturningCommentFunction returningCommentFunction)
@@ -64,12 +65,12 @@ namespace ZionCodes.Core.Services.Comments
             }
         }
 
-        private IQueryable<Comment> TryCatch
-           (ReturningQueryableCommentFunction returningQueryableCommentFunction)
+        private ICollection<Comment> TryCatch
+           (ReturningCollectionCommentFunction ReturningCollectionCommentFunction)
         {
             try
             {
-                return returningQueryableCommentFunction();
+                return ReturningCollectionCommentFunction();
             }
             catch (SqlException sqlException)
             {

@@ -39,8 +39,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
         private static DateTimeOffset GetRandomDateTime() =>
             new DateTimeRange(earliestDate: new DateTime()).GetValue();
 
-        private static IQueryable<Comment> CreateRandomComments(DateTimeOffset dateTime) =>
-            CreateRandomCommentFiller(dateTime).Create(GetRandomNumber()).AsQueryable();
+        private static ICollection<Comment> CreateRandomComments(DateTimeOffset dateTime) =>
+            CreateRandomCommentFiller(dateTime).Create(GetRandomNumber()).ToList();
 
         private static SqlException GetSqlException() =>
             (SqlException)FormatterServices.GetUninitializedObject(typeof(SqlException));

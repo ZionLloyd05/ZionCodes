@@ -13,15 +13,15 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
         public void ShouldLogWarningOnRetrieveAllWhenCommentsWasEmptyAndLogIt()
         {
             // given
-            IQueryable<Comment> emptyStorageComments = new List<Comment>().AsQueryable();
-            IQueryable<Comment> expectedComments = emptyStorageComments;
+            ICollection<Comment> emptyStorageComments = new List<Comment>().ToList();
+            ICollection<Comment> expectedComments = emptyStorageComments;
 
             this.storageBrokerMock.Setup(broker =>
                 broker.SelectAllComments())
                     .Returns(expectedComments);
 
             // when
-            IQueryable<Comment> actualComment =
+            ICollection<Comment> actualComment =
                 this.commentService.RetrieveAllComments();
 
             // then

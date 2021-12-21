@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using ZionCodes.Core.Dtos.Generic;
 using ZionCodes.Core.Models.Tags;
 using ZionCodes.Core.Services.Tags;
+using ZionCodes.Core.Utils;
 
 namespace ZionCodes.Core.Controllers
 {
@@ -30,17 +34,36 @@ namespace ZionCodes.Core.Controllers
         });
 
         [HttpGet]
-        public ActionResult<IQueryable<Tag>> GetAllTags() =>
+        public ActionResult<ICollection<Tag>> GetAllTags([FromQuery] PaginationQuery paginationQuery) =>
         TryCatchTagFunction(() =>
         {
-            IQueryable storageTag =
+            ICollection<Tag> storageTag =
                     this.tagService.RetrieveAllTags();
+
+
+            if (paginationQuery != null)
+            {
+                PaginationFilter filter = new()
+                {
+                    PageNumber = paginationQuery.PageNumber,
+                    PageSize = paginationQuery.PageSize,
+                };
+
+                if (paginationQuery.PageNumber < 1 || paginationQuery.PageSize < 1)
+                {
+                    return Ok(new PagedResponse<ICollection<Tag>>(storageTag));
+                }
+
+                var paginationResponse = PaginationBuilder.CreatePaginatedResponse(filter, storageTag);
+
+                return Ok(paginationResponse);
+            }
 
             return Ok(storageTag);
         });
 
         [HttpGet("{tagId}")]
-        public ValueTask<ActionResult<Tag>> GetTagAsync(Guid tagId) =>
+        public ValueTask<ActionResult<Tag>> GetTagAsync(int tagId) =>
         TryCatchTagFunction(async () =>
         {
             Tag storageTag =
@@ -61,7 +84,7 @@ namespace ZionCodes.Core.Controllers
 
 
         [HttpDelete("{tagId}")]
-        public ValueTask<ActionResult<Tag>> DeleteTagAsync(Guid tagId) =>
+        public ValueTask<ActionResult<Tag>> DeleteTagAsync(int tagId) =>
         TryCatchTagFunction(async () =>
         {
             Tag storageTag =

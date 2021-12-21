@@ -4,6 +4,7 @@
 // ---------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
@@ -20,7 +21,7 @@ namespace ZionCodes.Web.Api.Brokers.UserManagement
             this.userManagement = userManager;
         }
 
-        public IQueryable<User> SelectAllUsers() => this.userManagement.Users;
+        public ICollection<User> SelectAllUsers() => this.userManagement.Users.ToList();
 
         public async ValueTask<User> SelectUserByIdAsync(Guid userId)
         {

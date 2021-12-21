@@ -13,15 +13,15 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
         public void ShouldLogWarningOnRetrieveAllWhenCategoriesWasEmptyAndLogIt()
         {
             // given
-            IQueryable<Category> emptyStorageCategories = new List<Category>().AsQueryable();
-            IQueryable<Category> expectedCategories = emptyStorageCategories;
+            ICollection<Category> emptyStorageCategories = new List<Category>().ToList();
+            ICollection<Category> expectedCategories = emptyStorageCategories;
 
             this.storageBrokerMock.Setup(broker =>
                 broker.SelectAllCategories())
                     .Returns(expectedCategories);
 
             // when
-            IQueryable<Category> actualCategory =
+            ICollection<Category> actualCategory =
                 this.categoryService.RetrieveAllCategories();
 
             // then

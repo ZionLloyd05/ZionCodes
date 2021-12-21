@@ -45,7 +45,7 @@ namespace ZionCodes.Core.Tests.Acceptance.APIs.Tags
         private static Filler<Tag> CreateRandomTagFiller()
         {
             DateTimeOffset now = DateTimeOffset.UtcNow;
-            Guid posterId = Guid.NewGuid();
+            int posterId = 1;
 
             var filler = new Filler<Tag>();
 

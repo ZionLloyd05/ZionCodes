@@ -14,8 +14,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.Articles
         public async void ShouldThrowValidationExceptionOnRetrieveByIdWhenIdIsInvalidAndLogItAsync()
         {
             // given
-            Guid randomArticleId = default;
-            Guid inputArticleId = randomArticleId;
+            int randomArticleId = default;
+            int inputArticleId = randomArticleId;
 
             var invalidArticleInputException = new InvalidArticleInputException(
                     parameterName: nameof(Article.Id),
@@ -41,7 +41,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Articles
                     Times.Never);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectArticleByIdAsync(It.IsAny<Guid>()),
+                broker.SelectArticleByIdAsync(It.IsAny<int>()),
                     Times.Never);
 
             this.loggingBrokerMock.VerifyNoOtherCalls();
@@ -53,8 +53,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.Articles
         public async void ShouldThrowValidationExceptionOnRetrieveByIdWhenStorageArticleIsNullAndLogItAsync()
         {
             // given
-            Guid randomArticleId = Guid.NewGuid();
-            Guid someArticleId = randomArticleId;
+            int randomArticleId = 1;
+            int someArticleId = randomArticleId;
             Article invalidStorageArticle = null;
             var notFoundArticleException = new NotFoundArticleException(someArticleId);
 
@@ -62,7 +62,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Articles
                 new ArticleValidationException(notFoundArticleException);
 
             this.storageBrokerMock.Setup(broker =>
-                broker.SelectArticleByIdAsync(It.IsAny<Guid>()))
+                broker.SelectArticleByIdAsync(It.IsAny<int>()))
                     .ReturnsAsync(invalidStorageArticle);
 
             // when
@@ -82,7 +82,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Articles
                     Times.Never);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectArticleByIdAsync(It.IsAny<Guid>()),
+                broker.SelectArticleByIdAsync(It.IsAny<int>()),
                     Times.Once);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();

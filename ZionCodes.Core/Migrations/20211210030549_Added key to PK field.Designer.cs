@@ -9,8 +9,8 @@ using ZionCodes.Core.Brokers.Storages;
 namespace ZionCodes.Core.Migrations
 {
     [DbContext(typeof(StorageBroker))]
-    [Migration("20210803153551_AddUser")]
-    partial class AddUser
+    [Migration("20211210030549_Added key to PK field")]
+    partial class AddedkeytoPKfield
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -123,20 +123,18 @@ namespace ZionCodes.Core.Migrations
 
             modelBuilder.Entity("ZionCodes.Core.Models.Articles.Article", b =>
                 {
-                    b.Property<byte[]>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("varbinary(16)");
+                        .HasColumnType("int");
 
-                    b.Property<byte[]>("CategoryId")
-                        .IsRequired()
-                        .HasColumnType("varbinary(16)");
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Content")
                         .HasColumnType("text");
 
-                    b.Property<byte[]>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("varbinary(16)");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<DateTimeOffset>("CreatedDate")
                         .HasColumnType("timestamp");
@@ -153,9 +151,8 @@ namespace ZionCodes.Core.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("text");
 
-                    b.Property<byte[]>("UpdatedBy")
-                        .IsRequired()
-                        .HasColumnType("varbinary(16)");
+                    b.Property<int>("UpdatedBy")
+                        .HasColumnType("int");
 
                     b.Property<DateTimeOffset>("UpdatedDate")
                         .HasColumnType("timestamp");
@@ -169,13 +166,12 @@ namespace ZionCodes.Core.Migrations
 
             modelBuilder.Entity("ZionCodes.Core.Models.Categories.Category", b =>
                 {
-                    b.Property<byte[]>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("varbinary(16)");
+                        .HasColumnType("int");
 
-                    b.Property<byte[]>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("varbinary(16)");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<DateTimeOffset>("CreatedDate")
                         .HasColumnType("timestamp");
@@ -186,9 +182,8 @@ namespace ZionCodes.Core.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("text");
 
-                    b.Property<byte[]>("UpdatedBy")
-                        .IsRequired()
-                        .HasColumnType("varbinary(16)");
+                    b.Property<int>("UpdatedBy")
+                        .HasColumnType("int");
 
                     b.Property<DateTimeOffset>("UpdatedDate")
                         .HasColumnType("timestamp");
@@ -200,13 +195,12 @@ namespace ZionCodes.Core.Migrations
 
             modelBuilder.Entity("ZionCodes.Core.Models.Comments.Comment", b =>
                 {
-                    b.Property<byte[]>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("varbinary(16)");
+                        .HasColumnType("int");
 
-                    b.Property<byte[]>("ArticleId")
-                        .IsRequired()
-                        .HasColumnType("varbinary(16)");
+                    b.Property<int>("ArticleId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Body")
                         .HasColumnType("text");
@@ -217,9 +211,8 @@ namespace ZionCodes.Core.Migrations
                     b.Property<int>("Downvote")
                         .HasColumnType("int");
 
-                    b.Property<byte[]>("ParentCommentId")
-                        .IsRequired()
-                        .HasColumnType("varbinary(16)");
+                    b.Property<int>("ParentCommentId")
+                        .HasColumnType("int");
 
                     b.Property<DateTimeOffset>("UpdatedDate")
                         .HasColumnType("timestamp");
@@ -236,16 +229,15 @@ namespace ZionCodes.Core.Migrations
 
             modelBuilder.Entity("ZionCodes.Core.Models.ReadingNotes.ReadingNote", b =>
                 {
-                    b.Property<byte[]>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("varbinary(16)");
+                        .HasColumnType("int");
 
                     b.Property<string>("Author")
                         .HasColumnType("text");
 
-                    b.Property<byte[]>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("varbinary(16)");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<DateTimeOffset>("CreatedDate")
                         .HasColumnType("timestamp");
@@ -265,9 +257,8 @@ namespace ZionCodes.Core.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("text");
 
-                    b.Property<byte[]>("UpdatedBy")
-                        .IsRequired()
-                        .HasColumnType("varbinary(16)");
+                    b.Property<int>("UpdatedBy")
+                        .HasColumnType("int");
 
                     b.Property<DateTimeOffset>("UpdatedDate")
                         .HasColumnType("timestamp");
@@ -279,13 +270,12 @@ namespace ZionCodes.Core.Migrations
 
             modelBuilder.Entity("ZionCodes.Core.Models.Tags.Tag", b =>
                 {
-                    b.Property<byte[]>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("varbinary(16)");
+                        .HasColumnType("int");
 
-                    b.Property<byte[]>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("varbinary(16)");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<DateTimeOffset>("CreatedDate")
                         .HasColumnType("timestamp");
@@ -296,9 +286,8 @@ namespace ZionCodes.Core.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("text");
 
-                    b.Property<byte[]>("UpdatedBy")
-                        .IsRequired()
-                        .HasColumnType("varbinary(16)");
+                    b.Property<int>("UpdatedBy")
+                        .HasColumnType("int");
 
                     b.Property<DateTimeOffset>("UpdatedDate")
                         .HasColumnType("timestamp");

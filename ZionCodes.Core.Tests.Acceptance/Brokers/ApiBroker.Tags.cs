@@ -12,10 +12,10 @@ namespace ZionCodes.Core.Tests.Acceptance.Brokers
         public async ValueTask<Tag> PostTagAsync(Tag tag) =>
             await this.apiFactoryClient.PostContentAsync(TagsRelativeUrl, tag);
 
-        public async ValueTask<Tag> GetTagByIdAsync(Guid tagId) =>
+        public async ValueTask<Tag> GetTagByIdAsync(int tagId) =>
             await this.apiFactoryClient.GetContentAsync<Tag>($"{TagsRelativeUrl}/{tagId}");
 
-        public async ValueTask<Tag> DeleteTagByIdAsync(Guid tagId) =>
+        public async ValueTask<Tag> DeleteTagByIdAsync(int tagId) =>
             await this.apiFactoryClient.DeleteContentAsync<Tag>($"{TagsRelativeUrl}/{tagId}");
 
         public async ValueTask<Tag> PutTagAsync(Tag tag) =>

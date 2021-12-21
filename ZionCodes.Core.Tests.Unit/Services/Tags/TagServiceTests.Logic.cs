@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -56,13 +57,13 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
         {
             // given
             DateTimeOffset randomDateTime = GetRandomDateTime();
-            IQueryable<Tag> randomTags =
+            ICollection<Tag> randomTags =
                 CreateRandomTags(randomDateTime);
 
-            IQueryable<Tag> storageTags =
+            ICollection<Tag> storageTags =
                 randomTags;
 
-            IQueryable<Tag> expectedTags =
+            ICollection<Tag> expectedTags =
                 storageTags;
 
             this.storageBrokerMock.Setup(broker =>
@@ -70,7 +71,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
                     .Returns(storageTags);
 
             // when
-            IQueryable<Tag> actualTags =
+            ICollection<Tag> actualTags =
                 this.tagService.RetrieveAllTags();
 
             // then
@@ -89,8 +90,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
         public async Task ShouldRetrieveTagByIdAsync()
         {
             // given
-            Guid randomTagId = Guid.NewGuid();
-            Guid inputTagId = randomTagId;
+            int randomTagId = 1;
+            int inputTagId = randomTagId;
             DateTimeOffset randomDateTime = GetRandomDateTime();
             Tag randomTag = CreateRandomTag(randomDateTime);
             Tag storageTag = randomTag;
@@ -131,7 +132,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
             Tag expectedTag = afterUpdateStorageTag;
             Tag beforeUpdateStorageTag = randomTag.DeepClone();
             inputTag.UpdatedDate = randomDate;
-            Guid tagId = inputTag.Id;
+            int tagId = inputTag.Id;
 
             this.storageBrokerMock.Setup(broker =>
                 broker.SelectTagByIdAsync(tagId))
@@ -169,7 +170,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
             DateTimeOffset dateTime = randomDateTime;
             Tag randomTag = CreateRandomTag(dateTime);
             Tag inputTag = randomTag;
-            Guid inputTagId = inputTag.Id;
+            int inputTagId = inputTag.Id;
             inputTag.UpdatedBy = inputTag.CreatedBy;
             inputTag.UpdatedDate = inputTag.CreatedDate;
             Tag storageTag = inputTag;

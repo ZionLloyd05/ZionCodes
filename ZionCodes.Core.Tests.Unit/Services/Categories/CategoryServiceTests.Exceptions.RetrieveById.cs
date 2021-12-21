@@ -16,8 +16,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
         public async Task ShouldThrowDependencyExceptionOnRetrieveByIdWhenSqlExceptionOccursAndLogItAsync()
         {
             // given
-            Guid randomCategoryId = Guid.NewGuid();
-            Guid inputCategoryId = randomCategoryId;
+            int randomCategoryId = 1;
+            int inputCategoryId = randomCategoryId;
             SqlException sqlException = GetSqlException();
 
             var exceptionCategoryDependencyException =
@@ -53,14 +53,14 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
         public async Task ShouldThrowDependencyExceptionOnRetrieveByIdWhenDbExceptionOccursAndLogItAsync()
         {
             // given
-            Guid someCategoryId = Guid.NewGuid();
+            int someCategoryId = 1;
             var databaseUpdateException = new DbUpdateException();
 
             var expectedCategoryDependencyException =
                 new CategoryDependencyException(databaseUpdateException);
 
             this.storageBrokerMock.Setup(broker =>
-                broker.SelectCategoryByIdAsync(It.IsAny<Guid>()))
+                broker.SelectCategoryByIdAsync(It.IsAny<int>()))
                     .ThrowsAsync(databaseUpdateException);
 
             // when
@@ -76,7 +76,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
                     Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectCategoryByIdAsync(It.IsAny<Guid>()),
+                broker.SelectCategoryByIdAsync(It.IsAny<int>()),
                     Times.Once);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
@@ -88,14 +88,14 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
         public async Task ShouldThrowServiceExceptionOnRetrieveByIdWhenExceptionOccursAndLogItAsync()
         {
             // given
-            Guid someCategoryId = Guid.NewGuid();
+            int someCategoryId = 1;
             var exception = new Exception();
 
             var expectedCategoryServiceException =
                 new CategoryServiceException(exception);
 
             this.storageBrokerMock.Setup(broker =>
-                broker.SelectCategoryByIdAsync(It.IsAny<Guid>()))
+                broker.SelectCategoryByIdAsync(It.IsAny<int>()))
                     .ThrowsAsync(exception);
 
             // when
@@ -111,7 +111,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
                     Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectCategoryByIdAsync(It.IsAny<Guid>()),
+                broker.SelectCategoryByIdAsync(It.IsAny<int>()),
                     Times.Once);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
@@ -124,7 +124,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
           ShouldThrowDependencyExceptionOnRetrieveByIdWhenDbUpdateConcurrencyExceptionOccursAndLogItAsync()
         {
             // given
-            Guid someCategoryId = Guid.NewGuid();
+            int someCategoryId = 1;
             var databaseUpdateConcurrencyException = new DbUpdateConcurrencyException();
 
             var lockedCategoryException =
@@ -134,7 +134,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
                 new CategoryDependencyException(lockedCategoryException);
 
             this.storageBrokerMock.Setup(broker =>
-                broker.SelectCategoryByIdAsync(It.IsAny<Guid>()))
+                broker.SelectCategoryByIdAsync(It.IsAny<int>()))
                     .ThrowsAsync(databaseUpdateConcurrencyException);
 
             // when
@@ -150,7 +150,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
                     Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectCategoryByIdAsync(It.IsAny<Guid>()),
+                broker.SelectCategoryByIdAsync(It.IsAny<int>()),
                     Times.Once);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();

@@ -15,8 +15,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
         public async Task ShouldThrowDependencyExceptionOnDeleteWhenSqlExceptionOccursAndLogItAsync()
         {
             // given
-            Guid randomCategoryId = Guid.NewGuid();
-            Guid inputCategoryId = randomCategoryId;
+            int randomCategoryId = 1;
+            int inputCategoryId = randomCategoryId;
             SqlException sqlException = GetSqlException();
 
             var expectedCategoryDependencyException =
@@ -55,8 +55,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
         public async Task ShouldThrowDependencyExceptionOnDeleteWhenDbUpdateConcurrencyExceptionOccursAndLogItAsync()
         {
             // given
-            Guid randomCategoryId = Guid.NewGuid();
-            Guid inputCategoryId = randomCategoryId;
+            int randomCategoryId = 1;
+            int inputCategoryId = randomCategoryId;
             var databaseUpdateConcurrencyException = new DbUpdateConcurrencyException();
 
             var lockedCategoryException =
@@ -93,8 +93,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
         public async Task ShouldThrowServiceExceptionOnDeleteWhenExceptionOccursAndLogItAsync()
         {
             // given
-            Guid randomCategoryId = Guid.NewGuid();
-            Guid inputCategoryId = randomCategoryId;
+            int randomCategoryId = 1;
+            int inputCategoryId = randomCategoryId;
             var exception = new Exception();
 
             var expectedStudentCategoryException =

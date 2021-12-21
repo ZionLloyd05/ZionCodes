@@ -15,8 +15,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.Articles
         public async Task ShouldThrowDependencyExceptionOnDeleteWhenSqlExceptionOccursAndLogItAsync()
         {
             // given
-            Guid randomArticleId = Guid.NewGuid();
-            Guid inputArticleId = randomArticleId;
+            int randomArticleId = 1;
+            int inputArticleId = randomArticleId;
             SqlException sqlException = GetSqlException();
 
             var expectedArticleDependencyException =
@@ -55,8 +55,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.Articles
         public async Task ShouldThrowDependencyExceptionOnDeleteWhenDbUpdateConcurrencyExceptionOccursAndLogItAsync()
         {
             // given
-            Guid randomArticleId = Guid.NewGuid();
-            Guid inputArticleId = randomArticleId;
+            int randomArticleId = 1;
+            int inputArticleId = randomArticleId;
             var databaseUpdateConcurrencyException = new DbUpdateConcurrencyException();
 
             var lockedArticleException =
@@ -93,8 +93,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.Articles
         public async Task ShouldThrowServiceExceptionOnDeleteWhenExceptionOccursAndLogItAsync()
         {
             // given
-            Guid randomArticleId = Guid.NewGuid();
-            Guid inputArticleId = randomArticleId;
+            int randomArticleId = 1;
+            int inputArticleId = randomArticleId;
             var exception = new Exception();
 
             var expectedStudentArticleException =

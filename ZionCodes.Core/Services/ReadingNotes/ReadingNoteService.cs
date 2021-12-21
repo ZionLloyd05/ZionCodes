@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ZionCodes.Core.Brokers.DateTimes;
@@ -32,10 +33,10 @@ namespace ZionCodes.Core.Services.ReadingNotes
             return this.storageBroker.InsertReadingNoteAsync(readingNote);
         });
 
-        public IQueryable<ReadingNote> RetrieveAllReadingNotes() =>
+        public ICollection<ReadingNote> RetrieveAllReadingNotes() =>
             TryCatch(() =>
             {
-                IQueryable<ReadingNote> storageReadingNotes =
+                ICollection<ReadingNote> storageReadingNotes =
                 this.storageBroker.SelectAllReadingNotes();
 
                 ValidateStorageReadingNotes(storageReadingNotes);
@@ -43,7 +44,7 @@ namespace ZionCodes.Core.Services.ReadingNotes
                 return storageReadingNotes;
             });
 
-        public ValueTask<ReadingNote> RetrieveReadingNoteByIdAsync(Guid readingNoteId) =>
+        public ValueTask<ReadingNote> RetrieveReadingNoteByIdAsync(int readingNoteId) =>
             TryCatch(async () =>
             {
                 ValidateReadingNoteId(readingNoteId);
@@ -66,7 +67,7 @@ namespace ZionCodes.Core.Services.ReadingNotes
                 return await this.storageBroker.UpdateReadingNoteAsync(readingNote);
             });
 
-        public ValueTask<ReadingNote> RemoveReadingNoteByIdAsync(Guid readingNoteId) =>
+        public ValueTask<ReadingNote> RemoveReadingNoteByIdAsync(int readingNoteId) =>
             TryCatch(async () =>
             {
                 ValidateReadingNoteIdIsNull(readingNoteId);

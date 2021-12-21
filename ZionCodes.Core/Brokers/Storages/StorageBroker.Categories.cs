@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -19,9 +20,9 @@ namespace ZionCodes.Core.Brokers.Storages
             return categoryEntityEntry.Entity;
         }
 
-        public IQueryable<Category> SelectAllCategories() => this.Categories.AsQueryable();
+        public ICollection<Category> SelectAllCategories() => this.Categories.ToList();
 
-        public async ValueTask<Category> SelectCategoryByIdAsync(Guid categoryId)
+        public async ValueTask<Category> SelectCategoryByIdAsync(int categoryId)
         {
             this.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 

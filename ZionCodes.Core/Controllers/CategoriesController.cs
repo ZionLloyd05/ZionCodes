@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using ZionCodes.Core.Dtos.Generic;
 using ZionCodes.Core.Models.Categories;
 using ZionCodes.Core.Services.Categories;
+using ZionCodes.Core.Utils;
 
 namespace ZionCodes.Core.Controllers
 {
@@ -29,17 +32,35 @@ namespace ZionCodes.Core.Controllers
         });
 
         [HttpGet]
-        public ActionResult<IQueryable<Category>> GetAllCategories() =>
+        public ActionResult<ICollection<Category>> GetAllCategories([FromQuery] PaginationQuery paginationQuery) =>
         TryCatchCategoryFunction(() =>
         {
-            IQueryable storageCategory =
+            ICollection<Category> storageCategory =
                     this.categoryService.RetrieveAllCategories();
+
+            if (paginationQuery != null)
+            {
+                PaginationFilter filter = new()
+                {
+                    PageNumber = paginationQuery.PageNumber,
+                    PageSize = paginationQuery.PageSize,
+                };
+
+                if (paginationQuery.PageNumber < 1 || paginationQuery.PageSize < 1)
+                {
+                    return Ok(new PagedResponse<ICollection<Category>>(storageCategory));
+                }
+
+                var paginationResponse = PaginationBuilder.CreatePaginatedResponse(filter, storageCategory);
+
+                return Ok(paginationResponse);
+            }
 
             return Ok(storageCategory);
         });
 
         [HttpGet("{categoryId}")]
-        public ValueTask<ActionResult<Category>> GetCategoryAsync(Guid categoryId) =>
+        public ValueTask<ActionResult<Category>> GetCategoryAsync(int categoryId) =>
         TryCatchCategoryFunction(async () =>
         {
             Category storageCategory =
@@ -60,7 +81,7 @@ namespace ZionCodes.Core.Controllers
 
 
         [HttpDelete("{categoryId}")]
-        public ValueTask<ActionResult<Category>> DeleteCategoryAsync(Guid categoryId) =>
+        public ValueTask<ActionResult<Category>> DeleteCategoryAsync(int categoryId) =>
         TryCatchCategoryFunction(async () =>
         {
             Category storageCategory =

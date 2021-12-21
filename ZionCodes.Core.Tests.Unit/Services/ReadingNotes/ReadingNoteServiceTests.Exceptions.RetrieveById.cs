@@ -15,8 +15,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
         public async Task ShouldThrowDependencyExceptionOnRetrieveByIdWhenSqlExceptionOccursAndLogItAsync()
         {
             // given
-            Guid randomReadingNoteId = Guid.NewGuid();
-            Guid inputReadingNoteId = randomReadingNoteId;
+            int randomReadingNoteId = 1;
+            int inputReadingNoteId = randomReadingNoteId;
             SqlException sqlException = GetSqlException();
 
             var exceptionReadingNoteDependencyException =
@@ -51,14 +51,14 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
         public async Task ShouldThrowDependencyExceptionOnRetrieveByIdWhenDbExceptionOccursAndLogItAsync()
         {
             // given
-            Guid someReadingNoteId = Guid.NewGuid();
+            int someReadingNoteId = 1;
             var databaseUpdateException = new DbUpdateException();
 
             var expectedReadingNoteDependencyException =
                 new ReadingNoteDependencyException(databaseUpdateException);
 
             this.storageBrokerMock.Setup(broker =>
-                broker.SelectReadingNoteByIdAsync(It.IsAny<Guid>()))
+                broker.SelectReadingNoteByIdAsync(It.IsAny<int>()))
                     .ThrowsAsync(databaseUpdateException);
 
             // when
@@ -74,7 +74,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
                     Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectReadingNoteByIdAsync(It.IsAny<Guid>()),
+                broker.SelectReadingNoteByIdAsync(It.IsAny<int>()),
                     Times.Once);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
@@ -87,7 +87,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
          ShouldThrowDependencyExceptionOnRetrieveByIdWhenDbUpdateConcurrencyExceptionOccursAndLogItAsync()
         {
             // given
-            Guid someReadingNoteId = Guid.NewGuid();
+            int someReadingNoteId = 1;
             var databaseUpdateConcurrencyException = new DbUpdateConcurrencyException();
 
             var lockedReadingNoteException =
@@ -97,7 +97,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
                 new ReadingNoteDependencyException(lockedReadingNoteException);
 
             this.storageBrokerMock.Setup(broker =>
-                broker.SelectReadingNoteByIdAsync(It.IsAny<Guid>()))
+                broker.SelectReadingNoteByIdAsync(It.IsAny<int>()))
                     .ThrowsAsync(databaseUpdateConcurrencyException);
 
             // when
@@ -113,7 +113,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
                     Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectReadingNoteByIdAsync(It.IsAny<Guid>()),
+                broker.SelectReadingNoteByIdAsync(It.IsAny<int>()),
                     Times.Once);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
@@ -125,14 +125,14 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
         public async Task ShouldThrowServiceExceptionOnRetrieveByIdWhenExceptionOccursAndLogItAsync()
         {
             // given
-            Guid someReadingNoteId = Guid.NewGuid();
+            int someReadingNoteId = 1;
             var exception = new Exception();
 
             var expectedReadingNoteServiceException =
                 new ReadingNoteServiceException(exception);
 
             this.storageBrokerMock.Setup(broker =>
-                broker.SelectReadingNoteByIdAsync(It.IsAny<Guid>()))
+                broker.SelectReadingNoteByIdAsync(It.IsAny<int>()))
                     .ThrowsAsync(exception);
 
             // when
@@ -148,7 +148,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
                     Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectReadingNoteByIdAsync(It.IsAny<Guid>()),
+                broker.SelectReadingNoteByIdAsync(It.IsAny<int>()),
                     Times.Once);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();

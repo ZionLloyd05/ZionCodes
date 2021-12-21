@@ -1,10 +1,12 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace ZionCodes.Core.Models.ReadingNotes
 {
     public class ReadingNote : IAuditable
     {
-        public Guid Id { get; set; }
+        [Key]
+        public int Id { get; set; }
         public string Title { get; set; }
         public string Author { get; set; }
         public string ImageUrl { get; set; }
@@ -13,7 +15,7 @@ namespace ZionCodes.Core.Models.ReadingNotes
         public int Heart { get; set; }
         public DateTimeOffset CreatedDate { get; set; }
         public DateTimeOffset UpdatedDate { get; set; }
-        public Guid CreatedBy { get; set; }
-        public Guid UpdatedBy { get; set; }
+        public int CreatedBy { get; set; }
+        public int UpdatedBy { get; set; }
     }
 }

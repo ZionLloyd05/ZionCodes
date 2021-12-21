@@ -13,8 +13,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
         public async Task ShouldThrowValidatonExceptionOnDeleteWhenIdIsInvalidAndLogItAsync()
         {
             // given
-            Guid randomTagId = default;
-            Guid inputTagId = randomTagId;
+            int randomTagId = default;
+            int inputTagId = randomTagId;
 
             var invalidTagInputException = new InvalidTagException(
                 parameterName: nameof(Tag.Id),
@@ -35,7 +35,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
                     Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectTagByIdAsync(It.IsAny<Guid>()),
+                broker.SelectTagByIdAsync(It.IsAny<int>()),
                     Times.Never);
 
             this.storageBrokerMock.Verify(broker =>
@@ -53,7 +53,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
             // given
             DateTimeOffset dateTime = GetRandomDateTime();
             Tag randomTag = CreateRandomTag(dateTime);
-            Guid inputTagId = randomTag.Id;
+            int inputTagId = randomTag.Id;
             Tag inputTag = randomTag;
             Tag nullStorageTag = null;
 

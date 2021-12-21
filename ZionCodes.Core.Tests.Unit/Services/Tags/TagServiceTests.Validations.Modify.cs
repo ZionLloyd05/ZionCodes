@@ -33,7 +33,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
                     Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectTagByIdAsync(It.IsAny<Guid>()),
+                broker.SelectTagByIdAsync(It.IsAny<int>()),
                     Times.Never);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
@@ -70,7 +70,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
                     Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectTagByIdAsync(It.IsAny<Guid>()),
+                broker.SelectTagByIdAsync(It.IsAny<int>()),
                     Times.Never);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();

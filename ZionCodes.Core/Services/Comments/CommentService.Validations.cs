@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ZionCodes.Core.Models.Comments;
 using ZionCodes.Core.Models.Comments.Exceptions;
@@ -25,9 +26,9 @@ namespace ZionCodes.Core.Services.Comments
         }
 
 
-        private void ValidateCommentId(Guid commentId)
+        private void ValidateCommentId(int commentId)
         {
-            if (commentId == Guid.Empty)
+            if (commentId < 1)
             {
                 throw new InvalidCommentInputException(
                     parameterName: nameof(Comment.Id),
@@ -35,7 +36,7 @@ namespace ZionCodes.Core.Services.Comments
             }
         }
 
-        private void ValidateCommentIdIsNull(Guid commentId)
+        private void ValidateCommentIdIsNull(int commentId)
         {
             if (commentId == default)
             {
@@ -45,7 +46,7 @@ namespace ZionCodes.Core.Services.Comments
             }
         }
 
-        private void ValidateCommentArticleIdIsNull(Guid commentArticleId)
+        private void ValidateCommentArticleIdIsNull(int commentArticleId)
         {
             if (commentArticleId == default)
             {
@@ -55,7 +56,7 @@ namespace ZionCodes.Core.Services.Comments
             }
         }
 
-        private void ValidateStorageComment(Comment storageComment, Guid commentId)
+        private void ValidateStorageComment(Comment storageComment, int commentId)
         {
             if (storageComment == null)
             {
@@ -74,7 +75,7 @@ namespace ZionCodes.Core.Services.Comments
             }
         }
 
-        private void ValidateStorageComments(IQueryable<Comment> storageComments)
+        private void ValidateStorageComments(ICollection<Comment> storageComments)
         {
             if (storageComments.Count() == 0)
             {

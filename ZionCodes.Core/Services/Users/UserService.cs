@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ZionCodes.Core.Brokers.DateTimes;
@@ -57,10 +58,10 @@ namespace ZionCodes.Core.Services.Users
             return await this.userManagementBroker.InsertUserAsync(user, password);
         });
 
-        public IQueryable<User> RetrieveAllUsers() =>
+        public ICollection<User> RetrieveAllUsers() =>
         TryCatch(() =>
         {
-            IQueryable<User> storageUsers = this.userManagementBroker.SelectAllUsers();
+            ICollection<User> storageUsers = this.userManagementBroker.SelectAllUsers();
             ValidateStorageUsers(storageUsers);
 
             return storageUsers;

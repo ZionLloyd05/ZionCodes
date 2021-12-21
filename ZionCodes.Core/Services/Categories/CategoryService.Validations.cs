@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ZionCodes.Core.Models.Categories;
 using ZionCodes.Core.Models.Categories.Exceptions;
@@ -23,7 +24,7 @@ namespace ZionCodes.Core.Services.Categories
             }
         }
 
-        private void ValidateCategoryIdIsNull(Guid categoryId)
+        private void ValidateCategoryIdIsNull(int categoryId)
         {
             if (categoryId == default)
             {
@@ -33,7 +34,7 @@ namespace ZionCodes.Core.Services.Categories
             }
         }
 
-        private void ValidateStorageCategory(Category storageCategory, Guid categoryId)
+        private void ValidateStorageCategory(Category storageCategory, int categoryId)
         {
             if (storageCategory == null)
             {
@@ -48,9 +49,9 @@ namespace ZionCodes.Core.Services.Categories
             ValidateCategoryAuditFieldsOnModify(category);
         }
 
-        private void ValidateCategoryId(Guid categoryId)
+        private void ValidateCategoryId(int categoryId)
         {
-            if (categoryId == Guid.Empty)
+            if (categoryId < 1)
             {
                 throw new InvalidCategoryInputException(
                     parameterName: nameof(Category.Id),
@@ -69,7 +70,7 @@ namespace ZionCodes.Core.Services.Categories
             }
         }
 
-        private void ValidateStorageCategories(IQueryable<Category> storageCategories)
+        private void ValidateStorageCategories(ICollection<Category> storageCategories)
         {
             if (storageCategories.Count() == 0)
             {
@@ -77,7 +78,7 @@ namespace ZionCodes.Core.Services.Categories
             }
         }
 
-        private bool IsInvalid(Guid input) => input == default;
+        private bool IsInvalid(int input) => input == default;
         private bool IsInvalid(string categoryTitle) => String.IsNullOrWhiteSpace(categoryTitle);
         private bool IsInvalid(DateTimeOffset input) => input == default;
 

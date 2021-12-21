@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -19,9 +20,9 @@ namespace ZionCodes.Core.Brokers.Storages
             return tagEntityEntry.Entity;
         }
 
-        public IQueryable<Tag> SelectAllTags() => this.Tags.AsQueryable();
+        public ICollection<Tag> SelectAllTags() => this.Tags.ToList();
 
-        public async ValueTask<Tag> SelectTagByIdAsync(Guid tagId)
+        public async ValueTask<Tag> SelectTagByIdAsync(int tagId)
         {
             this.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -19,9 +20,12 @@ namespace ZionCodes.Core.Brokers.Storages
             return articleEntityEntry.Entity;
         }
 
-        public IQueryable<Article> SelectAllArticles() => this.Articles.AsQueryable();
+        public ICollection<Article> SelectAllArticles() => this.Articles
+            .Include(article => article.Category)
+            .Include(article => article.Comments)
+            .ToList();
 
-        public async ValueTask<Article> SelectArticleByIdAsync(Guid articleId)
+        public async ValueTask<Article> SelectArticleByIdAsync(int articleId)
         {
             this.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 

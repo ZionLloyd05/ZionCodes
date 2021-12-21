@@ -15,8 +15,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
         public async Task ShouldThrowDependencyExceptionOnDeleteWhenSqlExceptionOccursAndLogItAsync()
         {
             // given
-            Guid randomReadingNoteId = Guid.NewGuid();
-            Guid inputReadingNoteId = randomReadingNoteId;
+            int randomReadingNoteId = 1;
+            int inputReadingNoteId = randomReadingNoteId;
             SqlException sqlException = GetSqlException();
 
             var expectedReadingNoteDependencyException =
@@ -55,8 +55,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
         public async Task ShouldThrowDependencyExceptionOnDeleteWhenDbUpdateConcurrencyExceptionOccursAndLogItAsync()
         {
             // given
-            Guid randomReadingNoteId = Guid.NewGuid();
-            Guid inputReadingNoteId = randomReadingNoteId;
+            int randomReadingNoteId = 1;
+            int inputReadingNoteId = randomReadingNoteId;
             var databaseUpdateConcurrencyException = new DbUpdateConcurrencyException();
 
             var lockedReadingNoteException =
@@ -94,8 +94,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
         public async Task ShouldThrowServiceExceptionOnDeleteWhenExceptionOccursAndLogItAsync()
         {
             // given
-            Guid randomReadingNoteId = Guid.NewGuid();
-            Guid inputReadingNoteId = randomReadingNoteId;
+            int randomReadingNoteId = 1;
+            int inputReadingNoteId = randomReadingNoteId;
             var exception = new Exception();
 
             var expectedReadingNoteException =

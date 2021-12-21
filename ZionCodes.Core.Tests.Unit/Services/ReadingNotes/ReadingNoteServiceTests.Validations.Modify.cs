@@ -33,7 +33,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
                     Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectReadingNoteByIdAsync(It.IsAny<Guid>()),
+                broker.SelectReadingNoteByIdAsync(It.IsAny<int>()),
                     Times.Never);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
@@ -70,7 +70,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
                     Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectReadingNoteByIdAsync(It.IsAny<Guid>()),
+                broker.SelectReadingNoteByIdAsync(It.IsAny<int>()),
                     Times.Never);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();

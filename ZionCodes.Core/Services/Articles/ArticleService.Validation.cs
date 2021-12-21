@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ZionCodes.Core.Models.Articles;
 using ZionCodes.Core.Models.Articles.Exceptions;
@@ -25,9 +26,9 @@ namespace ZionCodes.Core.Services.Articles
         }
 
 
-        private void ValidateArticleId(Guid articleId)
+        private void ValidateArticleId(int articleId)
         {
-            if (articleId == Guid.Empty)
+            if (articleId < 1)
             {
                 throw new InvalidArticleInputException(
                     parameterName: nameof(Article.Id),
@@ -35,7 +36,7 @@ namespace ZionCodes.Core.Services.Articles
             }
         }
 
-        private void ValidateArticleIdIsNull(Guid articleId)
+        private void ValidateArticleIdIsNull(int articleId)
         {
             if (articleId == default)
             {
@@ -45,7 +46,7 @@ namespace ZionCodes.Core.Services.Articles
             }
         }
 
-        private void ValidateStorageArticle(Article storageArticle, Guid articleId)
+        private void ValidateStorageArticle(Article storageArticle, int articleId)
         {
             if (storageArticle == null)
             {
@@ -68,7 +69,7 @@ namespace ZionCodes.Core.Services.Articles
             }
         }
 
-        private void ValidateStorageArticles(IQueryable<Article> storageArticles)
+        private void ValidateStorageArticles(ICollection<Article> storageArticles)
         {
             if (storageArticles.Count() == 0)
             {
@@ -148,7 +149,7 @@ namespace ZionCodes.Core.Services.Articles
 
         private bool IsInvalid(DateTimeOffset input) => input == default;
         private bool IsInvalid(string articleBody) => String.IsNullOrWhiteSpace(articleBody);
-        private bool IsInvalid(Guid input) => input == default;
+        private bool IsInvalid(int input) => input == default;
 
         private bool IsDateNotRecent(DateTimeOffset dateTime)
         {

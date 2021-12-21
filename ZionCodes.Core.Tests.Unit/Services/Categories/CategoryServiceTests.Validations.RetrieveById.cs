@@ -13,8 +13,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
         public async void ShouldThrowValidationExceptionOnRetrieveByIdWhenIdIsInvalidAndLogItAsync()
         {
             // given
-            Guid randomCategoryId = default;
-            Guid inputCategoryId = randomCategoryId;
+            int randomCategoryId = default;
+            int inputCategoryId = randomCategoryId;
 
             var invalidCategoryInputException = new InvalidCategoryInputException(
                     parameterName: nameof(Category.Id),
@@ -40,7 +40,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
                     Times.Never);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectCategoryByIdAsync(It.IsAny<Guid>()),
+                broker.SelectCategoryByIdAsync(It.IsAny<int>()),
                     Times.Never);
 
             this.loggingBrokerMock.VerifyNoOtherCalls();
@@ -52,8 +52,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
         public async void ShouldThrowValidationExceptionOnRetrieveByIdWhenStorageCategoryIsNullAndLogItAsync()
         {
             // given
-            Guid randomCategoryId = Guid.NewGuid();
-            Guid someCategoryId = randomCategoryId;
+            int randomCategoryId = 1;
+            int someCategoryId = randomCategoryId;
             Category invalidStorageCategory = null;
             var notFoundCategoryException = new NotFoundCategoryException(someCategoryId);
 
@@ -61,7 +61,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
                 new CategoryValidationException(notFoundCategoryException);
 
             this.storageBrokerMock.Setup(broker =>
-                broker.SelectCategoryByIdAsync(It.IsAny<Guid>()))
+                broker.SelectCategoryByIdAsync(It.IsAny<int>()))
                     .ReturnsAsync(invalidStorageCategory);
 
             // when
@@ -81,7 +81,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
                     Times.Never);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectCategoryByIdAsync(It.IsAny<Guid>()),
+                broker.SelectCategoryByIdAsync(It.IsAny<int>()),
                     Times.Once);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();

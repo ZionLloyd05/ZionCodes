@@ -15,8 +15,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
         public async Task ShouldThrowDependencyExceptionOnDeleteWhenSqlExceptionOccursAndLogItAsync()
         {
             // given
-            Guid randomTagId = Guid.NewGuid();
-            Guid inputTagId = randomTagId;
+            int randomTagId = 1;
+            int inputTagId = randomTagId;
             SqlException sqlException = GetSqlException();
 
             var expectedTagDependencyException =
@@ -55,8 +55,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
         public async Task ShouldThrowDependencyExceptionOnDeleteWhenDbUpdateConcurrencyExceptionOccursAndLogItAsync()
         {
             // given
-            Guid randomTagId = Guid.NewGuid();
-            Guid inputTagId = randomTagId;
+            int randomTagId = 1;
+            int inputTagId = randomTagId;
             var databaseUpdateConcurrencyException = new DbUpdateConcurrencyException();
 
             var lockedTagException =
@@ -93,8 +93,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
         public async Task ShouldThrowServiceExceptionOnDeleteWhenExceptionOccursAndLogItAsync()
         {
             // given
-            Guid randomTagId = Guid.NewGuid();
-            Guid inputTagId = randomTagId;
+            int randomTagId = 1;
+            int inputTagId = randomTagId;
             var exception = new Exception();
 
             var expectedTagException =

@@ -15,8 +15,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
         public async Task ShouldThrowDependencyExceptionOnDeleteWhenSqlExceptionOccursAndLogItAsync()
         {
             // given
-            Guid randomCommentId = Guid.NewGuid();
-            Guid inputCommentId = randomCommentId;
+            int randomCommentId = 1;
+            int inputCommentId = randomCommentId;
             SqlException sqlException = GetSqlException();
 
             var expectedCommentDependencyException =
@@ -55,8 +55,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
         public async Task ShouldThrowDependencyExceptionOnDeleteWhenDbUpdateConcurrencyExceptionOccursAndLogItAsync()
         {
             // given
-            Guid randomCommentId = Guid.NewGuid();
-            Guid inputCommentId = randomCommentId;
+            int randomCommentId = 1;
+            int inputCommentId = randomCommentId;
             var databaseUpdateConcurrencyException = new DbUpdateConcurrencyException();
 
             var lockedCommentException =
@@ -93,8 +93,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
         public async Task ShouldThrowServiceExceptionOnDeleteWhenExceptionOccursAndLogItAsync()
         {
             // given
-            Guid randomCommentId = Guid.NewGuid();
-            Guid inputCommentId = randomCommentId;
+            int randomCommentId = 1;
+            int inputCommentId = randomCommentId;
             var exception = new Exception();
 
             var expectedStudentCommentException =

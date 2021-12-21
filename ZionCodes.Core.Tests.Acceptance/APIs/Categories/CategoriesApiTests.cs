@@ -45,7 +45,7 @@ namespace ZionCodes.Core.Tests.Acceptance.APIs.Categories
         private static Filler<Category> CreateRandomCategoryFiller()
         {
             DateTimeOffset now = DateTimeOffset.UtcNow;
-            Guid posterId = Guid.NewGuid();
+            int posterId = 1;
 
             var filler = new Filler<Category>();
 

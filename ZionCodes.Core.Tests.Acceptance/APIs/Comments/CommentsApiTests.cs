@@ -34,7 +34,7 @@ namespace ZionCodes.Core.Tests.Acceptance.APIs.Comments
             return await this.apiBroker.PostArticleAsync(article);
         }
 
-        private Comment CreateRandomComment(Guid articleId) =>
+        private Comment CreateRandomComment(int articleId) =>
              CreateRandomCommentFiller(articleId).Create();
 
         private async ValueTask<Comment> PostRandomCommentAsync()
@@ -47,10 +47,10 @@ namespace ZionCodes.Core.Tests.Acceptance.APIs.Comments
         }
 
 
-        private static Filler<Article> CreateRandomArticleFiller(Guid categoryId)
+        private static Filler<Article> CreateRandomArticleFiller(int categoryId)
         {
             DateTimeOffset now = DateTimeOffset.UtcNow;
-            Guid posterId = Guid.NewGuid();
+            int posterId = 1;
 
             var filler = new Filler<Article>();
 
@@ -68,7 +68,7 @@ namespace ZionCodes.Core.Tests.Acceptance.APIs.Comments
         private static Category CreateRandomCategory()
         {
             DateTimeOffset now = DateTimeOffset.UtcNow;
-            Guid posterId = Guid.NewGuid();
+            int posterId = 1;
             var filler = new Filler<Category>();
 
             filler.Setup()
@@ -96,11 +96,11 @@ namespace ZionCodes.Core.Tests.Acceptance.APIs.Comments
             return filler.Create();
         }
 
-        private static Filler<Comment> CreateRandomCommentFiller(Guid articleId)
+        private static Filler<Comment> CreateRandomCommentFiller(int articleId)
         {
             DateTimeOffset now = DateTimeOffset.UtcNow;
             //   Article randomArticle = await PostRandomArticleAsync();
-            Guid posterId = Guid.NewGuid();
+            int posterId = 1;
 
             var filler = new Filler<Comment>();
 

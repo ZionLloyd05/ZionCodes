@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -56,13 +57,13 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
         {
             // given
             DateTimeOffset randomDateTime = GetRandomDateTime();
-            IQueryable<Category> randomCategories =
+            ICollection<Category> randomCategories =
                 CreateRandomCategories(randomDateTime);
 
-            IQueryable<Category> storageCategories =
+            ICollection<Category> storageCategories =
                 randomCategories;
 
-            IQueryable<Category> expectedCategories =
+            ICollection<Category> expectedCategories =
                 storageCategories;
 
             this.storageBrokerMock.Setup(broker =>
@@ -70,7 +71,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
                     .Returns(storageCategories);
 
             // when
-            IQueryable<Category> actualCategories =
+            ICollection<Category> actualCategories =
                 this.categoryService.RetrieveAllCategories();
 
             // then
@@ -89,8 +90,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
         public async Task ShouldRetrieveCategoryByIdAsync()
         {
             // given
-            Guid randomCategoryId = Guid.NewGuid();
-            Guid inputCategoryId = randomCategoryId;
+            int randomCategoryId = 1;
+            int inputCategoryId = randomCategoryId;
             DateTimeOffset randomDateTime = GetRandomDateTime();
             Category randomCategory = CreateRandomCategory(randomDateTime);
             Category storageCategory = randomCategory;
@@ -131,7 +132,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
             Category expectedCategory = afterUpdateStorageCategory;
             Category beforeUpdateStorageCategory = randomCategory.DeepClone();
             inputCategory.UpdatedDate = randomDate;
-            Guid categoryId = inputCategory.Id;
+            int categoryId = inputCategory.Id;
 
             this.storageBrokerMock.Setup(broker =>
                 broker.SelectCategoryByIdAsync(categoryId))
@@ -170,7 +171,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
             DateTimeOffset dateTime = randomDateTime;
             Category randomCategory = CreateRandomCategory(dateTime);
             Category inputCategory = randomCategory;
-            Guid inputCategoryId = inputCategory.Id;
+            int inputCategoryId = inputCategory.Id;
             inputCategory.UpdatedBy = inputCategory.CreatedBy;
             inputCategory.UpdatedDate = inputCategory.CreatedDate;
             Category storageCategory = inputCategory;

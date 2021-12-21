@@ -4,6 +4,7 @@
 // ---------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using ZionCodes.Core.Models.Users;
 using ZionCodes.Web.Api.Models.Users.Exceptions;
@@ -153,7 +154,7 @@ namespace ZionCodes.Core.Services.Users
             return Math.Abs(difference.TotalMinutes) >= oneMinute;
         }
 
-        private void ValidateStorageUsers(IQueryable<User> storageUsers)
+        private void ValidateStorageUsers(ICollection<User> storageUsers)
         {
             if (!storageUsers.Any())
             {

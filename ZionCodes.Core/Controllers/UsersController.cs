@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using ZionCodes.Core.Dtos.Generic;
 using ZionCodes.Core.Dtos.Users;
 using ZionCodes.Core.Models.Users;
 using ZionCodes.Core.Services.Users;
+using ZionCodes.Core.Utils;
 
 namespace ZionCodes.Core.Controllers
 {
@@ -36,11 +39,30 @@ namespace ZionCodes.Core.Controllers
        });
 
         [HttpGet]
-        public ActionResult<IQueryable<User>> GetAllUsers() =>
+        public ActionResult<ICollection<User>> GetAllUsers([FromQuery] PaginationQuery paginationQuery) =>
         TryCatchUserFunction(() =>
         {
-            IQueryable storageUser =
+            ICollection<User> storageUser =
                     this.userService.RetrieveAllUsers();
+
+
+            if (paginationQuery != null)
+            {
+                PaginationFilter filter = new()
+                {
+                    PageNumber = paginationQuery.PageNumber,
+                    PageSize = paginationQuery.PageSize,
+                };
+
+                if (paginationQuery.PageNumber < 1 || paginationQuery.PageSize < 1)
+                {
+                    return Ok(new PagedResponse<ICollection<User>>(storageUser));
+                }
+
+                var paginationResponse = PaginationBuilder.CreatePaginatedResponse(filter, storageUser);
+
+                return Ok(paginationResponse);
+            }
 
             return Ok(storageUser);
         });

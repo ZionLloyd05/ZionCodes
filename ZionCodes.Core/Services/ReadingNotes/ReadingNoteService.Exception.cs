@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EFxceptions.Models.Exceptions;
@@ -12,7 +13,7 @@ namespace ZionCodes.Core.Services.ReadingNotes
     public partial class ReadingNoteService
     {
         private delegate ValueTask<ReadingNote> ReturningReadingNoteFunction();
-        private delegate IQueryable<ReadingNote> ReturningQueryableReadingNoteFunction();
+        private delegate ICollection<ReadingNote> ReturningCollectionReadingNoteFunction();
 
 
         private async ValueTask<ReadingNote> TryCatch(
@@ -65,12 +66,12 @@ namespace ZionCodes.Core.Services.ReadingNotes
             }
         }
 
-        private IQueryable<ReadingNote> TryCatch
-          (ReturningQueryableReadingNoteFunction returningQueryableReadingNoteFunction)
+        private ICollection<ReadingNote> TryCatch
+          (ReturningCollectionReadingNoteFunction ReturningCollectionReadingNoteFunction)
         {
             try
             {
-                return returningQueryableReadingNoteFunction();
+                return ReturningCollectionReadingNoteFunction();
             }
             catch (SqlException sqlException)
             {

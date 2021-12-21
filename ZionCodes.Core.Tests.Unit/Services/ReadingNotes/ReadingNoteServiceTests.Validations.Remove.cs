@@ -13,8 +13,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
         public async Task ShouldThrowValidatonExceptionOnDeleteWhenIdIsInvalidAndLogItAsync()
         {
             // given
-            Guid randomReadingNoteId = default;
-            Guid inputReadingNoteId = randomReadingNoteId;
+            int randomReadingNoteId = default;
+            int inputReadingNoteId = randomReadingNoteId;
 
             var invalidReadingNoteInputException = new InvalidReadingNoteException(
                 parameterName: nameof(ReadingNote.Id),
@@ -35,7 +35,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
                     Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectReadingNoteByIdAsync(It.IsAny<Guid>()),
+                broker.SelectReadingNoteByIdAsync(It.IsAny<int>()),
                     Times.Never);
 
             this.storageBrokerMock.Verify(broker =>
@@ -53,7 +53,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
             // given
             DateTimeOffset dateTime = GetRandomDateTime();
             ReadingNote randomReadingNote = CreateRandomReadingNote(dateTime);
-            Guid inputReadingNoteId = randomReadingNote.Id;
+            int inputReadingNoteId = randomReadingNote.Id;
             ReadingNote inputReadingNote = randomReadingNote;
             ReadingNote nullStorageReadingNote = null;
 

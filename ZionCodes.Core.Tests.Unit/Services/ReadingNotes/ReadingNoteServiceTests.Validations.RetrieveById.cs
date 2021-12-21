@@ -13,8 +13,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
         public async void ShouldThrowValidationExceptionOnRetrieveByIdWhenIdIsInvalidAndLogItAsync()
         {
             // given
-            Guid randomReadingNoteId = default;
-            Guid inputReadingNoteId = randomReadingNoteId;
+            int randomReadingNoteId = default;
+            int inputReadingNoteId = randomReadingNoteId;
 
             var invalidReadingNoteInputException = new InvalidReadingNoteInputException(
                     parameterName: nameof(ReadingNote.Id),
@@ -40,7 +40,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
                     Times.Never);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectReadingNoteByIdAsync(It.IsAny<Guid>()),
+                broker.SelectReadingNoteByIdAsync(It.IsAny<int>()),
                     Times.Never);
 
             this.loggingBrokerMock.VerifyNoOtherCalls();
@@ -52,8 +52,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
         public async void ShouldThrowValidationExceptionOnRetrieveByIdWhenStorageReadingNoteIsNullAndLogItAsync()
         {
             // given
-            Guid randomReadingNoteId = Guid.NewGuid();
-            Guid someReadingNoteId = randomReadingNoteId;
+            int randomReadingNoteId = 1;
+            int someReadingNoteId = randomReadingNoteId;
             ReadingNote invalidStorageReadingNote = null;
             var notFoundReadingNoteException = new NotFoundReadingNoteException(someReadingNoteId);
 
@@ -61,7 +61,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
                 new ReadingNoteValidationException(notFoundReadingNoteException);
 
             this.storageBrokerMock.Setup(broker =>
-                broker.SelectReadingNoteByIdAsync(It.IsAny<Guid>()))
+                broker.SelectReadingNoteByIdAsync(It.IsAny<int>()))
                     .ReturnsAsync(invalidStorageReadingNote);
 
             // when
@@ -81,7 +81,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
                     Times.Never);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectReadingNoteByIdAsync(It.IsAny<Guid>()),
+                broker.SelectReadingNoteByIdAsync(It.IsAny<int>()),
                     Times.Once);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();

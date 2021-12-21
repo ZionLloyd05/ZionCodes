@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EFxceptions.Models.Exceptions;
@@ -12,7 +13,7 @@ namespace ZionCodes.Core.Services.Tags
     public partial class TagService
     {
         private delegate ValueTask<Tag> ReturningTagFunction();
-        private delegate IQueryable<Tag> ReturningQueryableTagFunction();
+        private delegate ICollection<Tag> ReturningCollectionTagFunction();
 
         private async ValueTask<Tag> TryCatch(
             ReturningTagFunction returningTagFunction)
@@ -64,12 +65,12 @@ namespace ZionCodes.Core.Services.Tags
             }
         }
 
-        private IQueryable<Tag> TryCatch
-           (ReturningQueryableTagFunction returningQueryableTagFunction)
+        private ICollection<Tag> TryCatch
+           (ReturningCollectionTagFunction ReturningCollectionTagFunction)
         {
             try
             {
-                return returningQueryableTagFunction();
+                return ReturningCollectionTagFunction();
             }
             catch (SqlException sqlException)
             {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ZionCodes.Core.Models.ReadingNotes;
 using ZionCodes.Core.Models.ReadingNotes.Exceptions;
@@ -22,7 +23,7 @@ namespace ZionCodes.Core.Services.ReadingNotes
             }
         }
 
-        private void ValidateReadingNoteIdIsNull(Guid readingNoteId)
+        private void ValidateReadingNoteIdIsNull(int readingNoteId)
         {
             if (readingNoteId == default)
             {
@@ -32,9 +33,9 @@ namespace ZionCodes.Core.Services.ReadingNotes
             }
         }
 
-        private void ValidateReadingNoteId(Guid readingNoteId)
+        private void ValidateReadingNoteId(int readingNoteId)
         {
-            if (readingNoteId == Guid.Empty)
+            if (readingNoteId < 1)
             {
                 throw new InvalidReadingNoteInputException(
                     parameterName: nameof(ReadingNote.Id),
@@ -58,7 +59,7 @@ namespace ZionCodes.Core.Services.ReadingNotes
 
             }
         }
-        private void ValidateStorageReadingNotes(IQueryable<ReadingNote> storageCategories)
+        private void ValidateStorageReadingNotes(ICollection<ReadingNote> storageCategories)
         {
             if (storageCategories.Count() == 0)
             {
@@ -67,7 +68,7 @@ namespace ZionCodes.Core.Services.ReadingNotes
         }
 
 
-        private void ValidateStorageReadingNote(ReadingNote storageReadingNote, Guid readingNoteId)
+        private void ValidateStorageReadingNote(ReadingNote storageReadingNote, int readingNoteId)
         {
             if (storageReadingNote == null)
             {
@@ -113,7 +114,7 @@ namespace ZionCodes.Core.Services.ReadingNotes
             }
         }
 
-        private bool IsInvalid(Guid input) => input == default;
+        private bool IsInvalid(int input) => input == default;
         private bool IsInvalid(DateTimeOffset input) => input == default;
         private bool IsDateNotRecent(DateTimeOffset dateTime)
         {

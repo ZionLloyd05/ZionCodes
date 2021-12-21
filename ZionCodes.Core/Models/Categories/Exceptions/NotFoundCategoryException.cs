@@ -4,7 +4,7 @@ namespace ZionCodes.Core.Models.Categories.Exceptions
 {
     public class NotFoundCategoryException : Exception
     {
-        public NotFoundCategoryException(Guid categoryId)
+        public NotFoundCategoryException(int categoryId)
            : base($"Couldn't find category with Id: {categoryId}.") { }
     }
 }

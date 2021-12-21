@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -55,13 +56,13 @@ namespace ZionCodes.Core.Tests.Unit.Services.Articles
         {
             // given
             DateTimeOffset randomDateTime = GetRandomDateTime();
-            IQueryable<Article> randomArticles =
+            ICollection<Article> randomArticles =
                 CreateRandomArticles(randomDateTime);
 
-            IQueryable<Article> storageArticles =
+            ICollection<Article> storageArticles =
                 randomArticles;
 
-            IQueryable<Article> expectedArticles =
+            ICollection<Article> expectedArticles =
                 storageArticles;
 
             this.storageBrokerMock.Setup(broker =>
@@ -69,7 +70,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Articles
                     .Returns(storageArticles);
 
             // when
-            IQueryable<Article> actualArticles =
+            ICollection<Article> actualArticles =
                 this.articleService.RetrieveAllArticles();
 
             // then
@@ -88,8 +89,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.Articles
         public async Task ShouldRetrieveArticleByIdAsync()
         {
             // given
-            Guid randomArticleId = Guid.NewGuid();
-            Guid inputArticleId = randomArticleId;
+            int randomArticleId = 1;
+            int inputArticleId = randomArticleId;
             DateTimeOffset randomDateTime = GetRandomDateTime();
             Article randomArticle = CreateRandomArticle(randomDateTime);
             Article storageArticle = randomArticle;
@@ -130,7 +131,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Articles
             Article expectedArticle = afterUpdateStorageArticle;
             Article beforeUpdateStorageArticle = randomArticle.DeepClone();
             inputArticle.UpdatedDate = randomDate;
-            Guid articleId = inputArticle.Id;
+            int articleId = inputArticle.Id;
 
             this.storageBrokerMock.Setup(broker =>
                 broker.SelectArticleByIdAsync(articleId))
@@ -168,7 +169,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Articles
             DateTimeOffset dateTime = randomDateTime;
             Article randomArticle = CreateRandomArticle(dateTime);
             Article inputArticle = randomArticle;
-            Guid inputArticleId = inputArticle.Id;
+            int inputArticleId = inputArticle.Id;
             inputArticle.UpdatedDate = inputArticle.CreatedDate;
             Article storageArticle = inputArticle;
             Article expectedArticle = inputArticle;

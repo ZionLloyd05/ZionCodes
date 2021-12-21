@@ -33,7 +33,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
                     Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectCommentByIdAsync(It.IsAny<Guid>()),
+                broker.SelectCommentByIdAsync(It.IsAny<int>()),
                     Times.Never);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
@@ -71,7 +71,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
                     Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectCommentByIdAsync(It.IsAny<Guid>()),
+                broker.SelectCommentByIdAsync(It.IsAny<int>()),
                     Times.Never);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
@@ -146,7 +146,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
                     Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectCommentByIdAsync(It.IsAny<Guid>()),
+                broker.SelectCommentByIdAsync(It.IsAny<int>()),
                     Times.Never);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();

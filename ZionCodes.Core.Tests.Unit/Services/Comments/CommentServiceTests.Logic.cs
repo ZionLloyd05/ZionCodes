@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -55,13 +56,13 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
         {
             // given
             DateTimeOffset randomDateTime = GetRandomDateTime();
-            IQueryable<Comment> randomComments =
+            ICollection<Comment> randomComments =
                 CreateRandomComments(randomDateTime);
 
-            IQueryable<Comment> storageComments =
+            ICollection<Comment> storageComments =
                 randomComments;
 
-            IQueryable<Comment> expectedComments =
+            ICollection<Comment> expectedComments =
                 storageComments;
 
             this.storageBrokerMock.Setup(broker =>
@@ -69,7 +70,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
                     .Returns(storageComments);
 
             // when
-            IQueryable<Comment> actualComments =
+            ICollection<Comment> actualComments =
                 this.commentService.RetrieveAllComments();
 
             // then
@@ -88,8 +89,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
         public async Task ShouldRetrieveCommentByIdAsync()
         {
             // given
-            Guid randomCommentId = Guid.NewGuid();
-            Guid inputCommentId = randomCommentId;
+            int randomCommentId = 1;
+            int inputCommentId = randomCommentId;
             DateTimeOffset randomDateTime = GetRandomDateTime();
             Comment randomComment = CreateRandomComment(randomDateTime);
             Comment storageComment = randomComment;
@@ -130,7 +131,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
             Comment expectedComment = afterUpdateStorageComment;
             Comment beforeUpdateStorageComment = randomComment.DeepClone();
             inputComment.UpdatedDate = randomDate;
-            Guid commentId = inputComment.Id;
+            int commentId = inputComment.Id;
 
             this.storageBrokerMock.Setup(broker =>
                 broker.SelectCommentByIdAsync(commentId))
@@ -168,7 +169,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
             DateTimeOffset dateTime = randomDateTime;
             Comment randomComment = CreateRandomComment(dateTime);
             Comment inputComment = randomComment;
-            Guid inputCommentId = inputComment.Id;
+            int inputCommentId = inputComment.Id;
             inputComment.UpdatedDate = inputComment.CreatedDate;
             Comment storageComment = inputComment;
             Comment expectedComment = inputComment;

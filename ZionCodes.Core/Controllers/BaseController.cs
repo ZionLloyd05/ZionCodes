@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +15,7 @@ namespace ZionCodes.Core.Controllers
     public class BaseController<T> : RESTFulController
     {
         protected delegate ValueTask<ActionResult<T>> ReturningSingleControllerFunction();
-        protected delegate ActionResult<IQueryable<T>> ReturningMultipleControllerFunction();
+        protected delegate ActionResult<ICollection<T>> ReturningMultipleControllerFunction();
 
         #region CategoriesControllerFunction
         protected async ValueTask<ActionResult<T>> TryCatchCategoryFunction(
@@ -62,7 +63,7 @@ namespace ZionCodes.Core.Controllers
 
         }
 
-        protected ActionResult<IQueryable<T>> TryCatchCategoryFunction(
+        protected ActionResult<ICollection<T>> TryCatchCategoryFunction(
             ReturningMultipleControllerFunction returningControllerFunction)
         {
             try
@@ -126,7 +127,7 @@ namespace ZionCodes.Core.Controllers
 
         }
 
-        protected ActionResult<IQueryable<T>> TryCatchTagFunction(
+        protected ActionResult<ICollection<T>> TryCatchTagFunction(
             ReturningMultipleControllerFunction returningControllerFunction)
         {
             try
@@ -190,7 +191,7 @@ namespace ZionCodes.Core.Controllers
 
         }
 
-        protected ActionResult<IQueryable<T>> TryCatchCommentFunction(
+        protected ActionResult<ICollection<T>> TryCatchCommentFunction(
             ReturningMultipleControllerFunction returningControllerFunction)
         {
             try
@@ -254,7 +255,7 @@ namespace ZionCodes.Core.Controllers
 
         }
 
-        protected ActionResult<IQueryable<T>> TryCatchArticleFunction(
+        protected ActionResult<ICollection<T>> TryCatchArticleFunction(
             ReturningMultipleControllerFunction returningControllerFunction)
         {
             try
@@ -318,7 +319,7 @@ namespace ZionCodes.Core.Controllers
 
         }
 
-        protected ActionResult<IQueryable<T>> TryCatchUserFunction(
+        protected ActionResult<ICollection<T>> TryCatchUserFunction(
             ReturningMultipleControllerFunction returningControllerFunction)
         {
             try

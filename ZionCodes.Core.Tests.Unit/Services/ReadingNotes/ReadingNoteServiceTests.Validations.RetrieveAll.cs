@@ -13,15 +13,15 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
         public void ShouldLogWarningOnRetrieveAllWhenReadingNotesWasEmptyAndLogIt()
         {
             // given
-            IQueryable<ReadingNote> emptyStorageReadingNotes = new List<ReadingNote>().AsQueryable();
-            IQueryable<ReadingNote> expectedReadingNotes = emptyStorageReadingNotes;
+            ICollection<ReadingNote> emptyStorageReadingNotes = new List<ReadingNote>().ToList();
+            ICollection<ReadingNote> expectedReadingNotes = emptyStorageReadingNotes;
 
             this.storageBrokerMock.Setup(broker =>
                 broker.SelectAllReadingNotes())
                     .Returns(expectedReadingNotes);
 
             // when
-            IQueryable<ReadingNote> actualReadingNote =
+            ICollection<ReadingNote> actualReadingNote =
                 this.readingNoteService.RetrieveAllReadingNotes();
 
             // then

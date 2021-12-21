@@ -13,8 +13,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
         public async void ShouldThrowValidationExceptionOnRetrieveByIdWhenIdIsInvalidAndLogItAsync()
         {
             // given
-            Guid randomTagId = default;
-            Guid inputTagId = randomTagId;
+            int randomTagId = default;
+            int inputTagId = randomTagId;
 
             var invalidTagInputException = new InvalidTagInputException(
                     parameterName: nameof(Tag.Id),
@@ -40,7 +40,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
                     Times.Never);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectTagByIdAsync(It.IsAny<Guid>()),
+                broker.SelectTagByIdAsync(It.IsAny<int>()),
                     Times.Never);
 
             this.loggingBrokerMock.VerifyNoOtherCalls();
@@ -52,8 +52,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
         public async void ShouldThrowValidationExceptionOnRetrieveByIdWhenStorageTagIsNullAndLogItAsync()
         {
             // given
-            Guid randomTagId = Guid.NewGuid();
-            Guid someTagId = randomTagId;
+            int randomTagId = 1;
+            int someTagId = randomTagId;
             Tag invalidStorageTag = null;
             var notFoundTagException = new NotFoundTagException(someTagId);
 
@@ -61,7 +61,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
                 new TagValidationException(notFoundTagException);
 
             this.storageBrokerMock.Setup(broker =>
-                broker.SelectTagByIdAsync(It.IsAny<Guid>()))
+                broker.SelectTagByIdAsync(It.IsAny<int>()))
                     .ReturnsAsync(invalidStorageTag);
 
             // when
@@ -81,7 +81,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
                     Times.Never);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectTagByIdAsync(It.IsAny<Guid>()),
+                broker.SelectTagByIdAsync(It.IsAny<int>()),
                     Times.Once);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ZionCodes.Core.Brokers.DateTimes;
@@ -33,17 +34,17 @@ namespace ZionCodes.Core.Services.Tags
                 return await this.storageBroker.InsertTagAsync(tag);
             });
 
-        public IQueryable<Tag> RetrieveAllTags() =>
+        public ICollection<Tag> RetrieveAllTags() =>
             TryCatch(() =>
             {
-                IQueryable<Tag> storageTags = this.storageBroker.SelectAllTags();
+                ICollection<Tag> storageTags = this.storageBroker.SelectAllTags();
 
                 ValidateStorageTags(storageTags);
 
                 return storageTags;
             });
 
-        public ValueTask<Tag> RetrieveTagByIdAsync(Guid tagId) =>
+        public ValueTask<Tag> RetrieveTagByIdAsync(int tagId) =>
             TryCatch(async () =>
             {
                 ValidateTagId(tagId);
@@ -68,7 +69,7 @@ namespace ZionCodes.Core.Services.Tags
                 return await this.storageBroker.UpdateTagAsync(tag);
             });
 
-        public ValueTask<Tag> RemoveTagByIdAsync(Guid tagId) =>
+        public ValueTask<Tag> RemoveTagByIdAsync(int tagId) =>
             TryCatch(async () =>
             {
                 ValidateTagIdIsNull(tagId);

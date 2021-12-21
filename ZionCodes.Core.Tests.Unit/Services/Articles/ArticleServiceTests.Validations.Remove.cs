@@ -13,8 +13,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.Articles
         public async Task ShouldThrowValidatonExceptionOnDeleteWhenIdIsInvalidAndLogItAsync()
         {
             // given
-            Guid randomArticleId = default;
-            Guid inputArticleId = randomArticleId;
+            int randomArticleId = default;
+            int inputArticleId = randomArticleId;
 
             var invalidArticleInputException = new InvalidArticleException(
                 parameterName: nameof(Article.Id),
@@ -35,7 +35,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Articles
                     Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectArticleByIdAsync(It.IsAny<Guid>()),
+                broker.SelectArticleByIdAsync(It.IsAny<int>()),
                     Times.Never);
 
             this.storageBrokerMock.Verify(broker =>
@@ -53,7 +53,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Articles
             // given
             DateTimeOffset dateTime = GetRandomDateTime();
             Article randomArticle = CreateRandomArticle(dateTime);
-            Guid inputArticleId = randomArticle.Id;
+            int inputArticleId = randomArticle.Id;
             Article inputArticle = randomArticle;
             Article nullStorageArticle = null;
 

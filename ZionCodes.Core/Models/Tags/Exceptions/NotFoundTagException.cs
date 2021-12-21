@@ -4,7 +4,7 @@ namespace ZionCodes.Core.Models.Tags.Exceptions
 {
     public class NotFoundTagException : Exception
     {
-        public NotFoundTagException(Guid tagId)
+        public NotFoundTagException(int tagId)
            : base($"Couldn't find tag with Id: {tagId}.") { }
     }
 }

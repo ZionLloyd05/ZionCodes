@@ -13,15 +13,15 @@ namespace ZionCodes.Core.Tests.Unit.Services.Articles
         public void ShouldLogWarningOnRetrieveAllWhenArticlesWasEmptyAndLogIt()
         {
             // given
-            IQueryable<Article> emptyStorageArticles = new List<Article>().AsQueryable();
-            IQueryable<Article> expectedArticles = emptyStorageArticles;
+            ICollection<Article> emptyStorageArticles = new List<Article>().ToList();
+            ICollection<Article> expectedArticles = emptyStorageArticles;
 
             this.storageBrokerMock.Setup(broker =>
                 broker.SelectAllArticles())
                     .Returns(expectedArticles);
 
             // when
-            IQueryable<Article> actualArticle =
+            ICollection<Article> actualArticle =
                 this.articleService.RetrieveAllArticles();
 
             // then

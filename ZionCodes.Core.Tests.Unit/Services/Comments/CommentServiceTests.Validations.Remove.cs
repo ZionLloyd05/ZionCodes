@@ -13,8 +13,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
         public async Task ShouldThrowValidatonExceptionOnDeleteWhenIdIsInvalidAndLogItAsync()
         {
             // given
-            Guid randomCommentId = default;
-            Guid inputCommentId = randomCommentId;
+            int randomCommentId = default;
+            int inputCommentId = randomCommentId;
 
             var invalidCommentInputException = new InvalidCommentException(
                 parameterName: nameof(Comment.Id),
@@ -35,7 +35,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
                     Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectCommentByIdAsync(It.IsAny<Guid>()),
+                broker.SelectCommentByIdAsync(It.IsAny<int>()),
                     Times.Never);
 
             this.storageBrokerMock.Verify(broker =>
@@ -53,7 +53,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
             // given
             DateTimeOffset dateTime = GetRandomDateTime();
             Comment randomComment = CreateRandomComment(dateTime);
-            Guid inputCommentId = randomComment.Id;
+            int inputCommentId = randomComment.Id;
             Comment inputComment = randomComment;
             Comment nullStorageComment = null;
 

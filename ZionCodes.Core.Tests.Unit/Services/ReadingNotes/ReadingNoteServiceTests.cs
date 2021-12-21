@@ -39,8 +39,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.ReadingNotes
         private static DateTimeOffset GetRandomDateTime() =>
             new DateTimeRange(earliestDate: new DateTime()).GetValue();
 
-        private static IQueryable<ReadingNote> CreateRandomReadingNotes(DateTimeOffset dateTime) =>
-            CreateRandomReadingNoteFiller(dateTime).Create(GetRandomNumber()).AsQueryable();
+        private static ICollection<ReadingNote> CreateRandomReadingNotes(DateTimeOffset dateTime) =>
+            CreateRandomReadingNoteFiller(dateTime).Create(GetRandomNumber()).ToList();
 
         private static SqlException GetSqlException() =>
             (SqlException)FormatterServices.GetUninitializedObject(typeof(SqlException));

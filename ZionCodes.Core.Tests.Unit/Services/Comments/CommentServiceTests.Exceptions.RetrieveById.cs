@@ -15,8 +15,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
         public async Task ShouldThrowDependencyExceptionOnRetrieveByIdWhenSqlExceptionOccursAndLogItAsync()
         {
             // given
-            Guid randomCommentId = Guid.NewGuid();
-            Guid inputCommentId = randomCommentId;
+            int randomCommentId = 1;
+            int inputCommentId = randomCommentId;
             SqlException sqlException = GetSqlException();
 
             var exceptionCommentDependencyException =
@@ -51,14 +51,14 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
         public async Task ShouldThrowDependencyExceptionOnRetrieveByIdWhenDbExceptionOccursAndLogItAsync()
         {
             // given
-            Guid someCommentId = Guid.NewGuid();
+            int someCommentId = 1;
             var databaseUpdateException = new DbUpdateException();
 
             var expectedCommentDependencyException =
                 new CommentDependencyException(databaseUpdateException);
 
             this.storageBrokerMock.Setup(broker =>
-                broker.SelectCommentByIdAsync(It.IsAny<Guid>()))
+                broker.SelectCommentByIdAsync(It.IsAny<int>()))
                     .ThrowsAsync(databaseUpdateException);
 
             // when
@@ -74,7 +74,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
                     Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectCommentByIdAsync(It.IsAny<Guid>()),
+                broker.SelectCommentByIdAsync(It.IsAny<int>()),
                     Times.Once);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
@@ -87,14 +87,14 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
         public async Task ShouldThrowServiceExceptionOnRetrieveByIdWhenExceptionOccursAndLogItAsync()
         {
             // given
-            Guid someCommentId = Guid.NewGuid();
+            int someCommentId = 1;
             var exception = new Exception();
 
             var expectedCommentServiceException =
                 new CommentServiceException(exception);
 
             this.storageBrokerMock.Setup(broker =>
-                broker.SelectCommentByIdAsync(It.IsAny<Guid>()))
+                broker.SelectCommentByIdAsync(It.IsAny<int>()))
                     .ThrowsAsync(exception);
 
             // when
@@ -110,7 +110,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
                     Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectCommentByIdAsync(It.IsAny<Guid>()),
+                broker.SelectCommentByIdAsync(It.IsAny<int>()),
                     Times.Once);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
@@ -123,7 +123,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
           ShouldThrowDependencyExceptionOnRetrieveByIdWhenDbUpdateConcurrencyExceptionOccursAndLogItAsync()
         {
             // given
-            Guid someCommentId = Guid.NewGuid();
+            int someCommentId = 1;
             var databaseUpdateConcurrencyException = new DbUpdateConcurrencyException();
 
             var lockedCommentException =
@@ -133,7 +133,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
                 new CommentDependencyException(lockedCommentException);
 
             this.storageBrokerMock.Setup(broker =>
-                broker.SelectCommentByIdAsync(It.IsAny<Guid>()))
+                broker.SelectCommentByIdAsync(It.IsAny<int>()))
                     .ThrowsAsync(databaseUpdateConcurrencyException);
 
             // when
@@ -149,7 +149,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Comments
                     Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectCommentByIdAsync(It.IsAny<Guid>()),
+                broker.SelectCommentByIdAsync(It.IsAny<int>()),
                     Times.Once);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();

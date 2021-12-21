@@ -33,7 +33,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
                     Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectCategoryByIdAsync(It.IsAny<Guid>()),
+                broker.SelectCategoryByIdAsync(It.IsAny<int>()),
                     Times.Never);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
@@ -70,7 +70,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
                     Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectCategoryByIdAsync(It.IsAny<Guid>()),
+                broker.SelectCategoryByIdAsync(It.IsAny<int>()),
                     Times.Never);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
@@ -145,7 +145,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
                     Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectCategoryByIdAsync(It.IsAny<Guid>()),
+                broker.SelectCategoryByIdAsync(It.IsAny<int>()),
                     Times.Never);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();

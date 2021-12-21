@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using ZionCodes.Core.Dtos.Generic;
 using ZionCodes.Core.Models.Articles;
 using ZionCodes.Core.Services.Articles;
+using ZionCodes.Core.Utils;
 
 namespace ZionCodes.Core.Controllers
 {
@@ -30,17 +33,35 @@ namespace ZionCodes.Core.Controllers
         });
 
         [HttpGet]
-        public ActionResult<IQueryable<Article>> GetAllArticles() =>
+        public ActionResult<ICollection<Article>> GetAllArticles([FromQuery] PaginationQuery paginationQuery) =>
         TryCatchArticleFunction(() =>
         {
-            IQueryable storageArticle =
+            ICollection<Article> storageArticle =
                     this.articleService.RetrieveAllArticles();
+
+            if(paginationQuery != null)
+            {
+                PaginationFilter filter = new()
+                {
+                    PageNumber = paginationQuery.PageNumber,
+                    PageSize = paginationQuery.PageSize,
+                };
+                                
+                if (paginationQuery.PageNumber < 1 || paginationQuery.PageSize < 1)
+                {
+                    return Ok(new PagedResponse<ICollection<Article>>(storageArticle));
+                }
+
+                var paginationResponse = PaginationBuilder.CreatePaginatedResponse(filter, storageArticle);
+
+                return Ok(paginationResponse);
+            }        
 
             return Ok(storageArticle);
         });
 
         [HttpGet("{articleId}")]
-        public ValueTask<ActionResult<Article>> GetArticleAsync(Guid articleId) =>
+        public ValueTask<ActionResult<Article>> GetArticleAsync(int articleId) =>
         TryCatchArticleFunction(async () =>
         {
             Article storageArticle =
@@ -61,7 +82,7 @@ namespace ZionCodes.Core.Controllers
 
 
         [HttpDelete("{articleId}")]
-        public ValueTask<ActionResult<Article>> DeleteArticleAsync(Guid articleId) =>
+        public ValueTask<ActionResult<Article>> DeleteArticleAsync(int articleId) =>
         TryCatchArticleFunction(async () =>
         {
             Article storageArticle =

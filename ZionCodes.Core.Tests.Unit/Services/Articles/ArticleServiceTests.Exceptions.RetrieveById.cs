@@ -15,8 +15,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.Articles
         public async Task ShouldThrowDependencyExceptionOnRetrieveByIdWhenSqlExceptionOccursAndLogItAsync()
         {
             // given
-            Guid randomArticleId = Guid.NewGuid();
-            Guid inputArticleId = randomArticleId;
+            int randomArticleId = 1;
+            int inputArticleId = randomArticleId;
             SqlException sqlException = GetSqlException();
 
             var exceptionArticleDependencyException =
@@ -51,14 +51,14 @@ namespace ZionCodes.Core.Tests.Unit.Services.Articles
         public async Task ShouldThrowDependencyExceptionOnRetrieveByIdWhenDbExceptionOccursAndLogItAsync()
         {
             // given
-            Guid someArticleId = Guid.NewGuid();
+            int someArticleId = 1;
             var databaseUpdateException = new DbUpdateException();
 
             var expectedArticleDependencyException =
                 new ArticleDependencyException(databaseUpdateException);
 
             this.storageBrokerMock.Setup(broker =>
-                broker.SelectArticleByIdAsync(It.IsAny<Guid>()))
+                broker.SelectArticleByIdAsync(It.IsAny<int>()))
                     .ThrowsAsync(databaseUpdateException);
 
             // when
@@ -74,7 +74,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Articles
                     Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectArticleByIdAsync(It.IsAny<Guid>()),
+                broker.SelectArticleByIdAsync(It.IsAny<int>()),
                     Times.Once);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
@@ -87,14 +87,14 @@ namespace ZionCodes.Core.Tests.Unit.Services.Articles
         public async Task ShouldThrowServiceExceptionOnRetrieveByIdWhenExceptionOccursAndLogItAsync()
         {
             // given
-            Guid someArticleId = Guid.NewGuid();
+            int someArticleId = 1;
             var exception = new Exception();
 
             var expectedArticleServiceException =
                 new ArticleServiceException(exception);
 
             this.storageBrokerMock.Setup(broker =>
-                broker.SelectArticleByIdAsync(It.IsAny<Guid>()))
+                broker.SelectArticleByIdAsync(It.IsAny<int>()))
                     .ThrowsAsync(exception);
 
             // when
@@ -110,7 +110,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Articles
                     Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectArticleByIdAsync(It.IsAny<Guid>()),
+                broker.SelectArticleByIdAsync(It.IsAny<int>()),
                     Times.Once);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
@@ -123,7 +123,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Articles
           ShouldThrowDependencyExceptionOnRetrieveByIdWhenDbUpdateConcurrencyExceptionOccursAndLogItAsync()
         {
             // given
-            Guid someArticleId = Guid.NewGuid();
+            int someArticleId = 1;
             var databaseUpdateConcurrencyException = new DbUpdateConcurrencyException();
 
             var lockedArticleException =
@@ -133,7 +133,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Articles
                 new ArticleDependencyException(lockedArticleException);
 
             this.storageBrokerMock.Setup(broker =>
-                broker.SelectArticleByIdAsync(It.IsAny<Guid>()))
+                broker.SelectArticleByIdAsync(It.IsAny<int>()))
                     .ThrowsAsync(databaseUpdateConcurrencyException);
 
             // when
@@ -149,7 +149,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Articles
                     Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectArticleByIdAsync(It.IsAny<Guid>()),
+                broker.SelectArticleByIdAsync(It.IsAny<int>()),
                     Times.Once);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ZionCodes.Core.Brokers.DateTimes;
@@ -34,17 +35,17 @@ namespace ZionCodes.Core.Services.Articles
                 return await this.storageBroker.InsertArticleAsync(article);
             });
 
-        public IQueryable<Article> RetrieveAllArticles() =>
+        public ICollection<Article> RetrieveAllArticles() =>
             TryCatch(() =>
             {
-                IQueryable<Article> storageArticles = this.storageBroker.SelectAllArticles();
+                ICollection<Article> storageArticles = this.storageBroker.SelectAllArticles();
 
                 ValidateStorageArticles(storageArticles);
 
                 return storageArticles;
             });
 
-        public ValueTask<Article> RetrieveArticleByIdAsync(Guid articleId) =>
+        public ValueTask<Article> RetrieveArticleByIdAsync(int articleId) =>
             TryCatch(async () =>
             {
                 ValidateArticleId(articleId);
@@ -67,7 +68,7 @@ namespace ZionCodes.Core.Services.Articles
                 return await this.storageBroker.UpdateArticleAsync(article);
             });
 
-        public ValueTask<Article> RemoveArticleByIdAsync(Guid articleId) =>
+        public ValueTask<Article> RemoveArticleByIdAsync(int articleId) =>
             TryCatch(async () =>
             {
                 ValidateArticleIdIsNull(articleId);

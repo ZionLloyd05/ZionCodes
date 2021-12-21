@@ -13,8 +13,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
         public async Task ShouldThrowValidatonExceptionOnDeleteWhenIdIsInvalidAndLogItAsync()
         {
             // given
-            Guid randomCategoryId = default;
-            Guid inputCategoryId = randomCategoryId;
+            int randomCategoryId = default;
+            int inputCategoryId = randomCategoryId;
 
             var invalidCategoryInputException = new InvalidCategoryException(
                 parameterName: nameof(Category.Id),
@@ -35,7 +35,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
                     Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectCategoryByIdAsync(It.IsAny<Guid>()),
+                broker.SelectCategoryByIdAsync(It.IsAny<int>()),
                     Times.Never);
 
             this.storageBrokerMock.Verify(broker =>
@@ -53,7 +53,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
             // given
             DateTimeOffset dateTime = GetRandomDateTime();
             Category randomCategory = CreateRandomCategory(dateTime);
-            Guid inputCategoryId = randomCategory.Id;
+            int inputCategoryId = randomCategory.Id;
             Category inputCategory = randomCategory;
             Category nullStorageCategory = null;
 

@@ -15,8 +15,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
         public async Task ShouldThrowDependencyExceptionOnRetrieveByIdWhenSqlExceptionOccursAndLogItAsync()
         {
             // given
-            Guid randomTagId = Guid.NewGuid();
-            Guid inputTagId = randomTagId;
+            int randomTagId = 1;
+            int inputTagId = randomTagId;
             SqlException sqlException = GetSqlException();
 
             var exceptionTagDependencyException =
@@ -51,14 +51,14 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
         public async Task ShouldThrowDependencyExceptionOnRetrieveByIdWhenDbExceptionOccursAndLogItAsync()
         {
             // given
-            Guid someTagId = Guid.NewGuid();
+            int someTagId = 1;
             var databaseUpdateException = new DbUpdateException();
 
             var expectedTagDependencyException =
                 new TagDependencyException(databaseUpdateException);
 
             this.storageBrokerMock.Setup(broker =>
-                broker.SelectTagByIdAsync(It.IsAny<Guid>()))
+                broker.SelectTagByIdAsync(It.IsAny<int>()))
                     .ThrowsAsync(databaseUpdateException);
 
             // when
@@ -74,7 +74,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
                     Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectTagByIdAsync(It.IsAny<Guid>()),
+                broker.SelectTagByIdAsync(It.IsAny<int>()),
                     Times.Once);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
@@ -87,7 +87,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
          ShouldThrowDependencyExceptionOnRetrieveByIdWhenDbUpdateConcurrencyExceptionOccursAndLogItAsync()
         {
             // given
-            Guid someTagId = Guid.NewGuid();
+            int someTagId = 1;
             var databaseUpdateConcurrencyException = new DbUpdateConcurrencyException();
 
             var lockedTagException =
@@ -97,7 +97,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
                 new TagDependencyException(lockedTagException);
 
             this.storageBrokerMock.Setup(broker =>
-                broker.SelectTagByIdAsync(It.IsAny<Guid>()))
+                broker.SelectTagByIdAsync(It.IsAny<int>()))
                     .ThrowsAsync(databaseUpdateConcurrencyException);
 
             // when
@@ -113,7 +113,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
                     Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectTagByIdAsync(It.IsAny<Guid>()),
+                broker.SelectTagByIdAsync(It.IsAny<int>()),
                     Times.Once);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
@@ -125,14 +125,14 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
         public async Task ShouldThrowServiceExceptionOnRetrieveByIdWhenExceptionOccursAndLogItAsync()
         {
             // given
-            Guid someTagId = Guid.NewGuid();
+            int someTagId = 1;
             var exception = new Exception();
 
             var expectedTagServiceException =
                 new TagServiceException(exception);
 
             this.storageBrokerMock.Setup(broker =>
-                broker.SelectTagByIdAsync(It.IsAny<Guid>()))
+                broker.SelectTagByIdAsync(It.IsAny<int>()))
                     .ThrowsAsync(exception);
 
             // when
@@ -148,7 +148,7 @@ namespace ZionCodes.Core.Tests.Unit.Services.Tags
                     Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectTagByIdAsync(It.IsAny<Guid>()),
+                broker.SelectTagByIdAsync(It.IsAny<int>()),
                     Times.Once);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();

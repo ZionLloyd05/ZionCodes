@@ -39,8 +39,8 @@ namespace ZionCodes.Core.Tests.Unit.Services.Categories
         private static DateTimeOffset GetRandomDateTime() =>
             new DateTimeRange(earliestDate: new DateTime()).GetValue();
 
-        private static IQueryable<Category> CreateRandomCategories(DateTimeOffset dateTime) =>
-            CreateRandomCategoryFiller(dateTime).Create(GetRandomNumber()).AsQueryable();
+        private static ICollection<Category> CreateRandomCategories(DateTimeOffset dateTime) =>
+            CreateRandomCategoryFiller(dateTime).Create(GetRandomNumber()).ToList();
 
         private static SqlException GetSqlException() =>
             (SqlException)FormatterServices.GetUninitializedObject(typeof(SqlException));
